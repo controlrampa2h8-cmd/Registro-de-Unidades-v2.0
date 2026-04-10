@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Administrador</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;--surface:#fff;--surface2:#f0efe9;--border:#e2e0d8;--border2:#c8c6bc;
+  --text:#1a1916;--text2:#6b6960;--text3:#9b9a93;
+  --blue-bg:#e8f0fc;--blue-text:#1a4fa0;--blue-border:#b8cef5;
+  --green-bg:#e6f4ec;--green-text:#1a6b38;--green-border:#a8dbb8;
+  --amber-bg:#fdf3e0;--amber-text:#8a5a00;--amber-border:#f0d080;
+  --red-bg:#fceaea;--red-text:#a01a1a;--red-border:#f0b8b8;
+  --purple-bg:#f0ecfc;--purple-text:#4a1fa0;--purple-border:#c8b8f5;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);min-height:100vh}
+.topbar{background:#2d1a4a;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px}
+.topbar-icon{width:36px;height:36px;background:rgba(255,255,255,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.topbar-icon svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2}
+.topbar-title{font-size:15px;font-weight:600}
+.topbar-sub{font-size:11px;opacity:0.5;margin-top:2px}
+.topbar-clock{margin-left:auto;font-size:12px;opacity:0.5;font-family:monospace}
+.container{max-width:1100px;margin:0 auto;padding:20px 16px}
+.tabs{display:flex;gap:2px;margin-bottom:20px;border-bottom:1px solid var(--border)}
+.tab{padding:10px 20px;font-size:13px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500;transition:color 0.15s}
+.tab.active{color:var(--text);border-bottom-color:var(--text)}
+.pane{display:none}.pane.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:500;color:var(--text2)}
+.field input,.field select{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 11px;font-size:13px;background:var(--surface);color:var(--text);width:100%}
+.field input:focus,.field select:focus{outline:none;border-color:#1a4fa0;box-shadow:0 0 0 3px rgba(26,79,160,0.08)}
+.req{color:#c0392b}
+.actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.btn{padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;border:1px solid;transition:all 0.15s}
+.btn-primary{background:var(--text);color:#fff;border-color:var(--text)}
+.btn-primary:hover{background:#333}
+.btn-ghost{background:transparent;color:var(--text2);border-color:var(--border2)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-danger{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border)}
+.btn-danger:hover{background:#f5cccc}
+.btn-sm{padding:5px 11px;font-size:12px}
+.msg{padding:9px 13px;border-radius:var(--radius-sm);font-size:12.5px;margin-top:10px;display:none}
+.msg.ok{background:var(--green-bg);color:var(--green-text)}
+.msg.err{background:var(--red-bg);color:var(--red-text)}
+.msg.warn{background:var(--amber-bg);color:var(--amber-text)}
+.zone-info-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--text2);margin-bottom:14px}
+/* Placas table */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:9px 12px;font-size:11px;font-weight:600;color:var(--text3);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.04em;background:var(--surface2);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.placa-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:2px 8px;font-family:monospace;font-size:13px;font-weight:700;letter-spacing:0.06em}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.badge.local{background:var(--green-bg);color:var(--green-text)}
+.badge.prov{background:var(--amber-bg);color:var(--amber-text)}
+.empty{text-align:center;padding:2.5rem;color:var(--text3);font-size:13px}
+.del-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px 8px;border-radius:4px;font-size:13px}
+.del-btn:hover{color:var(--red-text);background:var(--red-bg)}
+.edit-btn{background:none;border:none;color:var(--blue-text);cursor:pointer;padding:4px 8px;border-radius:4px;font-size:12px;border:1px solid var(--blue-border);background:var(--blue-bg)}
+.edit-btn:hover{opacity:0.8}
+/* Historial */
+.estado{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.estado.asignado{background:var(--green-bg);color:var(--green-text)}
+.estado.espera{background:var(--amber-bg);color:var(--amber-text)}
+.estado.pendiente{background:var(--blue-bg);color:var(--blue-text)}
+.motivo-chip{font-size:11px;color:var(--purple-text);background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:4px;padding:3px 8px;display:inline-block;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;text-align:center}
+.stat-val{font-size:26px;font-weight:700;letter-spacing:-0.02em}
+.stat-lbl{font-size:11px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:0.04em}
+.stat.asig .stat-val{color:var(--green-text)}
+.stat.espera .stat-val{color:var(--amber-text)}
+.stat.pend .stat-val{color:#1a4fa0}
+.search-input{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 12px;font-size:13px;width:220px;color:var(--text)}
+.search-input:focus{outline:none;border-color:#1a4fa0}
+/* Modal edit */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius);padding:24px;width:100%;max-width:420px;border:1px solid var(--border)}
+.modal-title{font-size:15px;font-weight:600;margin-bottom:16px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-icon">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M18 8l2 2 4-4" stroke-width="2"/></svg>
+  </div>
+  <div>
+    <div class="topbar-title">Panel Administrador</div>
+    <div class="topbar-sub">Gestión completa del sistema</div>
+  </div>
+  <div class="topbar-clock" id="clock"></div>
+</div>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('placas')">Base de Placas</button>
+    <button class="tab" onclick="switchTab('zona')">Zona Geográfica</button>
+    <button class="tab" onclick="switchTab('historial')">Historial de Registros</button>
+  </div>
+
+  <!-- PLACAS -->
+  <div class="pane active" id="pane-placas">
+    <div class="card">
+      <div class="card-title" id="placa-form-title">Agregar nueva placa</div>
+      <div class="grid">
+        <div class="field">
+          <label>Placa <span class="req">*</span></label>
+          <input type="text" id="p-placa" placeholder="Ej: BVV801" maxlength="10" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+        </div>
+        <div class="field">
+          <label>Tipo de servicio <span class="req">*</span></label>
+          <select id="p-tipo">
+            <option value="">Seleccionar...</option>
+            <option value="LOCAL">LOCAL</option>
+            <option value="PROVINCIA">PROVINCIA</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Empresa de Transporte <span class="req">*</span></label>
+          <input type="text" id="p-empresa" placeholder="Ej: Transportes RBK">
+        </div>
+        <div class="field">
+          <label>Capacidad <span class="req">*</span></label>
+          <input type="text" id="p-cap" placeholder="Ej: 60 M3">
+        </div>
+      </div>
+      <div class="msg" id="msg-placa"></div>
+      <div class="actions">
+        <button class="btn btn-primary" id="btn-save-placa" onclick="guardarPlaca()">Agregar placa</button>
+        <button class="btn btn-ghost" id="btn-cancel-edit" onclick="cancelarEdicion()" style="display:none">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+        <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">Placas registradas</span>
+        <input type="text" class="search-input" placeholder="Buscar placa o empresa..." oninput="buscarPlacas(this.value)" style="margin-left:auto">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Placa</th><th>Tipo</th><th>Empresa</th><th>Capacidad</th><th>Acciones</th></tr></thead>
+          <tbody id="tbody-placas"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZONA -->
+  <div class="pane" id="pane-zona">
+    <div class="card">
+      <div class="card-title">Zona permitida — Unidades LOCAL</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.7">Define el centro geográfico de la cochera y el radio máximo. Solo aplica a unidades <strong>LOCAL</strong>. Las unidades PROVINCIA pueden registrar desde cualquier lugar.</p>
+      <div class="zone-info-box" id="zone-current">Sin zona configurada aún.</div>
+      <div class="grid">
+        <div class="field">
+          <label>Latitud del centro</label>
+          <input type="number" id="a-lat" placeholder="Ej: -11.9797" step="0.0001">
+        </div>
+        <div class="field">
+          <label>Longitud del centro</label>
+          <input type="number" id="a-lng" placeholder="Ej: -77.0827" step="0.0001">
+        </div>
+        <div class="field">
+          <label>Radio permitido (metros)</label>
+          <input type="number" id="a-radio" placeholder="Ej: 300" min="1">
+        </div>
+        <div class="field">
+          <label>Nombre de la zona</label>
+          <input type="text" id="a-nombre" placeholder="Ej: Cochera Principal Lima">
+        </div>
+      </div>
+      <div class="msg" id="msg-zona"></div>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="guardarZona()">Guardar zona</button>
+        <button class="btn btn-danger" onclick="eliminarZona()">Eliminar zona</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Cómo obtener coordenadas desde Google Maps</div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.9">
+        1. Abre <strong>Google Maps</strong> en tu navegador.<br>
+        2. Navega hasta el centro exacto de la cochera.<br>
+        3. Haz clic derecho sobre ese punto.<br>
+        4. Aparecerán las coordenadas (latitud, longitud) — cópialas aquí.
+      </p>
+    </div>
+  </div>
+
+  <!-- HISTORIAL -->
+  <div class="pane" id="pane-historial">
+    <div class="stats-row">
+      <div class="stat"><div class="stat-val" id="h-total">0</div><div class="stat-lbl">Total</div></div>
+      <div class="stat asig"><div class="stat-val" id="h-asig">0</div><div class="stat-lbl">Carga asignada</div></div>
+      <div class="stat espera"><div class="stat-val" id="h-esp">0</div><div class="stat-lbl">En espera</div></div>
+      <div class="stat pend"><div class="stat-val" id="h-pend">0</div><div class="stat-lbl">Pendientes</div></div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">Todos los registros</span>
+        <button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="limpiarHistorial()">Limpiar historial</button>
+      </div>
+      <div class="table-wrap">
+        <table style="min-width:1000px">
+          <thead>
+            <tr>
+              <th>#</th><th>Fecha/Hora</th><th>Tipo</th><th>Empresa</th><th>Placa</th>
+              <th>Cap.</th><th>Licencia</th><th>Conductor</th><th>Teléfono</th>
+              <th>Ubicación</th><th>Estado</th><th>Motivo</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-hist"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const pad=n=>String(n).padStart(2,'0');
+function fmtDate(d){return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
+function tick(){document.getElementById('clock').textContent=fmtDate(new Date());}
+tick();setInterval(tick,1000);
+
+// --- Storage helpers ---
+function getPlacas(){try{const p=localStorage.getItem('placas');return p?JSON.parse(p):getDefaultPlacas();}catch(e){return getDefaultPlacas();}}
+function savePlacas(db){try{localStorage.setItem('placas',JSON.stringify(db));}catch(e){}}
+function getRegistros(){try{const r=localStorage.getItem('registros');return r?JSON.parse(r):[];}catch(e){return [];}}
+function saveRegistros(r){try{localStorage.setItem('registros',JSON.stringify(r));}catch(e){}}
+function getZona(){try{const z=localStorage.getItem('zona');return z?JSON.parse(z):null;}catch(e){return null;}}
+function saveZona(z){try{localStorage.setItem('zona',JSON.stringify(z));}catch(e){}}
+
+function getDefaultPlacas(){
+  return {
+    "BVV801":{tipo:"LOCAL",empresa:"RBK",cap:"50 M3"},
+    "C7F936":{tipo:"PROVINCIA",empresa:"NR",cap:"80 M3"},
+    "CBD722":{tipo:"PROVINCIA",empresa:"Transporte Dagre",cap:"80 M3"},
+    "F8U949":{tipo:"LOCAL",empresa:"Transportes Barrios",cap:"60 M3"},
+    "BDP912":{tipo:"LOCAL",empresa:"Barrios",cap:"60 M3"},
+    "D4F123":{tipo:"PROVINCIA",empresa:"Trans Norte",cap:"80 M3"},
+    "ABK445":{tipo:"LOCAL",empresa:"Lima Express",cap:"50 M3"},
+    "XYZ990":{tipo:"PROVINCIA",empresa:"Servis Sur",cap:"100 M3"}
+  };
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['placas','zona','historial'][i]===t));
+  document.querySelectorAll('.pane').forEach(el=>el.classList.remove('active'));
+  document.getElementById('pane-'+t).classList.add('active');
+  if(t==='historial')renderHistorial();
+  if(t==='placas')renderPlacas();
+}
+
+function showMsg(id,txt,type){
+  const el=document.getElementById(id);el.textContent=txt;el.className='msg '+type;el.style.display='block';
+  setTimeout(()=>{el.style.display='none'},4000);
+}
+
+// --- PLACAS ---
+let editandoPlaca=null, busqueda='';
+
+function renderPlacas(query){
+  const db=getPlacas();
+  const tbody=document.getElementById('tbody-placas');
+  let entradas=Object.entries(db);
+  const q=(query||busqueda||'').toLowerCase();
+  if(q)entradas=entradas.filter(([k,v])=>k.toLowerCase().includes(q)||v.empresa.toLowerCase().includes(q)||v.tipo.toLowerCase().includes(q));
+  if(!entradas.length){tbody.innerHTML='<tr><td colspan="5" class="empty">No se encontraron placas</td></tr>';return;}
+  tbody.innerHTML=entradas.map(([placa,info])=>`
+    <tr>
+      <td><span class="placa-tag">${placa}</span></td>
+      <td><span class="badge ${info.tipo==='LOCAL'?'local':'prov'}">${info.tipo}</span></td>
+      <td>${info.empresa}</td>
+      <td>${info.cap}</td>
+      <td style="display:flex;gap:6px">
+        <button class="btn edit-btn btn-sm" onclick="editarPlaca('${placa}')">Editar</button>
+        <button class="del-btn" onclick="eliminarPlaca('${placa}')">✕</button>
+      </td>
+    </tr>`).join('');
+}
+
+function buscarPlacas(q){busqueda=q;renderPlacas(q);}
+
+function guardarPlaca(){
+  const placa=document.getElementById('p-placa').value.trim().toUpperCase();
+  const tipo=document.getElementById('p-tipo').value;
+  const empresa=document.getElementById('p-empresa').value.trim();
+  const cap=document.getElementById('p-cap').value.trim();
+  if(!placa||!tipo||!empresa||!cap){showMsg('msg-placa','Completa todos los campos.','err');return;}
+  const db=getPlacas();
+  if(!editandoPlaca&&db[placa]){showMsg('msg-placa','Esta placa ya existe. Usa "Editar" para modificarla.','err');return;}
+  db[placa]={tipo,empresa,cap};
+  savePlacas(db);
+  cancelarEdicion();
+  renderPlacas();
+  showMsg('msg-placa',editandoPlaca?'Placa actualizada.':'Placa agregada correctamente.','ok');
+  editandoPlaca=null;
+}
+
+function editarPlaca(placa){
+  const db=getPlacas();const info=db[placa];if(!info)return;
+  editandoPlaca=placa;
+  document.getElementById('p-placa').value=placa;
+  document.getElementById('p-placa').readOnly=true;
+  document.getElementById('p-tipo').value=info.tipo;
+  document.getElementById('p-empresa').value=info.empresa;
+  document.getElementById('p-cap').value=info.cap;
+  document.getElementById('placa-form-title').textContent='Editando placa: '+placa;
+  document.getElementById('btn-save-placa').textContent='Guardar cambios';
+  document.getElementById('btn-cancel-edit').style.display='inline-block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function cancelarEdicion(){
+  editandoPlaca=null;
+  ['p-placa','p-tipo','p-empresa','p-cap'].forEach(id=>{const el=document.getElementById(id);if(el.tagName==='SELECT')el.value='';else el.value='';});
+  document.getElementById('p-placa').readOnly=false;
+  document.getElementById('placa-form-title').textContent='Agregar nueva placa';
+  document.getElementById('btn-save-placa').textContent='Agregar placa';
+  document.getElementById('btn-cancel-edit').style.display='none';
+}
+
+function eliminarPlaca(placa){
+  if(!confirm('¿Eliminar la placa '+placa+'?'))return;
+  const db=getPlacas();delete db[placa];savePlacas(db);renderPlacas();
+}
+
+// --- ZONA ---
+function guardarZona(){
+  const lat=parseFloat(document.getElementById('a-lat').value);
+  const lng=parseFloat(document.getElementById('a-lng').value);
+  const radio=parseInt(document.getElementById('a-radio').value);
+  const nombre=document.getElementById('a-nombre').value.trim()||'Zona sin nombre';
+  if(isNaN(lat)||isNaN(lng)||isNaN(radio)||radio<1){showMsg('msg-zona','Completa todos los campos correctamente.','err');return;}
+  saveZona({lat,lng,radio,nombre});
+  actualizarZoneUI();showMsg('msg-zona','Zona guardada correctamente.','ok');
+}
+function eliminarZona(){
+  if(!confirm('¿Eliminar la zona configurada?'))return;
+  localStorage.removeItem('zona');
+  actualizarZoneUI();showMsg('msg-zona','Zona eliminada.','warn');
+}
+function actualizarZoneUI(){
+  const zona=getZona();
+  const zc=document.getElementById('zone-current');
+  if(zona){
+    zc.innerHTML='<strong>'+zona.nombre+'</strong><br><span style="color:var(--text3)">Centro: '+zona.lat+', '+zona.lng+' &nbsp;|&nbsp; Radio: '+zona.radio+' m</span>';
+    document.getElementById('a-lat').value=zona.lat;document.getElementById('a-lng').value=zona.lng;
+    document.getElementById('a-radio').value=zona.radio;document.getElementById('a-nombre').value=zona.nombre;
+  } else {zc.textContent='Sin zona configurada aún.';}
+}
+
+// --- HISTORIAL ---
+function renderHistorial(){
+  const regs=getRegistros();
+  const tbody=document.getElementById('tbody-hist');
+  document.getElementById('h-total').textContent=regs.length;
+  document.getElementById('h-asig').textContent=regs.filter(r=>r.estado==='CARGA ASIGNADA').length;
+  document.getElementById('h-esp').textContent=regs.filter(r=>r.estado==='EN ESPERA DE CARGA').length;
+  document.getElementById('h-pend').textContent=regs.filter(r=>!r.estado||r.estado==='PENDIENTE').length;
+  if(!regs.length){tbody.innerHTML='<tr><td colspan="13" class="empty">No hay registros aún</td></tr>';return;}
+  tbody.innerHTML=[...regs].reverse().map((r,i)=>{
+    const est=r.estado||'PENDIENTE';
+    const num=regs.indexOf(r)+1;
+    return `<tr>
+      <td style="font-weight:600;color:var(--text3)">${num}</td>
+      <td style="font-size:11px;white-space:nowrap;font-family:monospace">${r.ts}</td>
+      <td><span class="badge ${r.tipo==='LOCAL'?'local':'prov'}">${r.tipo}</span></td>
+      <td style="white-space:nowrap">${r.empresa}</td>
+      <td><span class="placa-tag">${r.placa}</span></td>
+      <td>${r.cap}</td><td>${r.lic}</td>
+      <td style="font-weight:600;white-space:nowrap">${r.nombre}</td>
+      <td>${r.tel}</td>
+      <td style="font-size:11px;color:var(--text3);font-family:monospace">${r.coords}</td>
+      <td><span class="estado ${est==='CARGA ASIGNADA'?'asignado':est==='EN ESPERA DE CARGA'?'espera':'pendiente'}">${est}</span></td>
+      <td>${r.motivo?`<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+      <td><button class="del-btn" onclick="eliminarReg(${r.id})" title="Eliminar">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function eliminarReg(id){
+  if(!confirm('¿Eliminar este registro?'))return;
+  const regs=getRegistros().filter(r=>r.id!==id);saveRegistros(regs);renderHistorial();
+}
+function limpiarHistorial(){
+  if(!confirm('¿Eliminar TODOS los registros? Esta acción no se puede deshacer.'))return;
+  saveRegistros([]);renderHistorial();
+}
+
+// init
+(()=>{
+  if(!localStorage.getItem('placas'))savePlacas(getDefaultPlacas());
+  renderPlacas();actualizarZoneUI();
+})();
+</script>
+</body>
+</html>

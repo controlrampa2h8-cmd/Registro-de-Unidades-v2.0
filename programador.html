@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel del Programador</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;--surface:#fff;--surface2:#f0efe9;--border:#e2e0d8;--border2:#c8c6bc;
+  --text:#1a1916;--text2:#6b6960;--text3:#9b9a93;
+  --blue-bg:#e8f0fc;--blue-text:#1a4fa0;--blue-border:#b8cef5;
+  --green-bg:#e6f4ec;--green-text:#1a6b38;--green-border:#a8dbb8;
+  --amber-bg:#fdf3e0;--amber-text:#8a5a00;--amber-border:#f0d080;
+  --red-bg:#fceaea;--red-text:#a01a1a;--red-border:#f0b8b8;
+  --purple-bg:#f0ecfc;--purple-text:#4a1fa0;--purple-border:#c8b8f5;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);min-height:100vh}
+.topbar{background:#1c3a5e;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px}
+.topbar-icon{width:36px;height:36px;background:rgba(255,255,255,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.topbar-icon svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2}
+.topbar-title{font-size:15px;font-weight:600}
+.topbar-sub{font-size:11px;opacity:0.5;margin-top:2px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.topbar-clock{font-size:12px;opacity:0.55;font-family:monospace}
+.sync-info{font-size:11px;opacity:0.5}
+.btn-refresh{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:500}
+.btn-refresh:hover{background:rgba(255,255,255,0.2)}
+.container{max-width:1200px;margin:0 auto;padding:20px 16px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;text-align:center}
+.stat-val{font-size:28px;font-weight:700;letter-spacing:-0.03em}
+.stat-lbl{font-size:11px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:0.04em}
+.stat.asig .stat-val{color:var(--green-text)}
+.stat.espera .stat-val{color:var(--amber-text)}
+.stat.pend .stat-val{color:#1a4fa0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.card-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em}
+.filters{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2)}
+.filter-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
+.filter-btn:hover:not(.active){background:var(--surface2)}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:900px}
+th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:0.04em;background:var(--surface2)}
+td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf7}
+.num{width:30px;height:30px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text2)}
+.placa{display:inline-block;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:2px 8px;font-family:monospace;font-size:12px;font-weight:700;letter-spacing:0.06em}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.badge.local{background:var(--green-bg);color:var(--green-text)}
+.badge.prov{background:var(--amber-bg);color:var(--amber-text)}
+.estado{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.estado.asignado{background:var(--green-bg);color:var(--green-text)}
+.estado.espera{background:var(--amber-bg);color:var(--amber-text)}
+.estado.pendiente{background:var(--blue-bg);color:var(--blue-text)}
+.motivo-chip{font-size:11px;color:var(--purple-text);background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:4px;padding:3px 8px;display:inline-block;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default}
+.empty{text-align:center;padding:3rem;color:var(--text3);font-size:13px}
+.action-wrap{display:flex;gap:6px;flex-wrap:wrap}
+.btn{padding:6px 13px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;cursor:pointer;border:1px solid;transition:all 0.15s;white-space:nowrap}
+.btn-asig{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}
+.btn-asig:hover{background:#c8ebd4}
+.btn-esp{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border)}
+.btn-esp:hover{background:#f5e8b8}
+.btn-reset{background:var(--surface2);color:var(--text3);border-color:var(--border);font-size:11px;padding:4px 9px}
+.btn-reset:hover{background:var(--border)}
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius);padding:26px;width:100%;max-width:460px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,0.15)}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6}
+.modal-label{font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:6px}
+textarea{width:100%;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;resize:vertical;min-height:90px;font-family:inherit;color:var(--text);background:var(--surface)}
+textarea:focus{outline:none;border-color:#1a4fa0;box-shadow:0 0 0 3px rgba(26,79,160,0.08)}
+.hint{font-size:11px;color:var(--text3);margin-top:5px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.btn-confirm{background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border);border-radius:var(--radius-sm);padding:9px 20px;font-size:13px;font-weight:500;cursor:pointer}
+.btn-confirm:hover{background:#c8ebd4}
+.btn-cancel{background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 16px;font-size:13px;cursor:pointer}
+.btn-cancel:hover{background:var(--surface2)}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}.filters{width:100%;margin-left:0}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-icon">
+    <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+  </div>
+  <div>
+    <div class="topbar-title">Panel del Programador</div>
+    <div class="topbar-sub">Asignación de carga por unidad</div>
+  </div>
+  <div class="topbar-right">
+    <span class="sync-info" id="sync-info">—</span>
+    <button class="btn-refresh" onclick="recargar()">↻ Actualizar</button>
+    <span class="topbar-clock" id="clock"></span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="stats-row">
+    <div class="stat"><div class="stat-val" id="s-total">0</div><div class="stat-lbl">Total registros</div></div>
+    <div class="stat asig"><div class="stat-val" id="s-asig">0</div><div class="stat-lbl">Carga asignada</div></div>
+    <div class="stat espera"><div class="stat-val" id="s-esp">0</div><div class="stat-lbl">En espera de carga</div></div>
+    <div class="stat pend"><div class="stat-val" id="s-pend">0</div><div class="stat-lbl">Pendientes</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">Orden de registro</div>
+      <div class="filters">
+        <button class="filter-btn active" onclick="setFiltro('TODOS',this)">Todos</button>
+        <button class="filter-btn" onclick="setFiltro('PENDIENTE',this)">Pendientes</button>
+        <button class="filter-btn" onclick="setFiltro('CARGA ASIGNADA',this)">Carga asignada</button>
+        <button class="filter-btn" onclick="setFiltro('EN ESPERA DE CARGA',this)">En espera</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Hora registro</th>
+            <th>Tipo</th>
+            <th>Empresa</th>
+            <th>Placa</th>
+            <th>Capacidad</th>
+            <th>Conductor</th>
+            <th>Teléfono</th>
+            <th>Estado</th>
+            <th>Motivo</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-title">Marcar como Carga Asignada</div>
+    <div class="modal-sub">Si la asignación fue por un motivo especial (sin carga real), escríbelo abajo. Si es una asignación normal, puedes dejar el campo vacío.</div>
+    <label class="modal-label">Motivo (opcional)</label>
+    <textarea id="modal-motivo" placeholder="Ej: Autorización de supervisión por avería de otra unidad..."></textarea>
+    <div class="hint">Deja en blanco si la asignación de carga es normal.</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-confirm" onclick="confirmar()">Confirmar asignación</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let registros=[], filtro='TODOS', idSel=null;
+const pad=n=>String(n).padStart(2,'0');
+function fmtDate(d){return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
+function tick(){document.getElementById('clock').textContent=fmtDate(new Date());}
+tick();setInterval(tick,1000);
+
+function cargar(){
+  try{const r=localStorage.getItem('registros');registros=r?JSON.parse(r):[];}catch(e){registros=[];}
+}
+function guardar(){try{localStorage.setItem('registros',JSON.stringify(registros));}catch(e){}}
+
+function recargar(){
+  cargar();renderTabla();updateStats();
+  const now=new Date();
+  document.getElementById('sync-info').textContent='Actualizado: '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+}
+setInterval(recargar,30000);
+
+function setFiltro(f,el){
+  filtro=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderTabla();
+}
+
+function renderTabla(){
+  const tbody=document.getElementById('tbody');
+  const lista=filtro==='TODOS'?registros:registros.filter(r=>(r.estado||'PENDIENTE')===filtro);
+  if(!lista.length){tbody.innerHTML='<tr><td colspan="11" class="empty">No hay registros para mostrar</td></tr>';return;}
+  tbody.innerHTML=lista.map((r,i)=>{
+    const est=r.estado||'PENDIENTE';
+    const num=registros.indexOf(r)+1;
+    const estadoHtml=`<span class="estado ${est==='CARGA ASIGNADA'?'asignado':est==='EN ESPERA DE CARGA'?'espera':'pendiente'}">${est}</span>`;
+    const motivoHtml=r.motivo?`<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>`:`<span style="color:var(--text3);font-size:12px">—</span>`;
+    const accionHtml=`<div class="action-wrap">
+      <button class="btn btn-asig" onclick="abrirModal(${r.id})">Carga asignada</button>
+      <button class="btn btn-esp" onclick="marcarEspera(${r.id})">En espera de carga</button>
+      ${est!=='PENDIENTE'?`<button class="btn btn-reset" onclick="resetear(${r.id})">↩</button>`:''}
+    </div>`;
+    return `<tr>
+      <td><span class="num">${num}</span></td>
+      <td style="font-size:11px;white-space:nowrap;font-family:monospace">${r.ts}</td>
+      <td><span class="badge ${r.tipo==='LOCAL'?'local':'prov'}">${r.tipo}</span></td>
+      <td style="white-space:nowrap">${r.empresa}</td>
+      <td><span class="placa">${r.placa}</span></td>
+      <td>${r.cap}</td>
+      <td style="font-weight:600;white-space:nowrap">${r.nombre}</td>
+      <td>${r.tel}</td>
+      <td>${estadoHtml}</td>
+      <td>${motivoHtml}</td>
+      <td>${accionHtml}</td>
+    </tr>`;
+  }).join('');
+}
+
+function updateStats(){
+  document.getElementById('s-total').textContent=registros.length;
+  document.getElementById('s-asig').textContent=registros.filter(r=>r.estado==='CARGA ASIGNADA').length;
+  document.getElementById('s-esp').textContent=registros.filter(r=>r.estado==='EN ESPERA DE CARGA').length;
+  document.getElementById('s-pend').textContent=registros.filter(r=>!r.estado||r.estado==='PENDIENTE').length;
+}
+
+function abrirModal(id){
+  idSel=id;document.getElementById('modal-motivo').value='';
+  document.getElementById('overlay').classList.add('open');
+}
+function cerrarModal(){document.getElementById('overlay').classList.remove('open');idSel=null;}
+function confirmar(){
+  if(!idSel)return;
+  const motivo=document.getElementById('modal-motivo').value.trim();
+  const idx=registros.findIndex(r=>r.id===idSel);
+  if(idx>-1){registros[idx].estado='CARGA ASIGNADA';registros[idx].motivo=motivo;}
+  guardar();cerrarModal();renderTabla();updateStats();
+}
+function marcarEspera(id){
+  const idx=registros.findIndex(r=>r.id===id);
+  if(idx>-1){registros[idx].estado='EN ESPERA DE CARGA';registros[idx].motivo='';}
+  guardar();renderTabla();updateStats();
+}
+function resetear(id){
+  const idx=registros.findIndex(r=>r.id===id);
+  if(idx>-1){registros[idx].estado='PENDIENTE';registros[idx].motivo='';}
+  guardar();renderTabla();updateStats();
+}
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)cerrarModal();});
+
+recargar();
+</script>
+</body>
+</html>
