@@ -13,8 +13,8 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .topbar-icon svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2}
 .topbar-title{font-size:15px;font-weight:600}.topbar-sub{font-size:11px;opacity:0.5;margin-top:2px}.topbar-clock{margin-left:auto;font-size:12px;opacity:0.5;font-family:monospace}
 .container{max-width:1100px;margin:0 auto;padding:20px 16px}
-.tabs{display:flex;gap:2px;margin-bottom:20px;border-bottom:1px solid var(--border)}
-.tab{padding:10px 20px;font-size:13px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500}
+.tabs{display:flex;gap:2px;margin-bottom:20px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tab{padding:10px 18px;font-size:13px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500;white-space:nowrap}
 .tab.active{color:var(--text);border-bottom-color:var(--text)}.pane{display:none}.pane.active{display:block}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
 .card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px}
@@ -29,6 +29,7 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .btn-primary{background:var(--text);color:#fff;border-color:var(--text)}.btn-primary:hover{background:#333}
 .btn-ghost{background:transparent;color:var(--text2);border-color:var(--border2)}.btn-ghost:hover{background:var(--surface2)}
 .btn-danger{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border)}.btn-danger:hover{background:#f5cccc}
+.btn-green{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}.btn-green:hover{background:#c8ebd4}
 .btn-sm{padding:5px 11px;font-size:12px}
 .msg{padding:9px 13px;border-radius:var(--radius-sm);font-size:12.5px;margin-top:10px;display:none}
 .msg.ok{background:var(--green-bg);color:var(--green-text)}.msg.err{background:var(--red-bg);color:var(--red-text)}.msg.warn{background:var(--amber-bg);color:var(--amber-text)}
@@ -38,9 +39,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}
 th{text-align:left;padding:9px 12px;font-size:11px;font-weight:600;color:var(--text3);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.04em;background:var(--surface2);white-space:nowrap}
 td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
 tr:last-child td{border-bottom:none}tr:hover td{background:var(--surface2)}
-.placa-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:2px 8px;font-family:monospace;font-size:13px;font-weight:700;letter-spacing:0.06em}
-.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
-.badge.local{background:var(--green-bg);color:var(--green-text)}.badge.prov{background:var(--amber-bg);color:var(--amber-text)}
+.placa-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:2px 8px;font-family:monospace;font-size:12px;font-weight:700;letter-spacing:0.06em}
+.lic-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:2px 8px;font-family:monospace;font-size:12px;font-weight:600}
+.badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge.LOCAL{background:var(--green-bg);color:var(--green-text)}
+.badge.PROVINCIA{background:var(--amber-bg);color:var(--amber-text)}
+.badge.other{background:var(--blue-bg);color:var(--blue-text)}
 .estado{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
 .estado.asignado{background:var(--green-bg);color:var(--green-text)}.estado.espera{background:var(--amber-bg);color:var(--amber-text)}.estado.pendiente{background:var(--blue-bg);color:var(--blue-text)}
 .motivo-chip{font-size:11px;color:var(--purple-text);background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:4px;padding:3px 8px;display:inline-block;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -51,8 +55,17 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--surface2)}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;text-align:center}
 .stat-val{font-size:26px;font-weight:700;letter-spacing:-0.02em}.stat-lbl{font-size:11px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:0.04em}
 .stat.asig .stat-val{color:var(--green-text)}.stat.espera .stat-val{color:var(--amber-text)}.stat.pend .stat-val{color:#1a4fa0}
+.search-row{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .search-input{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 12px;font-size:13px;width:220px;color:var(--text)}.search-input:focus{outline:none;border-color:#1a4fa0}
 .loading{text-align:center;padding:2rem;color:var(--text3);font-size:13px}
+.import-box{background:var(--green-bg);border:1px solid var(--green-border);border-radius:var(--radius);padding:16px 20px;margin-bottom:16px}
+.import-box h3{font-size:13px;font-weight:600;color:var(--green-text);margin-bottom:6px}
+.import-box p{font-size:12.5px;color:var(--green-text);opacity:0.85;line-height:1.6;margin-bottom:12px}
+.progress-bar{height:6px;background:rgba(0,0,0,0.1);border-radius:3px;overflow:hidden;margin-top:8px;display:none}
+.progress-fill{height:100%;background:var(--green-text);border-radius:3px;transition:width 0.3s}
+.excel-drop{border:2px dashed var(--border2);border-radius:var(--radius);padding:20px;text-align:center;color:var(--text2);font-size:13px;cursor:pointer;margin-bottom:12px}
+.excel-drop:hover{border-color:#1a4fa0;color:#1a4fa0}
+.excel-drop input[type=file]{display:none}
 @media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -64,35 +77,92 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--surface2)}
 </div>
 <div class="container">
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('placas')">Base de Placas</button>
+    <button class="tab active" onclick="switchTab('placas')">Placas</button>
+    <button class="tab" onclick="switchTab('conductores')">Conductores</button>
     <button class="tab" onclick="switchTab('zona')">Zona Geográfica</button>
-    <button class="tab" onclick="switchTab('historial')">Historial de Registros</button>
+    <button class="tab" onclick="switchTab('historial')">Historial</button>
   </div>
 
   <!-- PLACAS -->
   <div class="pane active" id="pane-placas">
+    <div class="import-box">
+      <h3>📦 Carga inicial de base de datos</h3>
+      <p>Importa las 445 unidades del archivo Excel directamente a Firebase con un solo clic. Solo necesitas hacerlo una vez.</p>
+      <div class="actions" style="margin-top:0">
+        <button class="btn btn-green" onclick="importarBDInicial()">⬆ Cargar 445 unidades a Firebase</button>
+      </div>
+      <div class="progress-bar" id="prog-placas"><div class="progress-fill" id="prog-fill-placas" style="width:0%"></div></div>
+      <div class="msg" id="msg-import-placas" style="margin-top:8px"></div>
+    </div>
     <div class="card">
       <div class="card-title" id="placa-form-title">Agregar nueva placa</div>
       <div class="grid">
         <div class="field"><label>Placa <span class="req">*</span></label><input type="text" id="p-placa" placeholder="Ej: BVV801" maxlength="10" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
-        <div class="field"><label>Tipo <span class="req">*</span></label><select id="p-tipo"><option value="">Seleccionar...</option><option value="LOCAL">LOCAL</option><option value="PROVINCIA">PROVINCIA</option></select></div>
-        <div class="field"><label>Empresa <span class="req">*</span></label><input type="text" id="p-empresa" placeholder="Ej: Transportes RBK"></div>
+        <div class="field"><label>Tipo de servicio <span class="req">*</span></label>
+          <select id="p-tipo">
+            <option value="">Seleccionar...</option>
+            <option value="LOCAL">LOCAL</option>
+            <option value="PROVINCIA">PROVINCIA</option>
+            <option value="FLEXIBLES">FLEXIBLES</option>
+            <option value="FURGÓN">FURGÓN</option>
+            <option value="PLATAFORMA">PLATAFORMA</option>
+            <option value="PLATAFORMA FURGÓN">PLATAFORMA FURGÓN</option>
+            <option value="REMOLCADOR">REMOLCADOR</option>
+            <option value="TRASLADO INTERNO">TRASLADO INTERNO</option>
+          </select>
+        </div>
+        <div class="field"><label>Empresa de Transporte <span class="req">*</span></label><input type="text" id="p-empresa" placeholder="Nombre de la empresa"></div>
         <div class="field"><label>Capacidad <span class="req">*</span></label><input type="text" id="p-cap" placeholder="Ej: 60 M3"></div>
       </div>
       <div class="msg" id="msg-placa"></div>
       <div class="actions">
         <button class="btn btn-primary" id="btn-save-placa" onclick="guardarPlaca()">Agregar placa</button>
-        <button class="btn btn-ghost" id="btn-cancel-edit" onclick="cancelarEdicion()" style="display:none">Cancelar</button>
+        <button class="btn btn-ghost" id="btn-cancel-placa" onclick="cancelarEdPlaca()" style="display:none">Cancelar</button>
       </div>
     </div>
     <div class="card" style="padding:0;overflow:hidden">
-      <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
-        <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">Placas registradas</span>
-        <input type="text" class="search-input" placeholder="Buscar placa o empresa..." oninput="buscarPlacas(this.value)" style="margin-left:auto">
+      <div class="search-row">
+        <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">Placas registradas (<span id="cnt-placas">0</span>)</span>
+        <input type="text" class="search-input" placeholder="Buscar placa, empresa o tipo..." oninput="buscarPlacas(this.value)" style="margin-left:auto">
       </div>
-      <div id="loading-placas" class="loading">Cargando placas...</div>
+      <div id="loading-placas" class="loading">Cargando...</div>
       <div class="table-wrap" id="table-placas" style="display:none">
         <table><thead><tr><th>Placa</th><th>Tipo</th><th>Empresa</th><th>Capacidad</th><th>Acciones</th></tr></thead><tbody id="tbody-placas"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONDUCTORES -->
+  <div class="pane" id="pane-conductores">
+    <div class="import-box">
+      <h3>📦 Carga inicial de conductores</h3>
+      <p>Importa los 310 conductores del archivo Excel directamente a Firebase con un solo clic. Solo necesitas hacerlo una vez.</p>
+      <div class="actions" style="margin-top:0">
+        <button class="btn btn-green" onclick="importarConductoresBD()">⬆ Cargar 310 conductores a Firebase</button>
+      </div>
+      <div class="progress-bar" id="prog-cond"><div class="progress-fill" id="prog-fill-cond" style="width:0%"></div></div>
+      <div class="msg" id="msg-import-cond" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title" id="cond-form-title">Agregar conductor</div>
+      <div class="grid">
+        <div class="field"><label>N° Licencia <span class="req">*</span></label><input type="text" id="c-lic" placeholder="Ej: Q45851459"></div>
+        <div class="field" style="grid-column:span 2"><label>Nombre y Apellido <span class="req">*</span></label><input type="text" id="c-nombre" placeholder="Ej: JOSE LUIS BALBIN PAUCAR" oninput="this.value=this.value.toUpperCase()"></div>
+      </div>
+      <div class="msg" id="msg-cond"></div>
+      <div class="actions">
+        <button class="btn btn-primary" id="btn-save-cond" onclick="guardarConductor()">Agregar conductor</button>
+        <button class="btn btn-ghost" id="btn-cancel-cond" onclick="cancelarEdCond()" style="display:none">Cancelar</button>
+      </div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="search-row">
+        <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">Conductores registrados (<span id="cnt-cond">0</span>)</span>
+        <input type="text" class="search-input" placeholder="Buscar licencia o nombre..." oninput="buscarConductores(this.value)" style="margin-left:auto">
+      </div>
+      <div id="loading-cond" class="loading">Cargando...</div>
+      <div class="table-wrap" id="table-cond" style="display:none">
+        <table><thead><tr><th>N° Licencia</th><th>Nombre y Apellido</th><th>Acciones</th></tr></thead><tbody id="tbody-cond"></tbody></table>
       </div>
     </div>
   </div>
@@ -101,7 +171,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--surface2)}
   <div class="pane" id="pane-zona">
     <div class="card">
       <div class="card-title">Zona permitida — Unidades LOCAL</div>
-      <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.7">Define el centro geográfico de la cochera y el radio máximo. Solo aplica a unidades <strong>LOCAL</strong>.</p>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.7">Define el centro geográfico de la cochera y el radio máximo. Solo aplica a unidades <strong>LOCAL</strong>. El resto de tipos pueden registrar desde cualquier lugar.</p>
       <div class="zone-info-box" id="zone-current">Cargando zona...</div>
       <div class="grid">
         <div class="field"><label>Latitud del centro</label><input type="number" id="a-lat" placeholder="Ej: -11.9797" step="0.0001"></div>
@@ -117,7 +187,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--surface2)}
     </div>
     <div class="card">
       <div class="card-title">Cómo obtener coordenadas</div>
-      <p style="font-size:13px;color:var(--text2);line-height:1.9">1. Abre <strong>Google Maps</strong> en tu navegador.<br>2. Navega hasta el centro exacto de la cochera.<br>3. Haz clic derecho sobre ese punto.<br>4. Aparecerán las coordenadas — cópialas aquí.</p>
+      <p style="font-size:13px;color:var(--text2);line-height:1.9">1. Abre <strong>Google Maps</strong> en tu navegador.<br>2. Navega hasta el centro exacto de la cochera.<br>3. Haz clic derecho sobre ese punto.<br>4. Copia las coordenadas (latitud, longitud) que aparecen.</p>
     </div>
   </div>
 
@@ -130,7 +200,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--surface2)}
       <div class="stat pend"><div class="stat-val" id="h-pend">—</div><div class="stat-lbl">Pendientes</div></div>
     </div>
     <div class="card" style="padding:0;overflow:hidden">
-      <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div class="search-row">
         <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">Todos los registros</span>
         <button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="limpiarHistorial()">Limpiar historial</button>
       </div>
@@ -145,26 +215,67 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
+<script>
+const BD_PLACAS = {"W4W771": {"empresa": "ALCANTARA MACHACUAY EFRAIN ABEL", "tipo": "LOCAL", "cap": "25 M3"}, "V4G721": {"empresa": "ANGULO QUISPE JOSE LUIS", "tipo": "PROVINCIA", "cap": "80 M3"}, "B1I872": {"empresa": "ANGULO QUISPE JOSE LUIS", "tipo": "PROVINCIA", "cap": "80 M3"}, "BDX915": {"empresa": "ANGULO QUISPE JOSE LUIS", "tipo": "PROVINCIA", "cap": "60 M3"}, "BJJ735": {"empresa": "ANGULO QUISPE JOSE LUIS", "tipo": "PROVINCIA", "cap": "60 M3"}, "CDB890": {"empresa": "ANGULO QUISPE JOSE LUIS", "tipo": "PROVINCIA", "cap": "70 M3"}, "BJT748": {"empresa": "ANGULO QUISPE JOSE LUIS", "tipo": "PROVINCIA", "cap": "70 M3"}, "A3D932": {"empresa": "ANGULO QUISPE JOSE LUIS", "tipo": "PROVINCIA", "cap": "70 M3"}, "CAK777": {"empresa": "ANGULO QUISPE JOSE LUIS", "tipo": "PROVINCIA", "cap": "80 M3"}, "BSB891": {"empresa": "ANGULO QUISPE JOSE LUIS", "tipo": "PROVINCIA", "cap": "80 M3"}, "CEG875": {"empresa": "BARRIOS CHUCO ALEX", "tipo": "LOCAL", "cap": "70 M3"}, "BDD912": {"empresa": "BARRIOS CHUCO ALEX", "tipo": "LOCAL", "cap": "60 M3"}, "F8U949": {"empresa": "BARRIOS CHUCO ALEX", "tipo": "LOCAL", "cap": "60 M3"}, "AVK917": {"empresa": "BENIGNO TARAZONA ALANIA", "tipo": "LOCAL", "cap": "15 M3"}, "BKN947": {"empresa": "BERTHA IDA URETA MEDINA", "tipo": "PROVINCIA", "cap": "50 M3"}, "BWY845": {"empresa": "BERTHA IDA URETA MEDINA", "tipo": "PROVINCIA", "cap": "80 M3"}, "AAC911": {"empresa": "BERTHA IDA URETA MEDINA", "tipo": "LOCAL", "cap": "60 M3"}, "BRG813": {"empresa": "BERTHA IDA URETA MEDINA", "tipo": "PROVINCIA", "cap": "80 M3"}, "BSO858": {"empresa": "BERTHA IDA URETA MEDINA", "tipo": "LOCAL", "cap": "70 M3"}, "BUM850": {"empresa": "BERTHA IDA URETA MEDINA", "tipo": "PROVINCIA", "cap": "80 M3"}, "AJT748": {"empresa": "BERTHA IDA URETA MEDINA", "tipo": "LOCAL", "cap": "15 M3"}, "CET769": {"empresa": "BERTHA IDA URETA MEDINA", "tipo": "LOCAL", "cap": "50 M3"}, "CFI862": {"empresa": "BERTHA IDA URETA MEDINA", "tipo": "LOCAL", "cap": "50 M3"}, "CEK767": {"empresa": "BERTHA IDA URETA MEDINA", "tipo": "PROVINCIA", "cap": "80 M3"}, "C7F936": {"empresa": "CARHUAPUMA ESCOBAR TANIA JULIA", "tipo": "PROVINCIA", "cap": "80 M3"}, "A2J819": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "D0S718": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "D2I859": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "F3M941": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "B9P939": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "D7P853": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "D2E929": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "M3R807": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "A3G868": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "Y1S823": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "C0B924": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "A0A989": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "AMK997": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "AXH976": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "A1H991": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "A1E972": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "AUI990": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "F6E992": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "AZA990": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "ANI972": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "AUJ974": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "BLF982": {"empresa": "CESITAR TRANSPORTES Y SERVICIOS EIRL", "tipo": "TRASLADO INTERNO", "cap": "90 M3"}, "ANA758": {"empresa": "CHUCO MEDINA FRANKLIN", "tipo": "LOCAL", "cap": "10 M3"}, "ALO767": {"empresa": "CHUCO MEDINA FRANKLIN", "tipo": "LOCAL", "cap": "15 M3"}, "ATM795": {"empresa": "CHUQUIYAURI LLIMPE RONAL ANTONIO", "tipo": "LOCAL", "cap": "50 M3"}, "F4P710": {"empresa": "CONSORCIO C&H SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "CAR921": {"empresa": "CONSORCIO C&H SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "APZ741": {"empresa": "CORPORACIÓN AME PERU S.A.C.", "tipo": "LOCAL", "cap": "50 M3"}, "D6T905": {"empresa": "CORPORACIÓN AME PERU S.A.C.", "tipo": "LOCAL", "cap": "80 M3"}, "F0S919": {"empresa": "CORPORACIÓN AME PERU S.A.C.", "tipo": "LOCAL", "cap": "80 M3"}, "CCX876": {"empresa": "CORPORACIÓN AME PERU S.A.C.", "tipo": "LOCAL", "cap": "50 M3"}, "CCZ717": {"empresa": "CORPORACIÓN AME PERU S.A.C.", "tipo": "LOCAL", "cap": "80 M3"}, "BJI829": {"empresa": "CORPORACION DE TRANSPORTES LH SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BDB739": {"empresa": "CORPORACION DE TRANSPORTES LH SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "AWE916": {"empresa": "CORPORACION DE TRANSPORTES LH SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "AJU745": {"empresa": "ROMERO CARGO EXPRESS PERU SAC", "tipo": "LOCAL", "cap": "10 M3"}, "AMD933": {"empresa": "CORPORACION HERMANOS CACHAY ROMERO SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "F1J918": {"empresa": "CORPORACION HERMANOS CACHAY ROMERO SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "CFY721": {"empresa": "CORPORACION JHOLDIN S.R.L.", "tipo": "LOCAL", "cap": "50 M3"}, "BJB875": {"empresa": "CORPORACION JHOLDIN S.R.L.", "tipo": "LOCAL", "cap": "10 M3"}, "BTC900": {"empresa": "CORPORACION LOGISTICA H&P S.A.C.", "tipo": "LOCAL", "cap": "15 M3"}, "D8Y778": {"empresa": "CORPORACION LOGISTICA H&P S.A.C.", "tipo": "LOCAL", "cap": "10 M3"}, "AWY899": {"empresa": "CORPORACION LOGISTICA H&P S.A.C.", "tipo": "LOCAL", "cap": "15 M3"}, "ASK704": {"empresa": "CORPORACION LOGISTICA H&P S.A.C.", "tipo": "LOCAL", "cap": "15 M3"}, "AKM897": {"empresa": "CORPORACION LOGISTICA H&P S.A.C.", "tipo": "LOCAL", "cap": "15 M3"}, "AKN838": {"empresa": "CORPORACION LOGISTICA H&P S.A.C.", "tipo": "LOCAL", "cap": "15 M3"}, "BZI818": {"empresa": "CORPORACION LOGISTICA H&P S.A.C.", "tipo": "PROVINCIA", "cap": "80 M3"}, "BEG876": {"empresa": "CORPORACION LOGISTICA Y TRANSPORTES D&J EXPRESS S.R.L.", "tipo": "PROVINCIA", "cap": "80 M3"}, "BVT854": {"empresa": "CORPORACION LOGISTICA Y TRANSPORTES D&J EXPRESS S.R.L.", "tipo": "LOCAL", "cap": "15 M3"}, "BPX931": {"empresa": "CORPORACION LOGISTICA Y TRANSPORTES D&J EXPRESS S.R.L.", "tipo": "LOCAL", "cap": "15 M3"}, "C9E817": {"empresa": "CORPORACION LOGÍSTICA YOSSELIN S.A.C", "tipo": "LOCAL", "cap": "80 M3"}, "D7O761": {"empresa": "CORPORACION M&M NACIONAL S.A.C.", "tipo": "PROVINCIA", "cap": "80 M3"}, "C3X710": {"empresa": "CORPORACION M&M NACIONAL SAC", "tipo": "LOCAL", "cap": "70 M3"}, "BHF780": {"empresa": "CORPORACION M&M NACIONAL SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "ARG901": {"empresa": "CORPORACION PLE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "ASD892": {"empresa": "CORPORACION PLE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BFZ918": {"empresa": "CORPORACIÓN RB ESPINOZA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BML706": {"empresa": "CORPORACIÓN RB ESPINOZA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "CEK842": {"empresa": "CORPORACIÓN RB ESPINOZA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BVV801": {"empresa": "CORPORACION RBK SAC", "tipo": "LOCAL", "cap": "50 M3"}, "AAX944": {"empresa": "CORPORACION SANCHEZ R S.A.C", "tipo": "LOCAL", "cap": "50 M3"}, "AZD723": {"empresa": "CORPORACION YAN YAN S.A.C.", "tipo": "PROVINCIA", "cap": "80 M3"}, "B7C768": {"empresa": "CORPORACION YAN YAN S.A.C.", "tipo": "PROVINCIA", "cap": "80 M3"}, "F9A911": {"empresa": "CORPORACION YAN YAN S.A.C.", "tipo": "PROVINCIA", "cap": "80 M3"}, "BJL797": {"empresa": "CORPORACION YAN YAN S.A.C.", "tipo": "PROVINCIA", "cap": "50 M3"}, "BNH727": {"empresa": "DANIELA LIZ VELIZ ROMANI", "tipo": "LOCAL", "cap": "25 M3"}, "BYQ837": {"empresa": "DE LA CRUZ RAMIREZ DILMER VICTOR", "tipo": "PROVINCIA", "cap": "50 M3"}, "BSU707": {"empresa": "DE LA CRUZ RAMIREZ DILMER VICTOR", "tipo": "LOCAL", "cap": "50 M3"}, "CHP716": {"empresa": "DE LA CRUZ RAMIREZ DILMER VICTOR", "tipo": "PROVINCIA", "cap": "80 M3"}, "BYQ781": {"empresa": "ELOY PALACIOS JIMÉNEZ", "tipo": "LOCAL", "cap": "10 M3"}, "F0K747": {"empresa": "ELOY PALACIOS JIMÉNEZ", "tipo": "LOCAL", "cap": "15 M3"}, "CFY714": {"empresa": "EMPRESA DE TRANSPORTE DE CARGA DIEGO AARON S.A.C", "tipo": "LOCAL", "cap": "70 M3"}, "BYJ844": {"empresa": "EMPRESA DE TRANSPORTE DE CARGA DIEGO AARON S.A.C", "tipo": "LOCAL", "cap": "70 M3"}, "BFF840": {"empresa": "EMPRESA DE TRANSPORTE DE CARGA DIEGO AARON S.A.C", "tipo": "LOCAL", "cap": "30 M3"}, "BMO883": {"empresa": "EMPRESA DE TRANSPORTE DE CARGA DIEGO AARON S.A.C", "tipo": "LOCAL", "cap": "30 M3"}, "APM947": {"empresa": "EMPRESA DE TRANSPORTE DE CARGA DIEGO AARON S.A.C", "tipo": "LOCAL", "cap": "50 M3"}, "BSZ826": {"empresa": "EMPRESA DE TRANSPORTE DE CARGA DIEGO AARON S.A.C", "tipo": "LOCAL", "cap": "70 M3"}, "BBF864": {"empresa": "EMPRESA DE TRANSPORTE DE CARGA DIEGO AARON S.A.C", "tipo": "LOCAL", "cap": "70 M3"}, "AXD750": {"empresa": "EMPRESA DE TRANSPORTE DE SERVICIO DE CARGA ROLY SAC", "tipo": "LOCAL", "cap": "80 M3"}, "T2Q828": {"empresa": "EMPRESA DE TRANSPORTE DE SERVICIO DE CARGA ROLY SAC", "tipo": "LOCAL", "cap": "80 M3"}, "CEA751": {"empresa": "EMPRESA DE TRANSPORTES ALCIRO EIRL.", "tipo": "LOCAL", "cap": "60 M3"}, "BSD850": {"empresa": "EMPRESA DE TRANSPORTES ALCIRO EIRL.", "tipo": "LOCAL", "cap": "40 M3"}, "A9T941": {"empresa": "EMPRESA DE TRANSPORTES Y SERVICIOS RECAMELSA S.A.C.", "tipo": "LOCAL", "cap": "10 M3"}, "BZR727": {"empresa": "EMPRESA DE TRANSPORTES Y SERVICIOS RECAMELSA S.A.C.", "tipo": "LOCAL", "cap": "40 M3"}, "AMM769": {"empresa": "ESPINOZA SANTILLAN LUPER JHON", "tipo": "LOCAL", "cap": "15 M3"}, "CEZ826": {"empresa": "ESPINOZA SANTILLAN LUPER JHON", "tipo": "LOCAL", "cap": "15 M3"}, "ADP804": {"empresa": "ESTRELLA ESPINOZA DINO ROGER", "tipo": "PROVINCIA", "cap": "80 M3"}, "BDX708": {"empresa": "GARROTE EXPRESS SAC", "tipo": "", "cap": "30 M3"}, "F2U898": {"empresa": "GARROTE EXPRESS SAC", "tipo": "", "cap": "50 M3"}, "C5L813": {"empresa": "GARROTE EXPRESS SAC", "tipo": "", "cap": "50 M3"}, "A6W826": {"empresa": "GARROTE EXPRESS SAC", "tipo": "", "cap": "50 M3"}, "BBI834": {"empresa": "GRUPO R & P TRANSPORT PERU S.A.C.", "tipo": "PROVINCIA", "cap": "80 M3"}, "AVK844": {"empresa": "GRUPO R & P TRANSPORT PERU S.A.C.", "tipo": "LOCAL", "cap": "15 M3"}, "BRR764": {"empresa": "GUTIERREZ INCA SONIA", "tipo": "LOCAL", "cap": "80 M3"}, "BAH793": {"empresa": "GUTIERREZ INCA SONIA", "tipo": "PROVINCIA", "cap": "80 M3"}, "BRR751": {"empresa": "GUTIERREZ INCA SONIA", "tipo": "LOCAL", "cap": "80 M3"}, "BWM867": {"empresa": "GUTIERREZ INCA SONIA", "tipo": "LOCAL", "cap": "80 M3"}, "F4Y893": {"empresa": "HONORATO RAMOS HUANCA", "tipo": "PROVINCIA", "cap": "80 M3"}, "BAU886": {"empresa": "HONORATO RAMOS HUANCA", "tipo": "PROVINCIA", "cap": "80 M3"}, "F4A843": {"empresa": "HONORATO RAMOS HUANCA", "tipo": "PROVINCIA", "cap": "80 M3"}, "BXF785": {"empresa": "HUAMALI BARRIOS KATY", "tipo": "LOCAL", "cap": "50 M3"}, "AST924": {"empresa": "HUAMALI BARRIOS KATY", "tipo": "LOCAL", "cap": "70 M3"}, "CCM798": {"empresa": "HUAMALI BARRIOS KATY", "tipo": "PROVINCIA", "cap": "50 M3"}, "ABL799": {"empresa": "HUAMALI BARRIOS KATY", "tipo": "LOCAL", "cap": "15 M3"}, "AJY782": {"empresa": "HUAMALI BARRIOS KATY", "tipo": "LOCAL", "cap": "70 M3"}, "BLV922": {"empresa": "HUAMALI BARRIOS KATY", "tipo": "PROVINCIA", "cap": "80 M3"}, "BCA830": {"empresa": "HUAMALI BARRIOS KATY", "tipo": "LOCAL", "cap": "50 M3"}, "CEE723": {"empresa": "HUAMALI BARRIOS KATY", "tipo": "PROVINCIA", "cap": "50 M3"}, "CHV762": {"empresa": "HUAMANI CHUMBE BARTOLOME", "tipo": "PROVINCIA", "cap": "80 M3"}, "AFP867": {"empresa": "HUAMANI CHUMBE BARTOLOME", "tipo": "LOCAL", "cap": "15 M3"}, "ASE819": {"empresa": "HUAMANI CHUMBE BARTOLOME", "tipo": "LOCAL", "cap": "15 M3"}, "BCB833": {"empresa": "HUAMANI CHUMBE BARTOLOME", "tipo": "FLEXIBLES", "cap": "20 M3"}, "AUS724": {"empresa": "HUAMANI CHUMBE BARTOLOME", "tipo": "PROVINCIA", "cap": "80 M3"}, "F4N933": {"empresa": "INTEGRACIÓN EMPRESARIAL RIVERA SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "A0N995": {"empresa": "INTEGRACIÓN EMPRESARIAL RIVERA SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "AYP781": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BVB715": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BVJ704": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BVK902": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BYO808": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "AZE898": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BDS898": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "VAB864": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BRZ843": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BLA894": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "TDK816": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BRN791": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "CDB927": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "TCG946": {"empresa": "INVERSIONES CALLACA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "H2A880": {"empresa": "INVERSIONES DE TRANSPORTE VIDARTE & ALARCON S.A.C.", "tipo": "LOCAL", "cap": "60 M3"}, "X3I756": {"empresa": "INVERSIONES INGAYA S.R.L.", "tipo": "LOCAL", "cap": "40 M3"}, "D2R826": {"empresa": "INVERSIONES INGAYA S.R.L.", "tipo": "LOCAL", "cap": "50 M3"}, "CHL792": {"empresa": "INVERSIONES KRISMARP S.A.C", "tipo": "PROVINCIA", "cap": "80 M3"}, "BVF781": {"empresa": "INVERSIONES KRISMARP S.A.C", "tipo": "LOCAL", "cap": "50 M3"}, "BKP883": {"empresa": "INVERSIONES KRISMARP S.A.C", "tipo": "PROVINCIA", "cap": "50 M3"}, "CEQ824": {"empresa": "INVERSIONES KRISMARP S.A.C", "tipo": "PROVINCIA", "cap": "50 M3"}, "BYU739": {"empresa": "INVERSIONES KRISMARP S.A.C", "tipo": "PROVINCIA", "cap": "50 M3"}, "BTQ890": {"empresa": "INVERSIONES KRISMARP S.A.C", "tipo": "PROVINCIA", "cap": "80 M3"}, "BZD896": {"empresa": "INVERSIONES KRISMARP S.A.C", "tipo": "PROVINCIA", "cap": "50 M3"}, "C7E737": {"empresa": "INVERSIONES Y MULTISERVICIO ALESSANDRO SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "C1M972": {"empresa": "INVERSIONES Y MULTISERVICIO ALESSANDRO SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "T9D864": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "T9L860": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "T0R834": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "TAH898": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "TAI919": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "TAT946": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "TAU855": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "TAV895": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "TAV937": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "BNY847": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "BPV836": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "BPV800": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "TDA891": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "BXW918": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "TEP971": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TFD988": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "THO997": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TJP980": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TJP998": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TJX999": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TJY985": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TKG977": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TKG980": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TKW973": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TLH991": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TLI995": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TML974": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TNB973": {"empresa": "INVERSIONES Y MULTISERVICIOS FLORES SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "T1K938": {"empresa": "INVERSIONES Y TRANSPORTES MARISA E.I.R.L.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "F7C834": {"empresa": "INVERSIONES Y TRANSPORTES MARISA E.I.R.L.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "D5P880": {"empresa": "INVERSIONES Y TRANSPORTES MARISA E.I.R.L.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "T4Q922": {"empresa": "INVERSIONES Y TRANSPORTES MARISA E.I.R.L.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "V1P801": {"empresa": "INVERSIONES Y TRANSPORTES MARISA E.I.R.L.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "T6G991": {"empresa": "INVERSIONES Y TRANSPORTES MARISA E.I.R.L.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "T0E972": {"empresa": "INVERSIONES Y TRANSPORTES MARISA E.I.R.L.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TMD973": {"empresa": "INVERSIONES Y TRANSPORTES MARISA E.I.R.L.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "T8W975": {"empresa": "INVERSIONES Y TRANSPORTES MARISA E.I.R.L.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TES974": {"empresa": "INVERSIONES Y TRANSPORTES MARISA E.I.R.L.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "BXX722": {"empresa": "IRMA PECEROS RETAMOZO", "tipo": "PROVINCIA", "cap": "50 M3"}, "CEG923": {"empresa": "IRMA PECEROS RETAMOZO", "tipo": "PROVINCIA", "cap": "80 M3"}, "BSW797": {"empresa": "IRMA PECEROS RETAMOZO", "tipo": "LOCAL", "cap": "50 M3"}, "F9Z934": {"empresa": "JAIME CORONADO ALMONACIN", "tipo": "PLATAFORMA", "cap": "90 M3"}, "A0T978": {"empresa": "JAIME CORONADO ALMONACIN", "tipo": "PLATAFORMA", "cap": "90 M3"}, "CEF805": {"empresa": "JAIME CORONADO ALMONACIN", "tipo": "LOCAL", "cap": "80 M3"}, "Z7O910": {"empresa": "JENNYFEER JACINTA MARTINEZ VASQUEZ", "tipo": "LOCAL", "cap": "15 M3"}, "M2X917": {"empresa": "JJTRANSPORTES DEL PERU SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "BNA975": {"empresa": "JJTRANSPORTES DEL PERU SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "APB743": {"empresa": "LOGISTIC J&V S.A.C", "tipo": "LOCAL", "cap": "50 M3"}, "BVN879": {"empresa": "LOGÍSTIC KENYON H SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BUB773": {"empresa": "LOGÍSTIC KENYON H SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "AAX816": {"empresa": "LOGÍSTIC KENYON H SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BCG827": {"empresa": "LOGÍSTIC KENYON H SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BNH724": {"empresa": "LOGÍSTIC KENYON H SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BJP870": {"empresa": "LOGÍSTICA & TRANSPORTE JIMMY SAC", "tipo": "LOCAL", "cap": "50 M3"}, "AUY974": {"empresa": "LOGÍSTICA & TRANSPORTE JIMMY SAC", "tipo": "LOCAL", "cap": "80 M3"}, "D9T926": {"empresa": "LOGÍSTICA & TRANSPORTE JIMMY SAC", "tipo": "LOCAL", "cap": "50 M3"}, "C2A806": {"empresa": "LOGÍSTICA & TRANSPORTE JIMMY SAC", "tipo": "LOCAL", "cap": "80 M3"}, "BPM835": {"empresa": "LOGÍSTICA G & J EXPRESS SAC", "tipo": "LOCAL", "cap": "10 M3"}, "CDL768": {"empresa": "LOGISTICA INTEGRAL CIMEK SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "CDL825": {"empresa": "LOGISTICA INTEGRAL CIMEK SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "CDL818": {"empresa": "LOGISTICA INTEGRAL CIMEK SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "BRR975": {"empresa": "LOGISTICA INTEGRAL CIMEK SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "BRQ988": {"empresa": "LOGISTICA INTEGRAL CIMEK SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "BRQ998": {"empresa": "LOGISTICA INTEGRAL CIMEK SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "BXQ836": {"empresa": "LOGISTICA LEOBER SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BRQ913": {"empresa": "LOGISTICA LEOBER SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "CCP867": {"empresa": "LOGISTICA LEOBER SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "A3S835": {"empresa": "LOGISTICA THIAGO EIRL", "tipo": "LOCAL", "cap": "70 M3"}, "BUC882": {"empresa": "LUIS EDUARDO MUÑOZ VEGA", "tipo": "LOCAL", "cap": "15 M3"}, "BRA885": {"empresa": "MAYTA MARIN MAYCOHL", "tipo": "LOCAL", "cap": "15 M3"}, "B3Q834": {"empresa": "MELENDREZ NAVARRO JUAN", "tipo": "PROVINCIA", "cap": "80 M3"}, "ADP739": {"empresa": "MISHELY LILIANA CORREA LOZANO", "tipo": "LOCAL", "cap": "10 M3"}, "B7E932": {"empresa": "MISHELY LILIANA CORREA LOZANO", "tipo": "LOCAL", "cap": "10 M3"}, "BYD788": {"empresa": "MULTISERVICIOS HIDCOR EIRL", "tipo": "LOCAL", "cap": "50 M3"}, "BMC917": {"empresa": "MULTISERVICIOS HIDCOR EIRL", "tipo": "PROVINCIA", "cap": "50 M3"}, "CFA793": {"empresa": "MULTISERVICIOS HIDCOR EIRL", "tipo": "PROVINCIA", "cap": "50 M3"}, "CAS710": {"empresa": "MULTISERVICIOS HIDCOR EIRL", "tipo": "LOCAL", "cap": "50 M3"}, "B5Y805": {"empresa": "NEGOCIOS LAZARO HED EIRL", "tipo": "PROVINCIA", "cap": "80 M3"}, "CFK802": {"empresa": "ONOFRE MAYHUA CECILIA HERLINDA", "tipo": "PROVINCIA", "cap": "80 M3"}, "BWE872": {"empresa": "ONOFRE MAYHUA CECILIA HERLINDA", "tipo": "LOCAL", "cap": "70 M3"}, "AVJ905": {"empresa": "ONOFRE MAYHUA CECILIA HERLINDA", "tipo": "LOCAL", "cap": "80 M3"}, "BKV747": {"empresa": "ONOFRE MAYHUA CECILIA HERLINDA", "tipo": "LOCAL", "cap": "80 M3"}, "BPD949": {"empresa": "ONOFRE MAYHUA CECILIA HERLINDA", "tipo": "LOCAL", "cap": "80 M3"}, "BTA866": {"empresa": "ONOFRE MAYHUA CECILIA HERLINDA", "tipo": "LOCAL", "cap": "80 M3"}, "BAZ841": {"empresa": "ONOFRE MAYHUA CECILIA HERLINDA", "tipo": "LOCAL", "cap": "80 M3"}, "B0I738": {"empresa": "OPERADOR LOGISTICO SANTA ROSITA S.A.C.", "tipo": "LOCAL", "cap": "10 M3"}, "D0C735": {"empresa": "OPERADOR LOGÍSTICO SANTOS SAC", "tipo": "FLEXIBLES", "cap": "15 M3"}, "BUK921": {"empresa": "OPERADOR LOGÍSTICO SANTOS SAC", "tipo": "FLEXIBLES", "cap": "70 M3"}, "CCI899": {"empresa": "OPERADOR LOGÍSTICO SANTOS SAC", "tipo": "FLEXIBLES", "cap": "20 M3"}, "BLY913": {"empresa": "OPERADOR LOGÍSTICO SANTOS SAC", "tipo": "FLEXIBLES", "cap": "50 M3"}, "BSX922": {"empresa": "OPERADOR LOGÍSTICO SANTOS SAC", "tipo": "FLEXIBLES", "cap": "60 M3"}, "F3O823": {"empresa": "OPERADOR LOGÍSTICO SANTOS SAC", "tipo": "FLEXIBLES", "cap": "60 M3"}, "BYM816": {"empresa": "OSCAR DAVID RICRA VILCHEZ", "tipo": "LOCAL", "cap": "50 M3"}, "W3P765": {"empresa": "OSCAR DAVID RICRA VILCHEZ", "tipo": "LOCAL", "cap": "80 M3"}, "D0D931": {"empresa": "PARIONA CHAVEZ NANCY GUILLERMINA", "tipo": "LOCAL", "cap": "80 M3"}, "BSN785": {"empresa": "PARIONA CHAVEZ NANCY GUILLERMINA", "tipo": "LOCAL", "cap": "80 M3"}, "ALF845": {"empresa": "PARIONA CHAVEZ NANCY GUILLERMINA", "tipo": "LOCAL", "cap": "80 M3"}, "BTM925": {"empresa": "PAUCAR SANTANA LILIANA IRMA", "tipo": "LOCAL", "cap": "50 M3"}, "W1P840": {"empresa": "PAUCAR SANTANA LILIANA IRMA", "tipo": "LOCAL", "cap": "60 M3"}, "BFK931": {"empresa": "PAUCAR SANTANA LILIANA IRMA", "tipo": "PROVINCIA", "cap": "80 M3"}, "ABH934": {"empresa": "R&A SERVICES LOGISTIC SAC", "tipo": "LOCAL", "cap": "15.24"}, "B5W716": {"empresa": "RECICLAJE GENERALES SEÑOR DE MURUHUAY SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "AWX991": {"empresa": "RECICLAJE GENERALES SEÑOR DE MURUHUAY SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "BPJ710": {"empresa": "RHELIS SAC", "tipo": "LOCAL", "cap": "50 M3"}, "ASP825": {"empresa": "RHELIS SAC", "tipo": "LOCAL", "cap": "50 M3"}, "D3H823": {"empresa": "ROLIN RIVERA CHAVEZ", "tipo": "PLATAFORMA", "cap": "90 M3"}, "B5X982": {"empresa": "ROLIN RIVERA CHAVEZ", "tipo": "PLATAFORMA", "cap": "90 M3"}, "ADR739": {"empresa": "ROLIN RIVERA CHAVEZ", "tipo": "LOCAL", "cap": "80 M3"}, "A7Q813": {"empresa": "ROMERO CARGO EXPRESS PERU SAC", "tipo": "LOCAL", "cap": "10 M3"}, "F2F895": {"empresa": "ROMERO CARGO EXPRESS PERU SAC", "tipo": "LOCAL", "cap": "50 M3"}, "BRN897": {"empresa": "SANCHEZ RIVERA KENNDY BALMES", "tipo": "PROVINCIA", "cap": "80 M3"}, "B5B820": {"empresa": "SARA ALCANTARA DE YANTAS", "tipo": "LOCAL", "cap": "40 M3"}, "B5B890": {"empresa": "SARA ALCANTARA DE YANTAS", "tipo": "LOCAL", "cap": "70 M3"}, "A2J919": {"empresa": "SERVICIO INTEGRAL RIVERA E.I.R.L.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "F7O979": {"empresa": "SERVICIO INTEGRAL RIVERA E.I.R.L.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "AKC809": {"empresa": "SHIPERS EIRL", "tipo": "TRASLADO INTERNO", "cap": "50 M3"}, "BMW762": {"empresa": "SHIPERS EIRL", "tipo": "TRASLADO INTERNO", "cap": "50 M3"}, "BMU887": {"empresa": "SHIPERS EIRL", "tipo": "TRASLADO INTERNO", "cap": "50 M3"}, "BWN934": {"empresa": "SHIPERS EIRL", "tipo": "TRASLADO INTERNO", "cap": "60 M3"}, "BUO764": {"empresa": "TITO MURILLO ISIDORA TEODORA", "tipo": "PROVINCIA", "cap": "80 M3"}, "BXM724": {"empresa": "TITO MURILLO ISIDORA TEODORA", "tipo": "PROVINCIA", "cap": "80 M3"}, "BEE703": {"empresa": "TITO MURILLO ISIDORA TEODORA", "tipo": "PROVINCIA", "cap": "80 M3"}, "ASG740": {"empresa": "TITO MURILLO ISIDORA TEODORA", "tipo": "PROVINCIA", "cap": "80 M3"}, "AXG750": {"empresa": "TOLENTINO PIÑAN NILTON ROBERTO", "tipo": "LOCAL", "cap": "10 M3"}, "A0Z865": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "LOCAL", "cap": "80 M3"}, "AVD785": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "LOCAL", "cap": "80 M3"}, "C5P932": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "LOCAL", "cap": "80 M3"}, "D2V796": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "LOCAL", "cap": "80 M3"}, "H1N907": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "LOCAL", "cap": "80 M3"}, "C5Q886": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "LOCAL", "cap": "80 M3"}, "C5Q888": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "LOCAL", "cap": "80 M3"}, "BPV825": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "LOCAL", "cap": "80 M3"}, "C5Q890": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "LOCAL", "cap": "50 M3"}, "F8R984": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "PLATAFORMA FURGÓN", "cap": ""}, "F9B971": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "PLATAFORMA FURGÓN", "cap": ""}, "A5D986": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "PLATAFORMA FURGÓN", "cap": ""}, "B1A970": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "PLATAFORMA FURGÓN", "cap": ""}, "A5I986": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "PLATAFORMA FURGÓN", "cap": ""}, "C1M985": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "PLATAFORMA FURGÓN", "cap": ""}, "D4F996": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "PLATAFORMA FURGÓN", "cap": ""}, "B2J996": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "PLATAFORMA FURGÓN", "cap": ""}, "B2K970": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "PLATAFORMA FURGÓN", "cap": ""}, "C5Q891": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "FURGÓN", "cap": "50 M3"}, "AFD993": {"empresa": "TRANSCAM E HIJOS SAC", "tipo": "PLATAFORMA FURGÓN", "cap": ""}, "BJL744": {"empresa": "TRANSCARGY SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BRJ762": {"empresa": "TRANSCARGY SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "AJD745": {"empresa": "TRANSCARGY SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "B2K909": {"empresa": "TRANSCARGY SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "B2K869": {"empresa": "TRANSCARGY SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BDV937": {"empresa": "TRANSCARGY SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BDX742": {"empresa": "TRANSCARGY SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "AFY717": {"empresa": "TRANSCARGY SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BEZ879": {"empresa": "TRANSCARGY SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "C4I803": {"empresa": "TRANSCARGY SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "T1Y828": {"empresa": "TRANSERVIC AC S.A.C", "tipo": "REMOLCADOR", "cap": "90 M3"}, "ADA973": {"empresa": "TRANSERVIC AC S.A.C", "tipo": "PLATAFORMA", "cap": "90 M3"}, "CHP709": {"empresa": "TRANSERVIC AC S.A.C", "tipo": "", "cap": "50 M3"}, "ASL925": {"empresa": "TRANSPORTE H&A SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BWR947": {"empresa": "TRANSPORTE KEYLA DAYANA E.I.R.L.", "tipo": "LOCAL", "cap": "60 M3"}, "F0V812": {"empresa": "TRANSPORTE KEYLA DAYANA E.I.R.L.", "tipo": "LOCAL", "cap": "70 M3"}, "BJK922": {"empresa": "TRANSPORTE OPERADOR LOGISTICO SANTA ROSA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "ACP825": {"empresa": "TRANSPORTE OPERADOR LOGISTICO SANTA ROSA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "AZI774": {"empresa": "TRANSPORTE RIVERITA EIRL", "tipo": "PROVINCIA", "cap": "80 M3"}, "BPW842": {"empresa": "TRANSPORTE RIVERITA EIRL", "tipo": "PROVINCIA", "cap": "80 M3"}, "BVX752": {"empresa": "TRANSPORTE RIVERITA EIRL", "tipo": "PROVINCIA", "cap": "80 M3"}, "BJP733": {"empresa": "TRANSPORTE RIVERITA EIRL", "tipo": "PROVINCIA", "cap": "80 M3"}, "ABX813": {"empresa": "TRANSPORTE RIVERITA EIRL", "tipo": "PROVINCIA", "cap": "80 M3"}, "ARO904": {"empresa": "TRANSPORTE RIVERITA EIRL", "tipo": "PROVINCIA", "cap": "80 M3"}, "CBP859": {"empresa": "TRANSPORTE RIVERITA EIRL", "tipo": "PROVINCIA", "cap": "80 M3"}, "BYU866": {"empresa": "TRANSPORTE RIVERITA EIRL", "tipo": "PROVINCIA", "cap": "80 M3"}, "Z2X851": {"empresa": "TRANSPORTE SERAPIO ZURITA QUISPE", "tipo": "LOCAL", "cap": "80 M3"}, "H2C888": {"empresa": "TRANSPORTE VIYAEXPRES SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BNP719": {"empresa": "TRANSPORTE VIYAEXPRES SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BAD920": {"empresa": "TRANSPORTE VIYAEXPRES SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "AZP946": {"empresa": "TRANSPORTE VIYAEXPRES SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BEH948": {"empresa": "TRANSPORTE VIYAEXPRES SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "AYQ776": {"empresa": "TRANSPORTE VIYAEXPRES SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BPM716": {"empresa": "TRANSPORTE VIYAEXPRES SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "ASD946": {"empresa": "TRANSPORTE VIYAEXPRES SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "AZG799": {"empresa": "TRANSPORTE Y LOGISTICA FLOVAL S.A.C", "tipo": "LOCAL", "cap": "40 M3"}, "CEF917": {"empresa": "TRANSPORTE Y LOGISTICA FLOVAL S.A.C", "tipo": "PROVINCIA", "cap": "80 M3"}, "ABY867": {"empresa": "TRANSPORTE Y LOGISTICA FLOVAL S.A.C", "tipo": "PROVINCIA", "cap": "80 M3"}, "BBL879": {"empresa": "TRANSPORTE Y LOGISTICA INTEGRAL GRUPO RIVERA SAC", "tipo": "LOCAL", "cap": "80 M3"}, "BJM871": {"empresa": "TRANSPORTE Y LOGISTICA INTEGRAL GRUPO RIVERA SAC", "tipo": "LOCAL", "cap": "80 M3"}, "D4J905": {"empresa": "TRANSPORTE Y LOGISTICA INTEGRAL GRUPO RIVERA SAC", "tipo": "LOCAL", "cap": "80 M3"}, "B1T844": {"empresa": "TRANSPORTE Y LOGISTICA INTEGRAL GRUPO RIVERA SAC", "tipo": "LOCAL", "cap": "60 M3"}, "W4U892": {"empresa": "TRANSPORTE Y LOGISTICA M Y W S. A.C.", "tipo": "LOCAL", "cap": "80 M3"}, "AAA913": {"empresa": "TRANSPORTE Y LOGISTICA M Y W S. A.C.", "tipo": "LOCAL", "cap": "80 M3"}, "CHH890": {"empresa": "TRANSPORTES & LOGISTICA DAYANARA S.A.C", "tipo": "PROVINCIA", "cap": "50 M3"}, "A9Y942": {"empresa": "TRANSPORTES & LOGISTICA DAYANARA S.A.C", "tipo": "LOCAL", "cap": "70 M3"}, "AMU814": {"empresa": "TRANSPORTES & LOGISTICA DAYANARA S.A.C", "tipo": "LOCAL", "cap": "15 M3"}, "CBI800": {"empresa": "TRANSPORTES & LOGISTICA DAYANARA S.A.C", "tipo": "PROVINCIA", "cap": "50 M3"}, "AVG709": {"empresa": "TRANSPORTES & SERVICIOS INTEGRALES QUISPE SAC", "tipo": "LOCAL", "cap": "15 M3"}, "CJJ799": {"empresa": "TRANSPORTES & SERVICIOS INTEGRALES QUISPE SAC", "tipo": "LOCAL", "cap": "50 M3"}, "BJB741": {"empresa": "TRANSPORTES & SERVICIOS INTEGRALES QUISPE SAC", "tipo": "LOCAL", "cap": "80 M3"}, "F9Z782": {"empresa": "TRANSPORTES & TRANSPORTES MARISEL SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "ABK975": {"empresa": "TRANSPORTES & TRANSPORTES MARISEL SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "D1N801": {"empresa": "TRANSPORTES CAMAT EIRL", "tipo": "FLEXIBLES", "cap": "20 M3"}, "AEJ734": {"empresa": "TRANSPORTES CAMAT EIRL", "tipo": "FLEXIBLES", "cap": "50 M3"}, "F2U700": {"empresa": "TRANSPORTES CARGOTEC S.A.C.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "AAV990": {"empresa": "TRANSPORTES CARGOTEC S.A.C.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "D6G859": {"empresa": "TRANSPORTES CARGOTEC S.A.C.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "A1J992": {"empresa": "TRANSPORTES CARGOTEC S.A.C.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "B2Q947": {"empresa": "TRANSPORTES CARGOTEC S.A.C.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "ATT983": {"empresa": "TRANSPORTES CARGOTEC S.A.C.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "B7H777": {"empresa": "TRANSPORTES CARGOTEC S.A.C.", "tipo": "LOCAL", "cap": "50 M3"}, "A9J900": {"empresa": "TRANSPORTES CARGOTEC S.A.C.", "tipo": "LOCAL", "cap": "60 M3"}, "D7B839": {"empresa": "TRANSPORTES CARGOTEC S.A.C.", "tipo": "LOCAL", "cap": "70 M3"}, "D7P713": {"empresa": "TRANSPORTES CARGOTEC S.A.C.", "tipo": "LOCAL", "cap": "70 M3"}, "CFS700": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "CFU787": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "CHV754": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BYQ727": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "W7M806": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "CEC781": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "CDD823": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "AXH874": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BHM894": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BZG881": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BLV797": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "BPS948": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BSQ873": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BYX799": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "CEJ916": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "CBD722": {"empresa": "TRANSPORTES DAGRE SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "Z4C890": {"empresa": "TRANSPORTES ELIANS DELWIN SAC", "tipo": "LOCAL", "cap": "50 M3"}, "BYW802": {"empresa": "TRANSPORTES ELIANS DELWIN SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "A6C869": {"empresa": "TRANSPORTES ELIANS DELWIN SAC", "tipo": "PROVINCIA", "cap": "50 M3"}, "ADK944": {"empresa": "TRANSPORTES ELIANS DELWIN SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BKE842": {"empresa": "TRANSPORTES ELIANS DELWIN SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "D1U833": {"empresa": "TRANSPORTES ESPINOZA SURICHAQUI", "tipo": "PROVINCIA", "cap": "80 M3"}, "D9S912": {"empresa": "TRANSPORTES ESPINOZA SURICHAQUI", "tipo": "LOCAL", "cap": "10 M3"}, "AFZ947": {"empresa": "TRANSPORTES ESPINOZA SURICHAQUI", "tipo": "LOCAL", "cap": "15 M3"}, "C5A885": {"empresa": "TRANSPORTES ESPINOZA SURICHAQUI", "tipo": "REMOLCADOR", "cap": "90 M3"}, "T0W986": {"empresa": "TRANSPORTES ESPINOZA SURICHAQUI", "tipo": "PLATAFORMA", "cap": "90 M3"}, "T4S916": {"empresa": "TRANSPORTES ESPINOZA SURICHAQUI", "tipo": "REMOLCADOR", "cap": "90 M3"}, "B7Y991": {"empresa": "TRANSPORTES ESPINOZA SURICHAQUI", "tipo": "PLATAFORMA", "cap": "90 M3"}, "BBS974": {"empresa": "TRANSPORTES ESPINOZA SURICHAQUI", "tipo": "PLATAFORMA", "cap": "90 M3"}, "ANE862": {"empresa": "TRANSPORTES ESPINOZA SURICHAQUI", "tipo": "LOCAL", "cap": "15 M3"}, "B8U816": {"empresa": "TRANSPORTES JHOFELH S.A.C.", "tipo": "LOCAL", "cap": "15 M3"}, "BSE755": {"empresa": "TRANSPORTES JHOFELH S.A.C.", "tipo": "PROVINCIA", "cap": "50 M3"}, "CJA842": {"empresa": "TRANSPORTES JHOFELH S.A.C.", "tipo": "PROVINCIA", "cap": "50 M3"}, "BJK937": {"empresa": "TRANSPORTES LOGÍSTICO J&D SAC", "tipo": "LOCAL", "cap": "15 M3"}, "BFO804": {"empresa": "TRANSPORTES PERUANOS NUEVA ESPERANZA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "D8B799": {"empresa": "TRANSPORTES PERUANOS NUEVA ESPERANZA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "F0O797": {"empresa": "TRANSPORTES PERUANOS NUEVA ESPERANZA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "BBR846": {"empresa": "TRANSPORTES PERUANOS NUEVA ESPERANZA SAC", "tipo": "PROVINCIA", "cap": "80 M3"}, "CAG908": {"empresa": "TRANSPORTES RURACINO S.A.C.", "tipo": "PROVINCIA", "cap": "50 M3"}, "CAC932": {"empresa": "TRANSPORTES RURACINO S.A.C.", "tipo": "LOCAL", "cap": "15 M3"}, "CDH778": {"empresa": "TRANSPORTES RURACINO S.A.C.", "tipo": "PROVINCIA", "cap": "50 M3"}, "C2K875": {"empresa": "TRANSPORTES SANTA MARIA", "tipo": "REMOLCADOR", "cap": "90 M3"}, "AEA980": {"empresa": "TRANSPORTES SANTA MARIA", "tipo": "PLATAFORMA", "cap": "90.00"}, "BRU861": {"empresa": "TRANSPORTES VILCHEZ H.L.F.L. S.A.C.", "tipo": "LOCAL", "cap": "70 M3"}, "BPJ773": {"empresa": "TRANSPORTES VILCHEZ H.L.F.L. S.A.C.", "tipo": "PROVINCIA", "cap": "80 M3"}, "BWD796": {"empresa": "TRANSPORTES VILCHEZ H.L.F.L. S.A.C.", "tipo": "PROVINCIA", "cap": "80 M3"}, "BZQ718": {"empresa": "TRANSPORTES VILCHEZ H.L.F.L. S.A.C.", "tipo": "PROVINCIA", "cap": "50 M3"}, "D8Y784": {"empresa": "TRANSPORTES Y NEGOCIACIONES JLG SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "ALO979": {"empresa": "TRANSPORTES Y NEGOCIACIONES JLG SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "APE828": {"empresa": "TRANSPORTES Y NEGOCIACIONES RICRA SAC", "tipo": "FURGÓN", "cap": "90 M3"}, "T4C802": {"empresa": "TRANSPORTES Y NEGOCIACIONES RICRA SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "Y1T944": {"empresa": "TRANSPORTES Y NEGOCIACIONES RICRA SAC", "tipo": "REMOLCADOR", "cap": "90 M3"}, "AFZ986": {"empresa": "TRANSPORTES Y NEGOCIACIONES RICRA SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "D8N989": {"empresa": "TRANSPORTES Y NEGOCIACIONES RICRA SAC", "tipo": "PLATAFORMA", "cap": "90 M3"}, "T3D902": {"empresa": "TRANSPORTES Y NEGOCIOS ORTIZ E.I.R.L.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "APC861": {"empresa": "TRANSPORTES Y NEGOCIOS ORTIZ E.I.R.L.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "T2X826": {"empresa": "TRANSPORTES Y NEGOCIOS ORTIZ E.I.R.L.", "tipo": "REMOLCADOR", "cap": "90 M3"}, "THU973": {"empresa": "TRANSPORTES Y NEGOCIOS ORTIZ E.I.R.L.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TMJ996": {"empresa": "TRANSPORTES Y NEGOCIOS ORTIZ E.I.R.L.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "TNS993": {"empresa": "TRANSPORTES Y NEGOCIOS ORTIZ E.I.R.L.", "tipo": "PLATAFORMA", "cap": "90 M3"}, "ASF870": {"empresa": "VASQUEZ QUISPE SANDRA LILIANA", "tipo": "LOCAL", "cap": "15 M3"}, "T8B946": {"empresa": "WILSON RIVERA QUINTO", "tipo": "REMOLCADOR", "cap": "90 M3"}, "B2F884": {"empresa": "WILSON RIVERA QUINTO", "tipo": "REMOLCADOR", "cap": "90 M3"}, "D3G998": {"empresa": "WILSON RIVERA QUINTO", "tipo": "PLATAFORMA", "cap": "90 M3"}, "BLO726": {"empresa": "WILSON RIVERA QUINTO", "tipo": "LOCAL", "cap": "50 M3"}, "A5T807": {"empresa": "WILSON RIVERA QUINTO", "tipo": "REMOLCADOR", "cap": "90 M3"}, "ACG983": {"empresa": "WILSON RIVERA QUINTO", "tipo": "PLATAFORMA", "cap": "90 M3"}, "C2A872": {"empresa": "YURIVILCA LUNA ELEANA SANDY", "tipo": "LOCAL", "cap": "10 M3"}, "W7E709": {"empresa": "YURIVILCA LUNA ELEANA SANDY", "tipo": "LOCAL", "cap": "40 M3"}, "W7C708": {"empresa": "YURIVILCA LUNA ELEANA SANDY", "tipo": "LOCAL", "cap": "15 M3"}};
+const BD_CONDUCTORES = {"Q06962543": {"nombre": "RODOLFO QUISPE CONDE"}, "P48579656": {"nombre": "RAFAEL ASTO ROMERO"}, "Q20032223": {"nombre": "HIPOLITO ELISEO YALLICO CAMACLLANQUI"}, "Q62327901": {"nombre": "JUAN JESUS CALLACA MANAYAY"}, "Q48037310": {"nombre": "WALTER HUACAUSI CARRASCO"}, "Q71095497": {"nombre": "MIGUEL ANGEL HIDALGO CORNELIO"}, "Q46365115": {"nombre": "MIULLER DUBERLY MENDOZA CAPCHA"}, "Q47352535": {"nombre": "LUIS YOVANI PECEROS RETAMOZO"}, "A72446781": {"nombre": "SANTOS IRWIN SEMINARIO SALES"}, "C76780790": {"nombre": "GUILLERMO DIAZ RODRIGUEZ"}, "Q76853727": {"nombre": "ALADINO ETIFANIO CARLOS CARLOS"}, "Q47511707": {"nombre": "CRISHTIAN ANTENOR CARLOS CARLOS"}, "Q76728514": {"nombre": "WINCKLER ROSSETE GOMEZ BERNILLA"}, "Q72461779": {"nombre": "CLINTON PERCY RUIZ REYNOSO"}, "C60383907": {"nombre": "LUIS YOVANI CALLACA MANAYAY"}, "Q45214155": {"nombre": "JESUS MANUEL QUISPE ROJAS"}, "U71537693": {"nombre": "SAMUEL HERACLIO HUAYHUACURI ALCA"}, "Q60207140": {"nombre": "GILGAL HUANUCO BARTOLO"}, "Q46928491": {"nombre": "WILLIAM CARLOS CALLACA MANAYAY"}, "A40977913": {"nombre": "ELVIS ELIDE RUIZ ALVAREZ"}, "Q09241757": {"nombre": "DANIEL RONYN SIERRA ROJAS"}, "Q47196672": {"nombre": "GILDEMEISTER FASABI PEREZ"}, "Q71875009": {"nombre": "EFRAIN DAVID VILCHEZ ROJAS"}, "Q72701252": {"nombre": "RENZO MIGUEL BENDEZU ROCA"}, "Q46062680": {"nombre": "IMER RINZA SANTOS"}, "Q73936701": {"nombre": "EDUARDO JAVIER HUAMANI HUAMACCTO"}, "Q20120541": {"nombre": "CARLOS ALBERTO QUISPE POMA"}, "M77063931": {"nombre": "MIQUEAS LLOEL SIMON CHACON"}, "Q73125857": {"nombre": "NELSON FREDDY CAINICELA ROCA"}, "Q41947171": {"nombre": "JAIME HUAMANI PABLO"}, "Q74947278": {"nombre": "ROLI DENIS HERRERA PIÑAN"}, "M74687998": {"nombre": "NILTON ROBERTO TOLENTINO PIÑAN"}, "Q41192359": {"nombre": "LUIS ROBERTO GUTIERREZ ARROYO"}, "Q76330181": {"nombre": "FRANKLIN RODRIGO POCCO AVALOS"}, "N20880671": {"nombre": "OSWALDO CHUCO ARREDONDO"}, "Q72278971": {"nombre": "FRANKLIN CHUCO MEDINA"}, "Y20904111": {"nombre": "ALEX BARRIOS CHUCO"}, "Q41055711": {"nombre": "CLAUDIO HUAMANI CHUMBE"}, "Q42526599": {"nombre": "WILDER SUMARAN VENTURA"}, "Q74364122": {"nombre": "VALERIO ONOFRE MAYHUA"}, "Q75776756": {"nombre": "ELMER FROILAN MAMANI MAMANI"}, "N08156577": {"nombre": "EFRAIN ABEL ALCANTARA MACHACUAY"}, "Q10251343": {"nombre": "EDGAR FLORENCIO ESPINOZA SURICHAQUI"}, "Q73987869": {"nombre": "GONZALO GABRIEL LIMA MALDONADO"}, "Q45904391": {"nombre": "ERICSON ALANIA CONTRERAS"}, "Q76298640": {"nombre": "YOVER JUAN DE LA CRUZ RAMIREZ"}, "Q42827724": {"nombre": "LEDESMAN BENDEZU VILLARROEL"}, "Q10607342": {"nombre": "JOSE CARLOS HUACACHIN CAMAVILCA"}, "Q44347948": {"nombre": "ENRIQUE ONOFRE MAYHUA"}, "Q73497841": {"nombre": "JOSUE SEBASTIAN ALVAREZ RODRIGUEZ"}, "P74537692": {"nombre": "KEVIN BRAYAN TITO SULCA"}, "Q46417012": {"nombre": "FELIX ANGEL PAUCAR QUISPE"}, "Q77695579": {"nombre": "ALEX JUNIOR QUISPE VILCA"}, "Q46926790": {"nombre": "ALEJANDRO ACOSTA NECIOSUPE"}, "Q76253761": {"nombre": "EUGENIO BALVIN ENRIQUEZ"}, "C48429724": {"nombre": "DILMER VICTOR DE LA CRUZ RAMIREZ"}, "Q07661637": {"nombre": "PELAYO MEDINA CARDENAS"}, "Q44385506": {"nombre": "CARLOS JABIER CABELLO PICOY"}, "Q43694703": {"nombre": "SEBASTIAN VELASQUEZ HUACAYCHUCO"}, "Q48787360": {"nombre": "RONAL ANTONIO CHUQUIYAURI LLIMPE"}, "Q46148193": {"nombre": "JHONIOR LEONARDO RIVERA QUINTO"}, "E44498954": {"nombre": "HERGILIO GUILLERMO REYES VALVERDE"}, "Q48252985": {"nombre": "JHON EMERSON TORRES TAIPE"}, "Q77429534": {"nombre": "LIZARDO BORDA JANAMPA"}, "Q41209948": {"nombre": "LUIS EDINSON CURINUQUI CURICO"}, "Q48197410": {"nombre": "MACIDONIO SEGUNDINO CAPCHA DAVILA"}, "Q48845070": {"nombre": "ELIAS RAMIREZ CALLACA"}, "Q75963805": {"nombre": "ELVIS YOVANI CARRILLO VILCABANA"}, "P04022176": {"nombre": "BENIGNO TARAZONA ALANIA"}, "Q47211537": {"nombre": "HECTOR RUBEN OCHOA VALDIVIA"}, "Q41223728": {"nombre": "NEFTALI LUJAN FALCON"}, "Q46910423": {"nombre": "JUAN MELENDREZ NAVARRO"}, "Q10018604": {"nombre": "MARTIN PEDRO CARRASCO VILLAVERDE"}, "Q10302691": {"nombre": "CIPRIANO HUAMACCTO GARCIA"}, "Q10545099": {"nombre": "JUAN CARLOS RIVAS MARQUEZ"}, "Q43010982": {"nombre": "SAUL MIQUE VILCHEZ ROJAS"}, "Q77221332": {"nombre": "KLEVERSON PIERRE MENOR FABIAN"}, "Q42930672": {"nombre": "RONAL ARREDONDO VENTOCILLA"}, "Q47943220": {"nombre": "GERMAN CARLOS PILLPA COLOMBINO"}, "Q43685905": {"nombre": "HERNAN MENDOZA HUAMACTO"}, "Q80459559": {"nombre": "GENIS TUANAMA TUANAMA"}, "Q77177204": {"nombre": "EDUARDO CIRIACO HUAMANI PABLO"}, "Q48283884": {"nombre": "LUIS ENRIQUE HUAMANI PABLO"}, "N77814207": {"nombre": "BRAYAM ANGEL HUACACHINO BARTOLO"}, "Q42476449": {"nombre": "WILLIAM RAUL GONZALES TEMBLADERA"}, "Q71584259": {"nombre": "YERSON EVANS ZEVALLOS HUERE"}, "Q75240276": {"nombre": "JHON CARLOS HUAMANI LEON"}, "Q44799986": {"nombre": "MANUEL HUMBERTO CHOCACA CHAPPA"}, "Q45851459": {"nombre": "JOSE LUIS BALBIN PAUCAR"}, "N73120807": {"nombre": "WILLIAMS IVAN RICRA YACHACHIN"}, "Q25645036": {"nombre": "ELOY PALACIOS JIMENEZ"}, "N71213965": {"nombre": "OSWALDO TRUJILLO PALACIOS"}, "Q45805743": {"nombre": "EFRAIN LOAYZA RIVERA"}, "Q42572337": {"nombre": "JACINTO MUNGUIA LUCAS"}, "Q43681990": {"nombre": "JHON NILTON SANTANA PAUCAR"}, "Q43555794": {"nombre": "MARCO ANTONIO GAMARRA MENDEZ"}, "Q44457732": {"nombre": "EFRAIN LUIS TRINIDAD CONDOR"}, "Q77462916": {"nombre": "LUIS EDYN DE LA CRUZ VILCABANA"}, "Q46671181": {"nombre": "PITWEL INOCENTE RIVERA"}, "E41991459": {"nombre": "ALBIER SIMION NUÑEZ TORRES"}, "Q62327867": {"nombre": "JOSE ISMAEL GOMEZ BERNILLA"}, "Q07429259": {"nombre": "JAVIER SALAZAR NARAZAS"}, "Q41546953": {"nombre": "FERNANDO ESPEZA NUÑEZ"}, "Q43903098": {"nombre": "JULIO CESAR VERA BLANCAS"}, "Q75032637": {"nombre": "JUAN MARTIN LIMA ORTEGA"}, "A10341684": {"nombre": "WILMER KLEVER RUIZ ALVAREZ"}, "Q43167581": {"nombre": "FELIX FERNANDO OLIVERA LANDEO"}, "Q45875680": {"nombre": "JOSE ARMANDO ESCRIBANO SARMIENTO"}, "A47309591": {"nombre": "EDUARDO VIDARTE MENDOZA"}, "Q73367566": {"nombre": "NESTOR VALERIANO CAYO"}, "E70822725": {"nombre": "ABEL ANGEL RODRIGUEZ ASENCIOS"}, "Q42983569": {"nombre": "ALFREDO FREDY CAPCHA ROMERO"}, "Q07459595": {"nombre": "ALCIBIADES RUBEN UNTIVEROS GAMARRA"}, "Q42343906": {"nombre": "JOHN PAUL RIVERA LEYVA"}, "Q47831132": {"nombre": "MEVER MAIN MANCHA MENDEZ"}, "N73659829": {"nombre": "DANTE HUAMALI BARRIOS"}, "Q03506472": {"nombre": "WALTER NOE SOSA VALENCIA"}, "Q71963975": {"nombre": "WILLAN ROBERTO CERQUIN CHAVEZ"}, "Q43453541": {"nombre": "HUGO FRANCISCO LOPEZ CONDOR"}, "Q77257291": {"nombre": "EDUARDO JOSE HUAÑA ROJAS"}, "Q61575753": {"nombre": "LUIS EDUARDO LIZARBE OCHANTE"}, "Q10419916": {"nombre": "HOMERO ZENOVIO ALARCON OROSCO"}, "Q71305998": {"nombre": "CRISTHIAN ANTHONY GIMENES VELASQUEZ"}, "Q74531864": {"nombre": "JHON EYNER AMAMBAL RAMIREZ"}, "Q74758921": {"nombre": "JHOSEFF ERIK GUZMAN QUISPE"}, "Q45789512": {"nombre": "WALTER RAMOS BARRETON"}, "Q44659725": {"nombre": "ROBERTO SANCHEZ CANCHIHUAMAN"}, "Q76134554": {"nombre": "DEYVI ANDERSON CAILLAHUA CARDENAS"}, "N48935863": {"nombre": "WILFREDO ANGEL SULLCA CONCE"}, "Q47590818": {"nombre": "MIGUEL ANGEL CACHAY ROMERO"}, "Q46031539": {"nombre": "WENDER YSUIZA TUANAMA"}, "N71939948": {"nombre": "WILLIAMS VASQUEZ REYES"}, "Q47220266": {"nombre": "GILMER VIDARTE VILLALOBOS"}, "E43832198": {"nombre": "PERCY GONZALES HUAYABAN"}, "Q76340250": {"nombre": "YORSI JHONATAN RICRA ECHEA"}, "Q25853733": {"nombre": "CESAR RAMIRO POLICARPO INOCENTE"}, "Q43129530": {"nombre": "DIOMER MORALES TRUJILLANO"}, "Q44717922": {"nombre": "PABLO BARRANZUELA MENDOZA"}, "N40635466": {"nombre": "HECTOR FALCON CARHUAS"}, "Q72537846": {"nombre": "ANTONY ANDRES CCAYHUARI GALLO"}, "Q45939447": {"nombre": "JORGE LUIS CANTARO MENDEZ"}, "Q42931368": {"nombre": "JHONY GONZALES ALIAGA"}, "L43708994": {"nombre": "FRANK LENIN CARBAJAL CASTREJON"}, "Q80905038": {"nombre": "JUAN JOSE RODRIGUEZ HUAYUNGA"}, "Q70757409": {"nombre": "ROMARIO RODRIGUEZ ACOSTA"}, "Q42453065": {"nombre": "CESAR BERROCAL POMA"}, "Q72046960": {"nombre": "JIM ANDERSON ORIHUELA LEON"}, "Q46692093": {"nombre": "LUIS EDUARDO MUÑOZ VEGA"}, "Q76773688": {"nombre": "NICXON ROMARIO INOCENTE BENANCIO"}, "P20081201": {"nombre": "EUSEBIO HUAMAN HUAMANI"}, "Q77079255": {"nombre": "JOMERZON ETER ESPINOZA LOPEZ"}, "Q76360573": {"nombre": "JHOAN NILTON HUAMACCTO HUAYTALLA"}, "Q71703059": {"nombre": "YOSBER TERRONES MONZALVE"}, "Q41507099": {"nombre": "RICHAR CACERES OROSCO"}, "Q70898352": {"nombre": "ANDERSON EDNIN DE LA CRUZ LOPEZ"}, "Q77246173": {"nombre": "JAVIER CESAR DE LA CRUZ BERNILLA"}, "Q09843200": {"nombre": "HONORATO RAMOS HUANCA"}, "Q47010061": {"nombre": "ALEX ARTURO FLORES SILVA"}, "Q47235932": {"nombre": "JAND JERRY SANCHEZ RIVERA"}, "N46753754": {"nombre": "DEIVIS GUILLERMO DEUDOR VILLENA"}, "Q74687996": {"nombre": "JEREMIAS TOLENTINO PIÑAN"}, "P20114732": {"nombre": "RAUL MAYTA MENDOZA"}, "Q46485677": {"nombre": "JHOSEPH OMAR SANCHEZ RIVERA"}, "C46778548": {"nombre": "JAIMEN JESUS EDUARDO VILCABANA CARRILLO"}, "Q45324225": {"nombre": "FERMIN WILFREDO CACHAY ROMERO"}, "Q41868237": {"nombre": "WILFREDO NILTON SEGURA BARZOLA"}, "Q20103711": {"nombre": "MAURO PALOMINO QUISPE"}, "Q62327856": {"nombre": "LUIS GILBERTO CARLOS BERNILLA"}, "Q48263811": {"nombre": "MIGUEL VLADIMIR QUISPE VILCA"}, "Q77246174": {"nombre": "DILMER JESUS DE LA CRUZ BERNILLA"}, "Q07656934": {"nombre": "NICOLAS JOSE ANGULO ORELLANA"}, "Q45169535": {"nombre": "DINO ROGER ESTRELLA ESPINOZA"}, "Q44351101": {"nombre": "ROGER ALEXANDER RAMON MELENDEZ"}, "Q45910485": {"nombre": "DANIEL GUSTAVO DE LA CRUZ DIAZ"}, "L47683811": {"nombre": "ELKI MANUEL CRUZADO DELGADO"}, "Q48331953": {"nombre": "BRUSLY PAUCAR SANTANA"}, "U46605393": {"nombre": "YENNER ALEXANDER DURAND CESPEDES"}, "Q42418560": {"nombre": "DEYVIS BASILIO SANCHEZ RIVERA"}, "Q42737458": {"nombre": "ROLAN YONEL OCHANTE BRAVO"}, "Q45940684": {"nombre": "YURI ROMARIO ALEJO HUAYTAN"}, "Q76378246": {"nombre": "RUBEN EDGAR RUTTI VILLAVERDE"}, "Q76350250": {"nombre": "JOEL ENRIQUE GONZALES AUCCASI"}, "Q47571557": {"nombre": "LUIS OMAR RUTTI VILLAVERDE"}, "D42944659": {"nombre": "EDGAR FLOREANO CASTRO"}, "Q10246174": {"nombre": "ROMULO FUENTES CARDENAS"}, "Q44287509": {"nombre": "CARLOS HUAMALI BARRIOS"}, "P75335831": {"nombre": "YOJHAN YEFFERSON PERALTA CARHUAVILCA"}, "N04053183": {"nombre": "ROLIN VIHAR RIVERA CHAVEZ"}, "L77074164": {"nombre": "NEXAR NEIL ROMERO FLORES"}, "C48391274": {"nombre": "SERGIO MANAYAY DIAZ"}, "Q74453620": {"nombre": "RIBALDO INOCENTE RIVERA"}, "Q41365797": {"nombre": "EDGAR ALEX CUYA CONDORI"}, "Q10170545": {"nombre": "ELAN AYLAS MARQUIÑO"}, "N10231547": {"nombre": "ANGEL RICHARD LEON CARHUARICRA"}, "Q80565676": {"nombre": "RICARDO ANDRES MARTINEZ HUAMAN"}, "Q42819319": {"nombre": "KENNDY BALMES SANCHEZ RIVERA"}, "X10671477": {"nombre": "JOHN ANDRES ANGELES VILLARREAL"}, "N04051895": {"nombre": "WALTER JAIME RARAZ CHAVEZ"}, "Q71195340": {"nombre": "GYVER LINCOL RARAZ QUINTO"}, "Q09664198": {"nombre": "EDWIN CASTILLON AYZANOA"}, "D18225653": {"nombre": "JENRRY MOISES ALVA ALVA"}, "Q61643269": {"nombre": "EFER ICLER CAMAÑA PAREDES"}, "L43647358": {"nombre": "ROLANDO SANTOS RINZA"}, "Q47514437": {"nombre": "ALFREDO BARRETO MAURICIO"}, "Q10876835": {"nombre": "JAIME CORONADO ALMONACIN"}, "Q16691948": {"nombre": "HUGO ENRIQUE GARCIA MATEO"}, "Q60861708": {"nombre": "JOSE LUIS CAIRO HILARIO"}, "Q47873039": {"nombre": "ELMER JESUS ACUÑA VIZCARRA"}, "Q43829987": {"nombre": "HEBERHT SOSA MEZA"}, "Q46307442": {"nombre": "YELSIN ELEUTERIO LEON CARHUARICRA"}, "Q77051869": {"nombre": "ALFREDO OSCAR CASTILLO HUAMAN"}, "Y45676944": {"nombre": "NOE SANTOS RINZA"}, "Q44569407": {"nombre": "YOBANY FRANCY COLLACHAGUA BARZOLA"}, "Q47040170": {"nombre": "LUIS JOSE VALENZUELA TIPULA"}, "R71899508": {"nombre": "CRISTIAN MENESES SULLCA"}, "Q45120634": {"nombre": "JUAN ALEJANDRO HUAREZ CERNA"}, "Q46717208": {"nombre": "ALEX DEYVIS ARTEAGA GOÑE"}, "Q00799173": {"nombre": "SERAPIO ZURITA QUISPE"}, "Q47319565": {"nombre": "FLORENTINO DE LA CRUZ BERNILLA"}, "C76343672": {"nombre": "CARLOS JAIMITO DE LA CRUZ RAMIREZ"}, "F76780990": {"nombre": "CRISTIAN FRANCISCO HUANE PADIN"}, "Q17448333": {"nombre": "JUAN CALLACA RAMIREZ"}, "Q44162462": {"nombre": "BRAULIO FILOMENO ESPINOZA MALPARTIDA"}, "Q48363025": {"nombre": "YERSON VARGAS BARRANTES"}, "Q41688604": {"nombre": "WILSON IDEL RIVERA QUINTO"}, "A46429209": {"nombre": "MIGUEL LUIGI ZEVALLOS ZEVALLOS"}, "Q76283178": {"nombre": "CRISTIAN ROMERO CANCHANYA"}, "Q40188047": {"nombre": "ENGEL LIVER ALCANTARA MALBER"}, "Q75554534": {"nombre": "GIAN MARCO CAMAC SALAS"}, "Q47903726": {"nombre": "KELVIN ZAVALETA LAZARO"}, "Q47596218": {"nombre": "ERMERSON JULIAN AGUILAR MARCELO"}, "Q77328515": {"nombre": "ADOLFO GOICOCHEA FERNANDEZ"}, "Q46409036": {"nombre": "CEVERO CHARRE DIONICIO"}, "Q45860352": {"nombre": "DAVID EDWIN TOMAS LLANOS"}, "Q43037073": {"nombre": "OSCAR LEDESMA VALENCIA"}, "Q46164067": {"nombre": "ELGAR DERLIS CABRERA BARTUREN"}, "Q09845914": {"nombre": "TONY ROY ALVA CHACA"}, "Q10862057": {"nombre": "ROGER FLORES CUENCA"}, "Q40847974": {"nombre": "ALEX RICHARD VALLADARES MOLEROS"}, "Q40901587": {"nombre": "JEFFREY AMED PEREZ CHOLAN"}, "N72229725": {"nombre": "RUBEN SERAPIO ESPINOZA MALPARTIDA"}, "Q45282102": {"nombre": "ANTONIO DAMIAN ALVA RODRIGUEZ"}, "Q40233091": {"nombre": "MARCO ANTONIO CERVANTES ZUÑIGA"}, "Q20574045": {"nombre": "JORGE CONDORE FERNANDEZ"}, "Q43224068": {"nombre": "EDWIN NOLY CHAUPIS MELLADO"}, "Q46511206": {"nombre": "JORGE VLADIMIR AGUIRRE FLORES"}, "C43099063": {"nombre": "ISMAEL ESNAIDER PEREZ SANCHEZ"}, "P46888443": {"nombre": "KENYO ADRIAN MARIÑO MALLMA"}, "U42127999": {"nombre": "LIZARDO APAZA VILCA"}, "M46892816": {"nombre": "GIANMARCO WILLIAMS MARTEL ROJAS"}, "Q20105055": {"nombre": "VICTOR RAFAEL SIHUAY ROJAS"}, "Q71923900": {"nombre": "FRANCISCO ARIRAMA MARICAHUA"}, "A47250756": {"nombre": "BRAYAN MISAEL RIVAS INFANTE"}, "Q07500111": {"nombre": "GRIMALDINO WUILLAM RIVERA JERONIMO"}, "Q41423935": {"nombre": "SAUL JULIO INGA DAMIAN"}, "Q77175946": {"nombre": "YEISON MICHAEL QUINTANILLA ACUÑA"}, "Q47427933": {"nombre": "ELVIS DINO SOPAN MENDOZA"}, "Q78201833": {"nombre": "DIEGO ANTONIO LLENQUE SILUPU"}, "C45121473": {"nombre": "JONATAN GAMALIEL LUCERO CALDERON"}, "Q48225642": {"nombre": "EDWIN TARRILLO PEREZ"}, "Q09934371": {"nombre": "ANICETO SANDOVAL MEZA"}, "Q47070581": {"nombre": "PERCY RICRA FARFAN"}, "Q45242942": {"nombre": "EDUARDO LUSHANO TORRES PAUJA"}, "Q76539322": {"nombre": "JORGE ALBERT CANTORAL CCAHUAY"}, "U44760216": {"nombre": "LEONARDO ALFONSO BERNILLA PAICO"}, "Q45391077": {"nombre": "FREDDY ANGELO SANDOVAL GONZALES"}, "C48336862": {"nombre": "RONALD RINZA FACUNDO"}, "Q10874880": {"nombre": "EDWIN MEZA GAMARRA"}, "H29581323": {"nombre": "REINALDO ROE AMADO CHAVEZ"}, "F21878463": {"nombre": "JOSE ALFONSO PACHAS MONDALGO"}, "Q42144206": {"nombre": "JOHAN ALEXANDER PEREDA VELASQUEZ"}, "Q42228984": {"nombre": "JOSE LUIS RODRIGUEZ EULOGIO"}, "C72258165": {"nombre": "ALEX WILFREDO SANCHEZ DIAZ"}, "Q43548806": {"nombre": "JESUS PASTOR RODRIGUEZ"}, "Q45403585": {"nombre": "CECINEO ESTRADA PEREZ"}, "Q43695487": {"nombre": "ALBERTO MIGUEL GAMARRA VASQUEZ"}, "Q74603389": {"nombre": "ROFELIO CANTEÑO CIPRIANO"}, "Q40043283": {"nombre": "RODOLFO MOISES ZAVALA MACHUCA"}, "P73443237": {"nombre": "JUAN BERNARDO CAÑARI HILARIO"}, "Q74850433": {"nombre": "LUIS FERNANDO AGUILAR MANAYAY"}, "Q76384130": {"nombre": "LUIS BRAYAN CHILCHO ACOSTA"}, "Q72010642": {"nombre": "JERONIMO SANTIAGO MACHACUAY CARLIER"}, "Q48128624": {"nombre": "WILFREDO RINZA SANTOS"}, "Q25752786": {"nombre": "MARCOS ANTONIO FLORES HUAYNA"}, "Q48292026": {"nombre": "MICHEL AQUILES QUISPE VILCA"}, "B42018414": {"nombre": "SEGUNDO ARCADIO JIMENEZ RAMIREZ"}, "C03351891": {"nombre": "SEGUNDO ALBERTO HUAMAN SILUPU"}, "B03366908": {"nombre": "JULIO GIRON GALLARDO"}, "Q45694205": {"nombre": "SILVIO ROBERTO ASTO PICHARDO"}, "Q43845915": {"nombre": "ROGER NESTOR QUISPE QUISPE"}, "D27048083": {"nombre": "VICTOR MANUEL CHAVEZ SALAZAR"}, "Q18905661": {"nombre": "RONALD ERNESTO VASQUEZ LECCA"}, "C41863017": {"nombre": "JULIO FRANCISCO CARHUATANTA BRAVO"}, "B42818731": {"nombre": "LUIS CARLOS ALBAN TORRES"}, "Q73936703": {"nombre": "DIEGO MILTON HUAMANI HUAMACCTO"}, "Q74066672": {"nombre": "JORGE ANTONIO CUEVA CASTILLO"}, "Y05348276": {"nombre": "SERGIO LUIS PINCHE MORENO"}, "Q09945342": {"nombre": "FLAVIO TRELLES CASTILLO"}, "R71899509": {"nombre": "ROGER MENESES SULLCA"}, "Q42487910": {"nombre": "BETEN BAWER VELASQUEZ FALLA"}, "Q45245204": {"nombre": "FRANK FELIPE DAGA VERGARAY"}, "Q25801488": {"nombre": "JOSE LUIS MEDINA RIQUEZ"}, "Q76671181": {"nombre": "PIERO NINO STEFANO CHUECAS PACHECO"}, "Q74610278": {"nombre": "FARID GEREMMY CASTRO AVELLANEDA"}, "U70547453": {"nombre": "LUCIO ALVARO YANQUI MAMANI"}, "D40421331": {"nombre": "SANTOS ROSENDO VALDERRAMA MARQUINA"}, "E40574911": {"nombre": "JUAN MANUEL ROSALES ESPIRITU"}, "D25815319": {"nombre": "NEIL WILDER DIAZ VERGARA"}, "D43164453": {"nombre": "MATEO CABALLERO VALDERRAMA"}, "Q25413425": {"nombre": "ANGEL FREDY BURGA DIAZ"}};
+</script>
+
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import{getFirestore,collection,getDocs,doc,setDoc,deleteDoc,getDoc,orderBy,query}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import{getFirestore,collection,getDocs,doc,setDoc,deleteDoc,getDoc,orderBy,query,writeBatch}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyBZrsVQINRIfBL8YuU3iDOX21cQtAF5w44",authDomain:"registro-de-unidades-9dd2d.firebaseapp.com",projectId:"registro-de-unidades-9dd2d",storageBucket:"registro-de-unidades-9dd2d.firebasestorage.app",messagingSenderId:"832510139261",appId:"1:832510139261:web:708c0c386f55362fb64a14"};
 const app=initializeApp(cfg);const db=getFirestore(app);
-let placasCache={},busqueda='',editandoPlaca=null;
+
+let placasCache={},conductoresCache={},busqPlaca='',busqCond='',editPlaca=null,editCond=null;
 const pad=n=>String(n).padStart(2,'0');
 function fmtDate(d){return`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
 function tick(){document.getElementById('clock').textContent=fmtDate(new Date());}tick();setInterval(tick,1000);
-function showMsg(id,txt,type){const el=document.getElementById(id);el.textContent=txt;el.className='msg '+type;el.style.display='block';setTimeout(()=>{el.style.display='none'},4000);}
+function showMsg(id,txt,type){const el=document.getElementById(id);el.textContent=txt;el.className='msg '+type;el.style.display='block';setTimeout(()=>{el.style.display='none'},5000);}
 
 window.switchTab=function(t){
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['placas','zona','historial'][i]===t));
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['placas','conductores','zona','historial'][i]===t));
   document.querySelectorAll('.pane').forEach(el=>el.classList.remove('active'));
   document.getElementById('pane-'+t).classList.add('active');
   if(t==='historial')cargarHistorial();
   if(t==='zona')cargarZona();
+  if(t==='conductores')cargarConductores();
 };
 
-// --- PLACAS ---
+// === IMPORTAR BD INICIAL ===
+window.importarBDInicial=async function(){
+  if(!confirm('¿Cargar las 445 unidades del Excel a Firebase? Si ya existen serán actualizadas.'))return;
+  const entries=Object.entries(BD_PLACAS);
+  const total=entries.length;
+  document.getElementById('prog-placas').style.display='block';
+  let done=0;
+  // Process in batches of 500
+  for(let i=0;i<entries.length;i+=400){
+    const batch=writeBatch(db);
+    entries.slice(i,i+400).forEach(([p,info])=>{batch.set(doc(db,'placas',p),info);placasCache[p]=info;});
+    await batch.commit();
+    done+=Math.min(400,entries.length-i);
+    document.getElementById('prog-fill-placas').style.width=Math.round(done/total*100)+'%';
+  }
+  renderPlacas();showMsg('msg-import-placas','✓ '+total+' unidades cargadas correctamente a Firebase.','ok');
+};
+
+window.importarConductoresBD=async function(){
+  if(!confirm('¿Cargar los 310 conductores del Excel a Firebase? Si ya existen serán actualizados.'))return;
+  const entries=Object.entries(BD_CONDUCTORES);
+  const total=entries.length;
+  document.getElementById('prog-cond').style.display='block';
+  let done=0;
+  for(let i=0;i<entries.length;i+=400){
+    const batch=writeBatch(db);
+    entries.slice(i,i+400).forEach(([lic,info])=>{batch.set(doc(db,'conductores',lic),info);conductoresCache[lic]=info;});
+    await batch.commit();
+    done+=Math.min(400,entries.length-i);
+    document.getElementById('prog-fill-cond').style.width=Math.round(done/total*100)+'%';
+  }
+  renderConductores();showMsg('msg-import-cond','✓ '+total+' conductores cargados correctamente a Firebase.','ok');
+};
+
+// === PLACAS ===
 async function cargarPlacas(){
   try{
     const snap=await getDocs(collection(db,'placas'));
@@ -174,72 +285,120 @@ async function cargarPlacas(){
     document.getElementById('table-placas').style.display='block';
   }catch(e){document.getElementById('loading-placas').textContent='Error al cargar placas.';}
 }
+function tipoBadge(tipo){
+  const cls=tipo==='LOCAL'?'LOCAL':tipo==='PROVINCIA'?'PROVINCIA':'other';
+  return`<span class="badge ${cls}">${tipo}</span>`;
+}
 function renderPlacas(q){
+  let entries=Object.entries(placasCache);
+  const sq=(q||busqPlaca||'').toLowerCase();
+  if(sq)entries=entries.filter(([k,v])=>k.toLowerCase().includes(sq)||v.empresa.toLowerCase().includes(sq)||v.tipo.toLowerCase().includes(sq));
+  document.getElementById('cnt-placas').textContent=Object.keys(placasCache).length;
   const tbody=document.getElementById('tbody-placas');
-  let entradas=Object.entries(placasCache);
-  const sq=(q||busqueda||'').toLowerCase();
-  if(sq)entradas=entradas.filter(([k,v])=>k.toLowerCase().includes(sq)||v.empresa.toLowerCase().includes(sq));
-  if(!entradas.length){tbody.innerHTML='<tr><td colspan="5" class="empty">No se encontraron placas</td></tr>';return;}
-  tbody.innerHTML=entradas.map(([placa,info])=>`<tr>
-    <td><span class="placa-tag">${placa}</span></td>
-    <td><span class="badge ${info.tipo==='LOCAL'?'local':'prov'}">${info.tipo}</span></td>
-    <td>${info.empresa}</td><td>${info.cap}</td>
+  if(!entries.length){tbody.innerHTML='<tr><td colspan="5" class="empty">No hay placas</td></tr>';return;}
+  tbody.innerHTML=entries.map(([p,i])=>`<tr>
+    <td><span class="placa-tag">${p}</span></td>
+    <td>${tipoBadge(i.tipo)}</td>
+    <td>${i.empresa}</td><td>${i.cap}</td>
     <td style="display:flex;gap:6px">
-      <button class="edit-btn" onclick="editarPlaca('${placa}')">Editar</button>
-      <button class="del-btn" onclick="eliminarPlaca('${placa}')">✕</button>
+      <button class="edit-btn" onclick="editarPlaca('${p}')">Editar</button>
+      <button class="del-btn" onclick="eliminarPlaca('${p}')">✕</button>
     </td>
   </tr>`).join('');
 }
-window.buscarPlacas=function(q){busqueda=q;renderPlacas(q);};
+window.buscarPlacas=function(q){busqPlaca=q;renderPlacas(q);};
 window.guardarPlaca=async function(){
-  const placa=document.getElementById('p-placa').value.trim().toUpperCase();
-  const tipo=document.getElementById('p-tipo').value;
-  const empresa=document.getElementById('p-empresa').value.trim();
-  const cap=document.getElementById('p-cap').value.trim();
-  if(!placa||!tipo||!empresa||!cap){showMsg('msg-placa','Completa todos los campos.','err');return;}
-  try{
-    await setDoc(doc(db,'placas',placa),{tipo,empresa,cap});
-    placasCache[placa]={tipo,empresa,cap};
-    cancelarEdicion();renderPlacas();
-    showMsg('msg-placa',editandoPlaca?'Placa actualizada.':'Placa agregada correctamente.','ok');
-    editandoPlaca=null;
-  }catch(e){showMsg('msg-placa','Error al guardar. Verifica tu conexión.','err');}
+  const p=document.getElementById('p-placa').value.trim().toUpperCase();
+  const t=document.getElementById('p-tipo').value;
+  const e=document.getElementById('p-empresa').value.trim();
+  const c=document.getElementById('p-cap').value.trim();
+  if(!p||!t||!e||!c){showMsg('msg-placa','Completa todos los campos.','err');return;}
+  try{await setDoc(doc(db,'placas',p),{tipo:t,empresa:e,cap:c});placasCache[p]={tipo:t,empresa:e,cap:c};cancelarEdPlaca();renderPlacas();showMsg('msg-placa','Placa guardada correctamente.','ok');}
+  catch(err){showMsg('msg-placa','Error al guardar.','err');}
 };
-window.editarPlaca=function(placa){
-  const info=placasCache[placa];if(!info)return;
-  editandoPlaca=placa;
-  document.getElementById('p-placa').value=placa;document.getElementById('p-placa').readOnly=true;
-  document.getElementById('p-tipo').value=info.tipo;document.getElementById('p-empresa').value=info.empresa;document.getElementById('p-cap').value=info.cap;
-  document.getElementById('placa-form-title').textContent='Editando placa: '+placa;
+window.editarPlaca=function(p){
+  editPlaca=p;const i=placasCache[p];if(!i)return;
+  document.getElementById('p-placa').value=p;document.getElementById('p-placa').readOnly=true;
+  document.getElementById('p-tipo').value=i.tipo;document.getElementById('p-empresa').value=i.empresa;document.getElementById('p-cap').value=i.cap;
+  document.getElementById('placa-form-title').textContent='Editando placa: '+p;
   document.getElementById('btn-save-placa').textContent='Guardar cambios';
-  document.getElementById('btn-cancel-edit').style.display='inline-block';
+  document.getElementById('btn-cancel-placa').style.display='inline-block';
   window.scrollTo({top:0,behavior:'smooth'});
 };
-window.cancelarEdicion=function(){
-  editandoPlaca=null;
-  ['p-placa','p-empresa','p-cap'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('p-tipo').value='';
-  document.getElementById('p-placa').readOnly=false;
+window.cancelarEdPlaca=function(){
+  editPlaca=null;['p-placa','p-empresa','p-cap'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('p-tipo').value='';document.getElementById('p-placa').readOnly=false;
   document.getElementById('placa-form-title').textContent='Agregar nueva placa';
   document.getElementById('btn-save-placa').textContent='Agregar placa';
-  document.getElementById('btn-cancel-edit').style.display='none';
+  document.getElementById('btn-cancel-placa').style.display='none';
 };
-window.eliminarPlaca=async function(placa){
-  if(!confirm('¿Eliminar la placa '+placa+'?'))return;
-  try{await deleteDoc(doc(db,'placas',placa));delete placasCache[placa];renderPlacas();}catch(e){alert('Error al eliminar.');}
+window.eliminarPlaca=async function(p){
+  if(!confirm('¿Eliminar placa '+p+'?'))return;
+  try{await deleteDoc(doc(db,'placas',p));delete placasCache[p];renderPlacas();}catch(e){alert('Error al eliminar.');}
 };
 
-// --- ZONA ---
+// === CONDUCTORES ===
+async function cargarConductores(){
+  try{
+    const snap=await getDocs(collection(db,'conductores'));
+    conductoresCache={};snap.forEach(d=>{conductoresCache[d.id]=d.data();});
+    renderConductores();
+    document.getElementById('loading-cond').style.display='none';
+    document.getElementById('table-cond').style.display='block';
+  }catch(e){document.getElementById('loading-cond').textContent='Error al cargar.';}
+}
+function renderConductores(q){
+  let entries=Object.entries(conductoresCache);
+  const sq=(q||busqCond||'').toLowerCase();
+  if(sq)entries=entries.filter(([k,v])=>k.toLowerCase().includes(sq)||v.nombre.toLowerCase().includes(sq));
+  document.getElementById('cnt-cond').textContent=Object.keys(conductoresCache).length;
+  const tbody=document.getElementById('tbody-cond');
+  if(!entries.length){tbody.innerHTML='<tr><td colspan="3" class="empty">No hay conductores registrados</td></tr>';return;}
+  tbody.innerHTML=entries.map(([lic,i])=>`<tr>
+    <td><span class="lic-tag">${lic}</span></td>
+    <td style="font-weight:500">${i.nombre}</td>
+    <td style="display:flex;gap:6px">
+      <button class="edit-btn" onclick="editarConductor('${lic}')">Editar</button>
+      <button class="del-btn" onclick="eliminarConductor('${lic}')">✕</button>
+    </td>
+  </tr>`).join('');
+}
+window.buscarConductores=function(q){busqCond=q;renderConductores(q);};
+window.guardarConductor=async function(){
+  const lic=document.getElementById('c-lic').value.trim();
+  const nombre=document.getElementById('c-nombre').value.trim().toUpperCase();
+  if(!lic||!nombre){showMsg('msg-cond','Completa todos los campos.','err');return;}
+  try{await setDoc(doc(db,'conductores',lic),{nombre});conductoresCache[lic]={nombre};cancelarEdCond();renderConductores();showMsg('msg-cond','Conductor guardado.','ok');}
+  catch(err){showMsg('msg-cond','Error al guardar.','err');}
+};
+window.editarConductor=function(lic){
+  editCond=lic;const i=conductoresCache[lic];if(!i)return;
+  document.getElementById('c-lic').value=lic;document.getElementById('c-lic').readOnly=true;
+  document.getElementById('c-nombre').value=i.nombre;
+  document.getElementById('cond-form-title').textContent='Editando conductor: '+lic;
+  document.getElementById('btn-save-cond').textContent='Guardar cambios';
+  document.getElementById('btn-cancel-cond').style.display='inline-block';
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+window.cancelarEdCond=function(){
+  editCond=null;['c-lic','c-nombre'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('c-lic').readOnly=false;
+  document.getElementById('cond-form-title').textContent='Agregar conductor';
+  document.getElementById('btn-save-cond').textContent='Agregar conductor';
+  document.getElementById('btn-cancel-cond').style.display='none';
+};
+window.eliminarConductor=async function(lic){
+  if(!confirm('¿Eliminar conductor '+lic+'?'))return;
+  try{await deleteDoc(doc(db,'conductores',lic));delete conductoresCache[lic];renderConductores();}catch(e){alert('Error.');}
+};
+
+// === ZONA ===
 async function cargarZona(){
   try{
     const zd=await getDoc(doc(db,'config','zona'));
     const zc=document.getElementById('zone-current');
-    if(zd.exists()){
-      const z=zd.data();
-      zc.innerHTML='<strong>'+z.nombre+'</strong><br><span style="color:var(--text3)">Centro: '+z.lat+', '+z.lng+' | Radio: '+z.radio+' m</span>';
-      document.getElementById('a-lat').value=z.lat;document.getElementById('a-lng').value=z.lng;
-      document.getElementById('a-radio').value=z.radio;document.getElementById('a-nombre').value=z.nombre;
-    } else zc.textContent='Sin zona configurada aún.';
+    if(zd.exists()){const z=zd.data();zc.innerHTML='<strong>'+z.nombre+'</strong><br><span style="color:var(--text3)">Centro: '+z.lat+', '+z.lng+' | Radio: '+z.radio+' m</span>';document.getElementById('a-lat').value=z.lat;document.getElementById('a-lng').value=z.lng;document.getElementById('a-radio').value=z.radio;document.getElementById('a-nombre').value=z.nombre;}
+    else zc.textContent='Sin zona configurada aún.';
   }catch(e){}
 }
 window.guardarZona=async function(){
@@ -247,16 +406,16 @@ window.guardarZona=async function(){
   const lng=parseFloat(document.getElementById('a-lng').value);
   const radio=parseInt(document.getElementById('a-radio').value);
   const nombre=document.getElementById('a-nombre').value.trim()||'Zona sin nombre';
-  if(isNaN(lat)||isNaN(lng)||isNaN(radio)||radio<1){showMsg('msg-zona','Completa todos los campos correctamente.','err');return;}
-  try{await setDoc(doc(db,'config','zona'),{lat,lng,radio,nombre});cargarZona();showMsg('msg-zona','Zona guardada correctamente.','ok');}
+  if(isNaN(lat)||isNaN(lng)||isNaN(radio)||radio<1){showMsg('msg-zona','Completa todos los campos.','err');return;}
+  try{await setDoc(doc(db,'config','zona'),{lat,lng,radio,nombre});cargarZona();showMsg('msg-zona','Zona guardada.','ok');}
   catch(e){showMsg('msg-zona','Error al guardar.','err');}
 };
 window.eliminarZona=async function(){
-  if(!confirm('¿Eliminar la zona?'))return;
+  if(!confirm('¿Eliminar la zona configurada?'))return;
   try{await deleteDoc(doc(db,'config','zona'));cargarZona();showMsg('msg-zona','Zona eliminada.','warn');}catch(e){}
 };
 
-// --- HISTORIAL ---
+// === HISTORIAL ===
 async function cargarHistorial(){
   try{
     const q=query(collection(db,'registros'),orderBy('tsNum','asc'));
@@ -273,15 +432,15 @@ async function cargarHistorial(){
       return`<tr>
         <td style="font-weight:600;color:var(--text3)">${i+1}</td>
         <td style="font-size:11px;white-space:nowrap;font-family:monospace">${r.ts}</td>
-        <td><span class="badge ${r.tipo==='LOCAL'?'local':'prov'}">${r.tipo}</span></td>
-        <td style="white-space:nowrap">${r.empresa}</td>
+        <td>${tipoBadge(r.tipo||'')}</td>
+        <td style="white-space:nowrap;font-size:12px">${r.empresa}</td>
         <td><span class="placa-tag">${r.placa}</span></td>
         <td>${r.cap}</td><td>${r.lic}</td>
-        <td style="font-weight:600;white-space:nowrap">${r.nombre}</td>
+        <td style="font-weight:600;white-space:nowrap;font-size:12px">${r.nombre}</td>
         <td>${r.tel}</td>
         <td style="font-size:11px;color:var(--text3);font-family:monospace">${r.coords}</td>
         <td><span class="estado ${est==='CARGA ASIGNADA'?'asignado':est==='EN ESPERA DE CARGA'?'espera':'pendiente'}">${est}</span></td>
-        <td>${r.motivo?`<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
+        <td>${r.motivo?`<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>`:'—'}</td>
         <td><button class="del-btn" onclick="eliminarReg('${r._id}')">✕</button></td>
       </tr>`;
     }).join('');
@@ -291,27 +450,14 @@ async function cargarHistorial(){
 }
 window.eliminarReg=async function(id){
   if(!confirm('¿Eliminar este registro?'))return;
-  try{await deleteDoc(doc(db,'registros',id));cargarHistorial();}catch(e){alert('Error al eliminar.');}
+  try{await deleteDoc(doc(db,'registros',id));cargarHistorial();}catch(e){alert('Error.');}
 };
 window.limpiarHistorial=async function(){
   if(!confirm('¿Eliminar TODOS los registros? Esta acción no se puede deshacer.'))return;
-  try{
-    const snap=await getDocs(collection(db,'registros'));
-    await Promise.all(snap.docs.map(d=>deleteDoc(doc(db,'registros',d.id))));
-    cargarHistorial();
-  }catch(e){alert('Error al limpiar.');}
+  try{const snap=await getDocs(collection(db,'registros'));const b=writeBatch(db);snap.docs.forEach(d=>b.delete(doc(db,'registros',d.id)));await b.commit();cargarHistorial();}catch(e){alert('Error.');}
 };
 
-// Precargar placas por defecto si no existen
-async function precargarPlacas(){
-  const snap=await getDocs(collection(db,'placas'));
-  if(snap.empty){
-    const defaults={"BVV801":{tipo:"LOCAL",empresa:"RBK",cap:"50 M3"},"C7F936":{tipo:"PROVINCIA",empresa:"NR",cap:"80 M3"},"CBD722":{tipo:"PROVINCIA",empresa:"Transporte Dagre",cap:"80 M3"},"F8U949":{tipo:"LOCAL",empresa:"Transportes Barrios",cap:"60 M3"},"BDP912":{tipo:"LOCAL",empresa:"Barrios",cap:"60 M3"}};
-    await Promise.all(Object.entries(defaults).map(([p,d])=>setDoc(doc(db,'placas',p),d)));
-  }
-}
-
-(async()=>{await precargarPlacas();cargarPlacas();cargarZona();})();
+cargarPlacas();cargarZona();
 </script>
 </body>
 </html>
