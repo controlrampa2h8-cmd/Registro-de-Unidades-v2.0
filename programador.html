@@ -260,7 +260,7 @@ function renderTabla(){
     const motivoHtml=r.motivo?`<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>`:`<span style="color:var(--text3)">—</span>`;
     return`<tr>
       <td><span class="num">${num}</span></td>
-      <td style="font-size:11px;white-space:nowrap;font-family:monospace">${r.ts}</td>
+      <td style="white-space:nowrap;font-family:monospace">${r.ts}</td>
       <td>${tipoBadge(r.tipo)}</td>
       <td style="white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis" title="${r.empresa}">${r.empresa}</td>
       <td><span class="placa">${r.placa}</span></td>
