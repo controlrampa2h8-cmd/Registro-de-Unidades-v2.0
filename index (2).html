@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Unidades</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;--surface:#fff;--surface2:#f0efe9;--border:#e2e0d8;--border2:#c8c6bc;
+  --text:#1a1916;--text2:#6b6960;--text3:#9b9a93;
+  --blue-bg:#e8f0fc;--blue-text:#1a4fa0;--blue-border:#b8cef5;
+  --green-bg:#e6f4ec;--green-text:#1a6b38;--green-border:#a8dbb8;
+  --amber-bg:#fdf3e0;--amber-text:#8a5a00;--amber-border:#f0d080;
+  --red-bg:#fceaea;--red-text:#a01a1a;--red-border:#f0b8b8;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);min-height:100vh}
+.topbar{background:var(--text);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.topbar-icon{width:36px;height:36px;background:rgba(255,255,255,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.topbar-icon svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2}
+.topbar-info{flex:1}
+.topbar-title{font-size:15px;font-weight:600}
+.topbar-sub{font-size:11px;opacity:0.5;margin-top:2px}
+.topbar-clock{font-size:12px;opacity:0.5;font-family:monospace}
+.container{max-width:680px;margin:0 auto;padding:20px 16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px}
+.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px}
+.geo-box{border-radius:var(--radius-sm);border:1px solid var(--border);padding:11px 14px;font-size:13px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px;background:var(--surface2);color:var(--text2);line-height:1.5}
+.geo-box.ok{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}
+.geo-box.err{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border)}
+.geo-box.warn{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border)}
+.geo-box.info{background:var(--blue-bg);color:var(--blue-text);border-color:var(--blue-border)}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px;background:var(--text3)}
+.dot.ok{background:#1a6b38}.dot.err{background:#a01a1a}.dot.warn{background:#8a5a00}.dot.info{background:#1a4fa0}
+.dist-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px}
+.dist-fill{height:100%;border-radius:3px;transition:width 0.4s}
+.fill-ok{background:#1a6b38}.fill-err{background:#c0392b}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:500;color:var(--text2)}
+.field input{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;background:var(--surface);color:var(--text);width:100%;transition:border 0.15s}
+.field input:focus{outline:none;border-color:#1a4fa0;box-shadow:0 0 0 3px rgba(26,79,160,0.08)}
+.field input[readonly]{background:var(--surface2);color:var(--text3);cursor:default}
+.field input.auto{background:var(--blue-bg);color:var(--blue-text);border-color:var(--blue-border);font-weight:500}
+.req{color:#c0392b}
+.actions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.btn{padding:11px 22px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;border:1px solid;transition:all 0.15s}
+.btn-primary{background:var(--text);color:#fff;border-color:var(--text)}
+.btn-primary:hover:not(:disabled){background:#333}
+.btn-primary:disabled{opacity:0.3;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--text2);border-color:var(--border2)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-geo{background:var(--blue-bg);color:var(--blue-text);border-color:var(--blue-border);padding:8px 16px;font-size:13px}
+.btn-geo:hover{opacity:0.85}
+.msg{padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-top:12px;display:none}
+.msg.ok{background:var(--green-bg);color:var(--green-text)}
+.msg.err{background:var(--red-bg);color:var(--red-text)}
+.badge-tipo{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-local{background:var(--green-bg);color:var(--green-text)}
+.badge-prov{background:var(--amber-bg);color:var(--amber-text)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-icon">
+    <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 4v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+  </div>
+  <div class="topbar-info">
+    <div class="topbar-title">Registro de Unidad</div>
+    <div class="topbar-sub">Portal del Conductor</div>
+  </div>
+  <div class="topbar-clock" id="clock"></div>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="card-title">Verificación de ubicación</div>
+    <div class="geo-box" id="geo-box">
+      <span class="dot" id="geo-dot"></span>
+      <span id="geo-text">Ingresa tu placa para conocer las condiciones de registro.</span>
+    </div>
+    <div id="dist-wrap" style="display:none;margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px">
+        <span>Distancia al centro de cochera</span><span id="dist-label"></span>
+      </div>
+      <div class="dist-bg"><div class="dist-fill" id="dist-bar" style="width:0%"></div></div>
+    </div>
+    <button class="btn btn-geo" id="btn-geo" onclick="verificarUbicacion()" style="display:none">📍 Verificar mi ubicación</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Datos de la unidad</div>
+    <div class="grid">
+      <div class="field">
+        <label>Marca temporal</label>
+        <input type="text" id="f-timestamp" readonly class="auto">
+      </div>
+      <div class="field">
+        <label>Placa <span class="req">*</span></label>
+        <input type="text" id="f-placa" placeholder="Ej: BVV801" maxlength="10" oninput="onPlaca(this)" style="text-transform:uppercase">
+      </div>
+      <div class="field">
+        <label>Tipo de servicio</label>
+        <input type="text" id="f-tipo" readonly class="auto" placeholder="Auto según placa">
+      </div>
+      <div class="field">
+        <label>Empresa de Transporte</label>
+        <input type="text" id="f-empresa" readonly class="auto" placeholder="Auto según placa">
+      </div>
+      <div class="field">
+        <label>Capacidad</label>
+        <input type="text" id="f-cap" readonly class="auto" placeholder="Auto según placa">
+      </div>
+      <div class="field">
+        <label>N° Licencia <span class="req">*</span></label>
+        <input type="text" id="f-lic" placeholder="Ej: Q45851459">
+      </div>
+      <div class="field" style="grid-column:span 2">
+        <label>Nombre y Apellido del Conductor <span class="req">*</span></label>
+        <input type="text" id="f-nombre" placeholder="Se mostrará en MAYÚSCULAS" oninput="this.value=this.value.toUpperCase()">
+      </div>
+      <div class="field">
+        <label>Teléfono <span class="req">*</span></label>
+        <input type="tel" id="f-tel" placeholder="Ej: 954049335">
+      </div>
+      <div class="field" id="field-coords" style="display:none">
+        <label>Ubicación capturada</label>
+        <input type="text" id="f-coords" readonly class="auto">
+      </div>
+    </div>
+    <div class="msg" id="msg"></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="btn-guardar" onclick="guardar()" disabled>Registrar unidad</button>
+      <button class="btn btn-ghost" onclick="limpiar()">Limpiar</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let zona=null, geoOk=false, userLat=null, userLng=null, tipoActual=null;
+
+function cargarZona(){
+  try{const z=localStorage.getItem('zona');if(z)zona=JSON.parse(z);}catch(e){}
+}
+function cargarPlacas(){
+  try{const p=localStorage.getItem('placas');if(p)return JSON.parse(p);}catch(e){}
+  return {};
+}
+
+const pad=n=>String(n).padStart(2,'0');
+function fmtDate(d){return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
+function tick(){const n=fmtDate(new Date());document.getElementById('clock').textContent=n;document.getElementById('f-timestamp').value=n;}
+tick();setInterval(tick,1000);
+
+function setGeo(type,dotCls,txt){
+  const b=document.getElementById('geo-box');b.className='geo-box '+(type||'');
+  document.getElementById('geo-dot').className='dot '+(dotCls||'');
+  document.getElementById('geo-text').textContent=txt;
+}
+
+function haversine(a,b,c,d){
+  const R=6371000,r=x=>x*Math.PI/180;
+  const dl=r(c-a),dn=r(d-b);
+  const k=Math.sin(dl/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(dn/2)**2;
+  return R*2*Math.atan2(Math.sqrt(k),Math.sqrt(1-k));
+}
+
+function onPlaca(el){
+  const v=el.value.toUpperCase().replace(/\s/g,'');el.value=v;
+  const db=cargarPlacas();
+  const info=db[v];
+  document.getElementById('f-tipo').value=info?info.tipo:'';
+  document.getElementById('f-empresa').value=info?info.empresa:'';
+  document.getElementById('f-cap').value=info?info.cap:'';
+  tipoActual=info?info.tipo:null;
+  geoOk=false;userLat=null;userLng=null;
+  document.getElementById('f-coords').value='';
+  document.getElementById('dist-wrap').style.display='none';
+  document.getElementById('btn-guardar').disabled=true;
+  document.getElementById('field-coords').style.display='none';
+  document.getElementById('btn-geo').style.display='none';
+  if(!info){setGeo('','','Ingresa una placa válida para ver las condiciones de registro.');return;}
+  if(info.tipo==='LOCAL'){
+    cargarZona();
+    if(!zona){setGeo('warn','warn','Unidad LOCAL: no hay zona configurada. Contacta al administrador.');}
+    else{setGeo('info','info','Unidad LOCAL: debes estar dentro de la cochera "'+zona.nombre+'" ('+zona.radio+' m) para registrarte.');document.getElementById('btn-geo').style.display='inline-block';}
+  } else {
+    document.getElementById('field-coords').style.display='flex';
+    setGeo('warn','warn','Unidad PROVINCIA: puedes registrar desde cualquier lugar. Se capturará tu ubicación al guardar.');
+    document.getElementById('btn-guardar').disabled=false;
+  }
+}
+
+function verificarUbicacion(){
+  cargarZona();
+  if(!zona){setGeo('warn','warn','Sin zona configurada. Contacta al administrador.');return;}
+  setGeo('info','info','Obteniendo tu ubicación GPS...');
+  if(!navigator.geolocation){setGeo('err','err','Tu navegador no soporta geolocalización.');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    userLat=pos.coords.latitude;userLng=pos.coords.longitude;
+    const dist=haversine(userLat,userLng,zona.lat,zona.lng),dentro=dist<=zona.radio,dm=Math.round(dist);
+    geoOk=dentro;
+    document.getElementById('dist-wrap').style.display='block';
+    document.getElementById('dist-label').textContent=dm+' m / '+zona.radio+' m';
+    const bar=document.getElementById('dist-bar');
+    bar.style.width=Math.min(100,Math.round(dist/zona.radio*100))+'%';
+    bar.className='dist-fill '+(dentro?'fill-ok':'fill-err');
+    if(dentro){setGeo('ok','ok','Estás dentro de la cochera "'+zona.nombre+'" — '+dm+' m del centro. Puedes registrarte.');document.getElementById('btn-guardar').disabled=false;}
+    else{setGeo('err','err','Estás fuera de la zona permitida. Distancia: '+dm+' m. Límite: '+zona.radio+' m.');document.getElementById('btn-guardar').disabled=true;}
+  },()=>{setGeo('err','err','No se pudo obtener tu ubicación. Verifica los permisos del navegador.');geoOk=false;},{enableHighAccuracy:true,timeout:10000});
+}
+
+function guardar(){
+  const placa=document.getElementById('f-placa').value.trim().toUpperCase();
+  const lic=document.getElementById('f-lic').value.trim();
+  const nombre=document.getElementById('f-nombre').value.trim().toUpperCase();
+  const tel=document.getElementById('f-tel').value.trim();
+  if(!placa||!lic||!nombre||!tel){showMsg('Completa todos los campos obligatorios.','err');return;}
+  const db=cargarPlacas();const info=db[placa];
+  if(!info){showMsg('Placa no encontrada. Consulta al administrador.','err');return;}
+  if(info.tipo==='LOCAL'&&!geoOk){showMsg('Debes verificar tu ubicación dentro de la cochera.','err');return;}
+  if(info.tipo==='PROVINCIA'){
+    showMsg('Capturando ubicación...','ok');
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(pos=>{
+        userLat=pos.coords.latitude;userLng=pos.coords.longitude;
+        document.getElementById('f-coords').value=userLat.toFixed(6)+', '+userLng.toFixed(6);
+        finalizar(userLat,userLng,info,placa,lic,nombre,tel);
+      },()=>finalizar(null,null,info,placa,lic,nombre,tel),{enableHighAccuracy:true,timeout:8000});
+    } else finalizar(null,null,info,placa,lic,nombre,tel);
+    return;
+  }
+  finalizar(userLat,userLng,info,placa,lic,nombre,tel);
+}
+
+function finalizar(lat,lng,info,placa,lic,nombre,tel){
+  const coords=lat&&lng?(lat.toFixed(6)+', '+lng.toFixed(6)):'No disponible';
+  let registros=[];
+  try{const r=localStorage.getItem('registros');if(r)registros=JSON.parse(r);}catch(e){}
+  const reg={id:Date.now(),ts:fmtDate(new Date()),tipo:info.tipo,empresa:info.empresa,placa,cap:info.cap,lic,nombre,tel,coords,estado:'PENDIENTE',motivo:''};
+  registros.push(reg);
+  try{localStorage.setItem('registros',JSON.stringify(registros));}catch(e){}
+  limpiar();
+  geoOk=false;userLat=null;userLng=null;
+  setGeo('ok','ok','¡Registro exitoso! Tu unidad ha sido registrada correctamente.');
+  document.getElementById('btn-guardar').disabled=true;
+  document.getElementById('dist-wrap').style.display='none';
+  document.getElementById('field-coords').style.display='none';
+  document.getElementById('btn-geo').style.display='none';
+  showMsg('¡Unidad registrada correctamente!','ok');
+}
+
+function limpiar(){
+  ['f-placa','f-tipo','f-empresa','f-cap','f-lic','f-nombre','f-tel','f-coords'].forEach(id=>document.getElementById(id).value='');
+  tipoActual=null;geoOk=false;document.getElementById('btn-guardar').disabled=true;
+  document.getElementById('dist-wrap').style.display='none';document.getElementById('field-coords').style.display='none';
+  document.getElementById('btn-geo').style.display='none';
+  setGeo('','','Ingresa tu placa para conocer las condiciones de registro.');
+}
+
+function showMsg(txt,type){
+  const el=document.getElementById('msg');el.textContent=txt;el.className='msg '+type;el.style.display='block';
+  setTimeout(()=>{el.style.display='none'},4000);
+}
+
+cargarZona();
+</script>
+</body>
+</html>
