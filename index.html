@@ -14,11 +14,12 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .topbar-info{flex:1}.topbar-title{font-size:15px;font-weight:600}.topbar-sub{font-size:11px;opacity:0.5;margin-top:2px}.topbar-clock{font-size:12px;opacity:0.5;font-family:monospace}
 .container{max-width:680px;margin:0 auto;padding:20px 16px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px;transition:opacity 0.2s}
-.card.disabled-card{opacity:0.45;pointer-events:none}
+.card.locked{opacity:0.45;pointer-events:none}
 .section-divider{display:flex;align-items:center;gap:8px;margin-bottom:14px}
 .step-badge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--border2);color:var(--text2);font-size:11px;font-weight:700;flex-shrink:0}
 .step-badge.active{background:#1a4fa0;color:#fff}.step-badge.done{background:#1a6b38;color:#fff}
 .step-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em}
+/* Geo */
 .geo-box{border-radius:var(--radius-sm);border:1px solid var(--border);padding:11px 14px;font-size:13px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px;background:var(--surface2);color:var(--text2);line-height:1.5}
 .geo-box.ok{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}
 .geo-box.err{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border)}
@@ -28,17 +29,19 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .dot.ok{background:#1a6b38}.dot.err{background:#a01a1a}.dot.warn{background:#8a5a00}.dot.info{background:#1a4fa0}
 .dist-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px}
 .dist-fill{height:100%;border-radius:3px;transition:width 0.4s}.fill-ok{background:#1a6b38}.fill-err{background:#c0392b}
+/* Camera */
 .camera-wrap{border-radius:var(--radius);overflow:hidden;background:#111;position:relative;margin-bottom:12px}
 .camera-wrap video{width:100%;display:block;max-height:260px;object-fit:cover}
 .plate-guide-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .plate-box{border:3px solid rgba(255,220,0,0.9);border-radius:6px;width:72%;height:72px;box-shadow:0 0 0 2000px rgba(0,0,0,0.4)}
-.plate-hint{position:absolute;bottom:10px;left:0;right:0;text-align:center;color:rgba(255,255,255,0.8);font-size:12px}
+.plate-hint{position:absolute;bottom:10px;left:0;right:0;text-align:center;color:rgba(255,255,255,0.85);font-size:12px}
 .photo-preview{width:100%;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:12px;display:none}
 .ocr-box{border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-bottom:10px;line-height:1.6;display:none}
 .ocr-box.ok{background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border)}
 .ocr-box.err{background:var(--red-bg);color:var(--red-text);border:1px solid var(--red-border)}
 .ocr-box.warn{background:var(--amber-bg);color:var(--amber-text);border:1px solid var(--amber-border)}
 .ocr-box.info{background:var(--blue-bg);color:var(--blue-text);border:1px solid var(--blue-border)}
+/* Form */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .field{display:flex;flex-direction:column;gap:5px}
 .field label{font-size:12px;font-weight:500;color:var(--text2)}
@@ -57,6 +60,7 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .msg{padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-top:12px;display:none}
 .msg.ok{background:var(--green-bg);color:var(--green-text)}.msg.err{background:var(--red-bg);color:var(--red-text)}
 .loading{text-align:center;padding:2rem;color:var(--text3);font-size:13px}
+.info-note{background:var(--blue-bg);color:var(--blue-text);border:1px solid var(--blue-border);border-radius:var(--radius-sm);padding:10px 14px;font-size:12.5px;margin-bottom:14px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -65,46 +69,17 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
   <div class="topbar-info"><div class="topbar-title">Registro de Unidad</div><div class="topbar-sub">Portal del Conductor</div></div>
   <div class="topbar-clock" id="clock"></div>
 </div>
+
 <div class="container">
   <div id="init-msg" class="loading">Conectando con la base de datos...</div>
   <div id="app-content" style="display:none">
 
-    <!-- PASO 1: UBICACIÓN -->
+    <!-- PASO 1: DATOS -->
     <div class="card" id="card-1">
-      <div class="section-divider"><span class="step-badge active" id="b1">1</span><span class="step-label">Verificación de ubicación</span></div>
-      <div class="geo-box" id="geo-box"><span class="dot" id="geo-dot"></span><span id="geo-text">Ingresa tu placa en el paso 3 para ver las condiciones.</span></div>
-      <div id="dist-wrap" style="display:none;margin-bottom:12px">
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px"><span>Distancia al centro</span><span id="dist-label"></span></div>
-        <div class="dist-bg"><div class="dist-fill" id="dist-bar" style="width:0%"></div></div>
-      </div>
-      <button class="btn btn-blue" id="btn-geo" onclick="verificarUbicacion()" style="display:none">📍 Verificar mi ubicación</button>
-    </div>
-
-    <!-- PASO 2: FOTO -->
-    <div class="card disabled-card" id="card-2">
-      <div class="section-divider"><span class="step-badge" id="b2">2</span><span class="step-label">Foto de la placa de tu unidad</span></div>
-      <p style="font-size:12.5px;color:var(--text2);margin-bottom:14px;line-height:1.7">Toma una foto de la placa <strong>en este momento</strong> con la cámara. El sistema verificará que coincide con la placa ingresada. No se permite subir fotos de la galería.</p>
-      <div id="cam-wrap" style="display:none">
-        <div class="camera-wrap">
-          <video id="video" autoplay playsinline muted></video>
-          <div class="plate-guide-overlay"><div class="plate-box"></div><div class="plate-hint">Centra la placa dentro del recuadro</div></div>
-        </div>
-        <button class="btn btn-primary btn-full" onclick="capturarFoto()">📸 Tomar foto ahora</button>
-      </div>
-      <img id="foto-preview" class="photo-preview">
-      <div class="ocr-box" id="ocr-box"></div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn btn-blue" id="btn-abrir-cam" onclick="abrirCamara()" style="display:none">📷 Abrir cámara</button>
-        <button class="btn btn-ghost" id="btn-retomar" onclick="retomar()" style="display:none">↺ Retomar foto</button>
-      </div>
-    </div>
-
-    <!-- PASO 3: DATOS -->
-    <div class="card disabled-card" id="card-3">
-      <div class="section-divider"><span class="step-badge" id="b3">3</span><span class="step-label">Datos de la unidad</span></div>
+      <div class="section-divider"><span class="step-badge active" id="b1">1</span><span class="step-label">Datos de la unidad</span></div>
       <div class="grid">
         <div class="field"><label>Marca temporal</label><input type="text" id="f-timestamp" readonly class="auto"></div>
-        <div class="field"><label>Placa <span class="req">*</span></label><input type="text" id="f-placa" placeholder="Ej: BVV801" maxlength="10" oninput="onPlaca(this)" style="text-transform:uppercase"></div>
+        <div class="field"><label>Placa <span class="req">*</span></label><input type="text" id="f-placa" placeholder="Ej: W4W771" maxlength="10" oninput="onPlaca(this)" style="text-transform:uppercase"></div>
         <div class="field"><label>Tipo de servicio</label><input type="text" id="f-tipo" readonly class="auto" placeholder="Auto según placa"></div>
         <div class="field"><label>Empresa de Transporte</label><input type="text" id="f-empresa" readonly class="auto" placeholder="Auto según placa"></div>
         <div class="field"><label>Capacidad</label><input type="text" id="f-cap" readonly class="auto" placeholder="Auto según placa"></div>
@@ -113,12 +88,45 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
         <div class="field"><label>Teléfono <span class="req">*</span></label><input type="tel" id="f-tel" placeholder="Ej: 954049335"></div>
         <div class="field" id="field-coords" style="display:none"><label>Ubicación capturada</label><input type="text" id="f-coords" readonly class="auto"></div>
       </div>
-      <div class="msg" id="msg"></div>
       <div class="actions">
-        <button class="btn btn-primary" id="btn-guardar" onclick="guardar()" disabled>Registrar unidad</button>
-        <button class="btn btn-ghost" onclick="limpiar()">Limpiar</button>
+        <button class="btn btn-primary" id="btn-continuar-datos" onclick="continuarDatos()" disabled>Continuar →</button>
       </div>
     </div>
+
+    <!-- PASO 2: FOTO -->
+    <div class="card locked" id="card-2">
+      <div class="section-divider"><span class="step-badge" id="b2">2</span><span class="step-label">Foto de la placa de tu unidad</span></div>
+      <div class="info-note">Toma una foto de la placa <strong>en este momento</strong>. El sistema verificará que coincide con la placa ingresada. No se permite subir fotos de la galería.</div>
+      <div id="cam-wrap" style="display:none">
+        <div class="camera-wrap">
+          <video id="video" autoplay playsinline muted></video>
+          <div class="plate-guide-overlay"><div class="plate-box"></div><div class="plate-hint">Centra la placa dentro del recuadro</div></div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="capturarFoto()">📸 Tomar foto ahora</button>
+      </div>
+      <img id="foto-preview" class="photo-preview" alt="Foto de la placa">
+      <div class="ocr-box" id="ocr-box"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        <button class="btn btn-blue" id="btn-abrir-cam" onclick="abrirCamara()" style="display:none">📷 Abrir cámara</button>
+        <button class="btn btn-ghost" id="btn-retomar" onclick="retomar()" style="display:none">↺ Retomar foto</button>
+      </div>
+    </div>
+
+    <!-- PASO 3: UBICACIÓN -->
+    <div class="card locked" id="card-3">
+      <div class="section-divider"><span class="step-badge" id="b3">3</span><span class="step-label">Verificación de ubicación</span></div>
+      <div class="geo-box" id="geo-box"><span class="dot" id="geo-dot"></span><span id="geo-text">Presiona el botón para verificar tu ubicación.</span></div>
+      <div id="dist-wrap" style="display:none;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px"><span>Distancia al centro de cochera</span><span id="dist-label"></span></div>
+        <div class="dist-bg"><div class="dist-fill" id="dist-bar" style="width:0%"></div></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="btn btn-blue" id="btn-geo" onclick="verificarUbicacion()" style="display:none">📍 Verificar mi ubicación</button>
+        <button class="btn btn-primary" id="btn-guardar" onclick="guardar()" disabled style="display:none">Registrar unidad</button>
+      </div>
+      <div class="msg" id="msg"></div>
+    </div>
+
   </div>
 </div>
 
@@ -148,9 +156,10 @@ async function init(){
   }catch(e){document.getElementById('init-msg').textContent='Error al conectar. Recarga la página.';}
 }
 
+// Manejo de pasos
 function paso(n){
   [1,2,3].forEach(i=>{
-    document.getElementById('card-'+i).classList.toggle('disabled-card',i>n);
+    if(i>1) document.getElementById('card-'+i).classList.toggle('locked',i>n);
     const b=document.getElementById('b'+i);
     if(i<n){b.className='step-badge done';b.textContent='✓';}
     else if(i===n){b.className='step-badge active';b.textContent=i;}
@@ -158,58 +167,62 @@ function paso(n){
   });
 }
 
-function setGeo(t,dc,txt){document.getElementById('geo-box').className='geo-box '+(t||'');document.getElementById('geo-dot').className='dot '+(dc||'');document.getElementById('geo-text').textContent=txt;}
+function setGeo(t,dc,txt){
+  document.getElementById('geo-box').className='geo-box '+(t||'');
+  document.getElementById('geo-dot').className='dot '+(dc||'');
+  document.getElementById('geo-text').textContent=txt;
+}
 function haversine(a,b,c,d){const R=6371000,r=x=>x*Math.PI/180;const k=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return R*2*Math.atan2(Math.sqrt(k),Math.sqrt(1-k));}
 
+// PASO 1: Al escribir placa
 window.onPlaca=function(el){
   const v=el.value.toUpperCase().replace(/\s/g,'');el.value=v;
   const info=placasDB[v];
   document.getElementById('f-tipo').value=info?info.tipo:'';
   document.getElementById('f-empresa').value=info?info.empresa:'';
   document.getElementById('f-cap').value=info?info.cap:'';
-  geoOk=false;fotoOk=false;userLat=null;userLng=null;
-  document.getElementById('dist-wrap').style.display='none';
-  document.getElementById('btn-guardar').disabled=true;
-  document.getElementById('field-coords').style.display='none';
-  document.getElementById('btn-geo').style.display='none';
-  resetFoto();paso(1);
-  if(!info){setGeo('','','Ingresa una placa válida para ver las condiciones de registro.');return;}
-  if(info.tipo==='LOCAL'){
-    if(!zona)setGeo('warn','warn','Unidad LOCAL: no hay zona configurada. Contacta al administrador.');
-    else{setGeo('info','info','Unidad LOCAL: debes estar dentro de "'+zona.nombre+'" (radio: '+zona.radio+' m).');document.getElementById('btn-geo').style.display='inline-block';}
-  } else {
-    document.getElementById('field-coords').style.display='flex';
-    setGeo('warn','warn','Unidad PROVINCIA: puedes registrar desde cualquier lugar. Se capturará tu ubicación.');
-    geoOk=true;paso(2);document.getElementById('btn-abrir-cam').style.display='inline-block';
-  }
+  checkContinuar();
 };
 
-window.verificarUbicacion=function(){
-  if(!zona){setGeo('warn','warn','Sin zona configurada.');return;}
-  setGeo('info','info','Obteniendo ubicación GPS...');
-  if(!navigator.geolocation){setGeo('err','err','Tu navegador no soporta geolocalización.');return;}
-  navigator.geolocation.getCurrentPosition(pos=>{
-    userLat=pos.coords.latitude;userLng=pos.coords.longitude;
-    const dist=haversine(userLat,userLng,zona.lat,zona.lng),dentro=dist<=zona.radio,dm=Math.round(dist);
-    geoOk=dentro;
-    document.getElementById('dist-wrap').style.display='block';
-    document.getElementById('dist-label').textContent=dm+' m / '+zona.radio+' m';
-    const bar=document.getElementById('dist-bar');bar.style.width=Math.min(100,Math.round(dist/zona.radio*100))+'%';bar.className='dist-fill '+(dentro?'fill-ok':'fill-err');
-    if(dentro){setGeo('ok','ok','✓ Dentro de "'+zona.nombre+'" — '+dm+' m del centro.');paso(2);document.getElementById('btn-abrir-cam').style.display='inline-block';}
-    else{setGeo('err','err','Fuera de la zona. Estás a '+dm+' m. Límite: '+zona.radio+' m.');}
-  },()=>{setGeo('err','err','No se pudo obtener ubicación. Verifica los permisos.');geoOk=false;},{enableHighAccuracy:true,timeout:10000});
-};
-
+// PASO 1: Al escribir licencia
 window.onLicencia=function(el){
   const lic=el.value.trim();
   const f=document.getElementById('f-nombre');
   if(lic.length>=4){
     const info=conductoresDB[lic];
     if(info){f.value=info.nombre;f.className='auto';f.style.color='';}
-    else{f.value='Licencia no encontrada';f.className='err-field';f.style.color='';}
-  } else f.value='';
+    else{f.value='Licencia no encontrada';f.className='err-field';}
+  } else {
+    f.value='';f.className='auto';
+  }
+  checkContinuar();
 };
 
+function checkContinuar(){
+  const placa=document.getElementById('f-placa').value.trim().toUpperCase();
+  const lic=document.getElementById('f-lic').value.trim();
+  const tel=document.getElementById('f-tel').value.trim();
+  const nombre=document.getElementById('f-nombre').value.trim();
+  const placaOk=!!placasDB[placa];
+  const licOk=nombre&&nombre!=='Licencia no encontrada';
+  const telOk=tel.length>=7;
+  document.getElementById('btn-continuar-datos').disabled=!(placaOk&&licOk&&telOk);
+}
+
+// PASO 1 → PASO 2
+window.continuarDatos=function(){
+  const placa=document.getElementById('f-placa').value.trim().toUpperCase();
+  const lic=document.getElementById('f-lic').value.trim();
+  const nombre=document.getElementById('f-nombre').value.trim();
+  const tel=document.getElementById('f-tel').value.trim();
+  if(!placasDB[placa]){showMsg('La placa ingresada no está registrada en el sistema.','err');return;}
+  if(!nombre||nombre==='Licencia no encontrada'){showMsg('La licencia ingresada no está registrada.','err');return;}
+  if(!tel){showMsg('Ingresa tu número de teléfono.','err');return;}
+  paso(2);
+  document.getElementById('btn-abrir-cam').style.display='inline-block';
+};
+
+// CÁMARA
 window.abrirCamara=async function(){
   document.getElementById('btn-abrir-cam').style.display='none';
   document.getElementById('cam-wrap').style.display='block';
@@ -239,21 +252,37 @@ window.capturarFoto=function(){
 
 async function procesarOCR(dataUrl){
   const placa=document.getElementById('f-placa').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
-  if(!placa){setOcr('warn','Ingresa la placa primero, luego toma la foto.');return;}
-  setOcr('info','🔍 Analizando la foto, por favor espera...');
+  setOcr('info','🔍 Verificando placa en la foto, por favor espera...');
   try{
-    const result=await Tesseract.recognize(dataUrl,'eng',{tessedit_char_whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',tessedit_pageseg_mode:'11'});
-    const textoRaw=result.data.text.toUpperCase().replace(/[^A-Z0-9]/g,'');
-    const coincide=verificarCoincidencia(textoRaw,placa);
+    const result=await Tesseract.recognize(dataUrl,'eng',{
+      tessedit_char_whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+      tessedit_pageseg_mode:'11'
+    });
+    const textoOCR=result.data.text.toUpperCase().replace(/[^A-Z0-9]/g,'');
+    const coincide=verificarCoincidencia(textoOCR,placa);
     if(coincide){
-      setOcr('ok','✓ Placa verificada correctamente. La foto coincide con la placa ingresada ('+document.getElementById('f-placa').value+').');
-      fotoOk=true;paso(3);document.getElementById('btn-guardar').disabled=false;
+      setOcr('ok','✓ Placa verificada: la foto coincide con "'+document.getElementById('f-placa').value+'".');
+      fotoOk=true;
+      // Avanzar al paso 3
+      paso(3);
+      const info=placasDB[placa];
+      if(info&&info.tipo==='LOCAL'){
+        if(!zona){setGeo('warn','warn','No hay zona configurada. Contacta al administrador.');}
+        else{setGeo('info','info','Unidad LOCAL: debes estar dentro de "'+zona.nombre+'" (radio: '+zona.radio+' m). Presiona verificar.');document.getElementById('btn-geo').style.display='inline-block';}
+      } else {
+        // PROVINCIA u otros: capturar ubicación y permitir guardar directamente
+        document.getElementById('field-coords').style.display='flex';
+        setGeo('warn','warn','Unidad '+info.tipo+': se capturará tu ubicación al registrar.');
+        document.getElementById('btn-guardar').style.display='inline-block';
+        document.getElementById('btn-guardar').disabled=false;
+        geoOk=true;
+      }
     } else {
-      setOcr('err','✗ No se pudo verificar la placa en la foto. Texto detectado: "'+(textoRaw||'ninguno')+'". Toma una foto más nítida y cercana a la placa.');
+      setOcr('err','✗ La placa en la foto no coincide con "'+document.getElementById('f-placa').value+'". Asegúrate de enfocar bien la placa e intenta nuevamente.');
       fotoOk=false;
     }
   }catch(e){
-    setOcr('warn','No se pudo analizar la foto automáticamente. Asegúrate que la placa sea visible y bien iluminada, luego retoma la foto.');
+    setOcr('warn','No se pudo leer la placa automáticamente. Asegúrate que esté bien iluminada y retoma la foto.');
     fotoOk=false;
   }
 }
@@ -261,11 +290,10 @@ async function procesarOCR(dataUrl){
 function verificarCoincidencia(ocr,placa){
   if(!ocr||!placa)return false;
   if(ocr.includes(placa)||placa.includes(ocr))return true;
-  // Ventana deslizante para encontrar la placa dentro del texto OCR
   for(let i=0;i<=ocr.length-placa.length+2;i++){
     const sub=ocr.substring(i,i+placa.length);
-    let matches=0;for(let j=0;j<Math.min(sub.length,placa.length);j++){if(sub[j]===placa[j])matches++;}
-    if(matches/placa.length>=0.75)return true;
+    let m=0;for(let j=0;j<Math.min(sub.length,placa.length);j++){if(sub[j]===placa[j])m++;}
+    if(m/placa.length>=0.75)return true;
   }
   return false;
 }
@@ -275,38 +303,56 @@ function setOcr(type,msg){
   if(!msg){el.style.display='none';return;}
   el.textContent=msg;el.className='ocr-box '+(type||'');el.style.display='block';
 }
-
 function pararCamara(){if(streamActivo){streamActivo.getTracks().forEach(t=>t.stop());streamActivo=null;}}
 
 window.retomar=function(){
   pararCamara();
   document.getElementById('foto-preview').style.display='none';document.getElementById('foto-preview').src='';
   document.getElementById('btn-retomar').style.display='none';
-  fotoOk=false;document.getElementById('btn-guardar').disabled=true;
-  setOcr('','');paso(2);abrirCamara();
+  document.getElementById('btn-guardar').style.display='none';
+  document.getElementById('btn-geo').style.display='none';
+  document.getElementById('dist-wrap').style.display='none';
+  fotoOk=false;geoOk=false;
+  setGeo('','','Presiona el botón para verificar tu ubicación.');
+  setOcr('','');
+  paso(2);abrirCamara();
 };
 
-function resetFoto(){
-  pararCamara();
-  document.getElementById('foto-preview').style.display='none';document.getElementById('foto-preview').src='';
-  document.getElementById('cam-wrap').style.display='none';
-  document.getElementById('btn-abrir-cam').style.display='none';
-  document.getElementById('btn-retomar').style.display='none';
-  setOcr('','');fotoOk=false;
-}
+// PASO 3: Verificar ubicación
+window.verificarUbicacion=function(){
+  if(!zona){setGeo('warn','warn','Sin zona configurada. Contacta al administrador.');return;}
+  setGeo('info','info','Obteniendo ubicación GPS...');
+  if(!navigator.geolocation){setGeo('err','err','Tu navegador no soporta geolocalización.');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    userLat=pos.coords.latitude;userLng=pos.coords.longitude;
+    const dist=haversine(userLat,userLng,zona.lat,zona.lng),dentro=dist<=zona.radio,dm=Math.round(dist);
+    geoOk=dentro;
+    document.getElementById('dist-wrap').style.display='block';
+    document.getElementById('dist-label').textContent=dm+' m / '+zona.radio+' m';
+    const bar=document.getElementById('dist-bar');bar.style.width=Math.min(100,Math.round(dist/zona.radio*100))+'%';bar.className='dist-fill '+(dentro?'fill-ok':'fill-err');
+    if(dentro){
+      setGeo('ok','ok','✓ Dentro de "'+zona.nombre+'" — '+dm+' m del centro.');
+      document.getElementById('btn-guardar').style.display='inline-block';
+      document.getElementById('btn-guardar').disabled=false;
+    } else {
+      setGeo('err','err','Fuera de la zona. Estás a '+dm+' m. Límite: '+zona.radio+' m.');
+      document.getElementById('btn-guardar').disabled=true;
+    }
+  },()=>{setGeo('err','err','No se pudo obtener tu ubicación. Verifica los permisos del navegador.');geoOk=false;},{enableHighAccuracy:true,timeout:10000});
+};
 
+// GUARDAR
 window.guardar=async function(){
   const placa=document.getElementById('f-placa').value.trim().toUpperCase();
   const lic=document.getElementById('f-lic').value.trim();
   const nombre=document.getElementById('f-nombre').value.trim();
   const tel=document.getElementById('f-tel').value.trim();
-  if(!placa||!lic||!nombre||!tel){showMsg('Completa todos los campos obligatorios.','err');return;}
-  if(nombre==='Licencia no encontrada'){showMsg('La licencia ingresada no está registrada. Consulta al administrador.','err');return;}
-  const info=placasDB[placa];if(!info){showMsg('Placa no encontrada en la base de datos.','err');return;}
-  if(info.tipo==='LOCAL'&&!geoOk){showMsg('Debes verificar tu ubicación dentro de la cochera.','err');return;}
-  if(!fotoOk){showMsg('Debes completar la verificación de foto de la placa.','err');return;}
+  const info=placasDB[placa];
+  if(!info||!lic||!nombre||!tel){showMsg('Verifica todos los campos.','err');return;}
+  if(!fotoOk){showMsg('Debes completar la verificación de foto.','err');return;}
+  if(!geoOk&&info.tipo==='LOCAL'){showMsg('Debes verificar tu ubicación dentro de la cochera.','err');return;}
   document.getElementById('btn-guardar').disabled=true;
-  if(info.tipo==='PROVINCIA'&&navigator.geolocation){
+  if(info.tipo!=='LOCAL'&&navigator.geolocation){
     navigator.geolocation.getCurrentPosition(async pos=>{
       userLat=pos.coords.latitude;userLng=pos.coords.longitude;
       document.getElementById('f-coords').value=userLat.toFixed(6)+', '+userLng.toFixed(6);
@@ -320,22 +366,35 @@ window.guardar=async function(){
 async function finalizar(lat,lng,info,placa,lic,nombre,tel){
   const coords=lat&&lng?(lat.toFixed(6)+', '+lng.toFixed(6)):'No disponible';
   try{
-    await window._add(window._col(window._db,'registros'),{ts:fmtDate(new Date()),tsNum:Date.now(),tipo:info.tipo,empresa:info.empresa,placa,cap:info.cap,lic,nombre,tel,coords,estado:'PENDIENTE',motivo:''});
-    limpiar();setGeo('ok','ok','¡Registro exitoso! Tu unidad ha sido registrada.');
-    showMsg('¡Unidad registrada correctamente!','ok');
-  }catch(e){showMsg('Error al guardar. Verifica tu conexión.','err');document.getElementById('btn-guardar').disabled=false;}
+    await window._add(window._col(window._db,'registros'),{
+      ts:fmtDate(new Date()),tsNum:Date.now(),tipo:info.tipo,empresa:info.empresa,
+      placa,cap:info.cap,lic,nombre,tel,coords,estado:'PENDIENTE',motivo:''
+    });
+    // Éxito
+    pararCamara();
+    document.getElementById('app-content').innerHTML=`
+      <div style="text-align:center;padding:3rem 1rem">
+        <div style="width:64px;height:64px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px">✓</div>
+        <div style="font-size:20px;font-weight:600;color:var(--green-text);margin-bottom:8px">¡Registro exitoso!</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:6px">Unidad <strong>${placa}</strong> registrada correctamente.</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:24px">Conductor: <strong>${nombre}</strong></div>
+        <button class="btn btn-primary" onclick="location.reload()">Registrar otra unidad</button>
+      </div>`;
+  }catch(e){
+    showMsg('Error al guardar. Verifica tu conexión e intenta nuevamente.','err');
+    document.getElementById('btn-guardar').disabled=false;
+  }
 }
 
-window.limpiar=function(){
-  ['f-placa','f-tipo','f-empresa','f-cap','f-lic','f-nombre','f-tel','f-coords'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-nombre').className='auto';
-  geoOk=false;fotoOk=false;userLat=null;userLng=null;
-  document.getElementById('btn-guardar').disabled=true;
-  document.getElementById('dist-wrap').style.display='none';document.getElementById('field-coords').style.display='none';document.getElementById('btn-geo').style.display='none';
-  resetFoto();paso(1);setGeo('','','Ingresa tu placa para conocer las condiciones de registro.');
-};
+function showMsg(txt,type){
+  const el=document.getElementById('msg');el.textContent=txt;el.className='msg '+type;el.style.display='block';
+  setTimeout(()=>{el.style.display='none'},5000);
+}
 
-function showMsg(txt,type){const el=document.getElementById('msg');el.textContent=txt;el.className='msg '+type;el.style.display='block';setTimeout(()=>{el.style.display='none'},5000);}
+// Escuchar cambios en teléfono para habilitar continuar
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('f-tel').addEventListener('input',checkContinuar);
+});
 
 paso(1);init();
 </script>
