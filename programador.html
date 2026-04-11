@@ -157,6 +157,7 @@ textarea:focus{outline:none;border-color:#1a4fa0}
 <div class="lock-notice" id="lock-notice">
   🔒 El sistema programa en orden de llegada. Solo la unidad más antigua no programada está habilitada. Una vez programada se habilita la siguiente.
 </div>
+<div id="banner-induccion" style="display:none;background:#e0f5f5;border:1px solid #7dd0d0;border-radius:5px;padding:9px 16px;margin:0 20px 10px;font-size:13px;font-weight:500;color:#0a6b6b"></div>
 
 <div class="table-area">
   <div class="table-card">
@@ -184,37 +185,7 @@ textarea:focus{outline:none;border-color:#1a4fa0}
   </div>
 </div>
 
-<!-- Modal PROGRAMAR -->
-<div class="overlay" id="overlay-prog">
-  <div class="modal">
-    <div class="modal-title">Confirmar programación</div>
-    <div class="modal-sub">Estás a punto de programar esta unidad. Puedes añadir una observación si lo requieres.</div>
-    <div class="modal-info" id="prog-info"></div>
-    <label class="modal-label">Observación (opcional)</label>
-    <textarea id="prog-motivo" placeholder="Ej: Carga para ruta norte, prioridad alta..."></textarea>
-    <div class="hint">Deja en blanco si no aplica ninguna observación.</div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="cerrarModals()">Cancelar</button>
-      <button class="btn-confirm" onclick="confirmarProgramar()">✓ Confirmar PROGRAMAR</button>
-    </div>
-  </div>
-</div>
 
-<!-- Modal INDUCCIÓN -->
-<div class="overlay" id="overlay-induc">
-  <div class="modal">
-    <div class="modal-title">Programar por Inducción Especial</div>
-    <div class="modal-sub">Esta unidad no es la siguiente en el orden de registro. Debes indicar el motivo por el cual se le asigna prioridad.</div>
-    <div class="modal-info" id="induc-info"></div>
-    <label class="modal-label">Motivo de inducción <span style="color:#c0392b">*</span></label>
-    <textarea id="induc-motivo" placeholder="Ej: Unidad con inducción especial requerida por cliente, charla de seguridad específica, autorización de supervisión..."></textarea>
-    <div class="hint">Este campo es obligatorio para programar fuera de orden.</div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="cerrarModals()">Cancelar</button>
-      <button class="btn-confirm-teal" onclick="confirmarInduccion()">✓ Confirmar Inducción</button>
-    </div>
-  </div>
-</div>
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
@@ -222,7 +193,7 @@ import{getFirestore,collection,getDocs,doc,updateDoc,orderBy,query}from"https://
 const cfg={apiKey:"AIzaSyBZrsVQINRIfBL8YuU3iDOX21cQtAF5w44",authDomain:"registro-de-unidades-9dd2d.firebaseapp.com",projectId:"registro-de-unidades-9dd2d",storageBucket:"registro-de-unidades-9dd2d.firebasestorage.app",messagingSenderId:"832510139261",appId:"1:832510139261:web:708c0c386f55362fb64a14"};
 const app=initializeApp(cfg);const db=getFirestore(app);
 
-let registros=[],idSel=null;
+let registros=[];
 let filtros={estado:'TODOS',tipo:'',cap:''};
 
 const pad=n=>String(n).padStart(2,'0');
@@ -329,29 +300,25 @@ function renderTabla(){
 
     let accionHtml='';
     if(prog){
-      // Ya programado → solo LIMPIAR
       accionHtml=`<div class="action-wrap"><button class="btn btn-limpiar" onclick="limpiar('${r._id}')">Limpiar</button></div>`;
+    } else if(modoInduccion){
+      // Modo inducción activo: todos los no programados tienen PROGRAMAR habilitado
+      accionHtml=`<div class="action-wrap">
+        <button class="btn btn-prog" onclick="abrirProgramar('${r._id}')">PROGRAMAR</button>
+        <button class="btn btn-limpiar" onclick="cancelarInduccion()" style="font-size:12px;padding:5px 10px">✕ Cancelar</button>
+      </div>`;
     } else if(bloqueado){
-      // Bloqueado → botones deshabilitados + candado
+      // Bloqueado → PROGRAMAR deshabilitado, Inducción disponible para activar el modo
       accionHtml=`<div class="action-wrap">
         <button class="btn btn-prog" disabled>PROGRAMAR</button>
-        <button class="btn btn-induc" disabled>Inducción</button>
+        <button class="btn btn-induc" onclick="activarInduccion()">Inducción</button>
         <span class="lock-icon">🔒</span>
       </div>`;
     } else {
-      // Habilitado (primer no programado o inducción)
+      // Primer no programado habilitado
       accionHtml=`<div class="action-wrap">
         <button class="btn btn-prog" onclick="abrirProgramar('${r._id}')">PROGRAMAR</button>
-        <button class="btn btn-induc" onclick="abrirInduccion('${r._id}')">Inducción</button>
-      </div>`;
-    }
-
-    // Para registros bloqueados que no son el primero, permitir INDUCCIÓN
-    if(bloqueado){
-      accionHtml=`<div class="action-wrap">
-        <button class="btn btn-prog" disabled>PROGRAMAR</button>
-        <button class="btn btn-induc" onclick="abrirInduccion('${r._id}')">Inducción</button>
-        <span class="lock-icon">🔒</span>
+        <button class="btn btn-induc" onclick="activarInduccion()">Inducción</button>
       </div>`;
     }
 
@@ -377,59 +344,67 @@ function updateStats(){
   document.getElementById('s-pend').textContent=registros.filter(r=>noProgramado(r)).length;
 }
 
-// PROGRAMAR
-window.abrirProgramar=function(id){
-  idSel=id;
+// Modo inducción activo: cuando el programador activa inducción para una capacidad
+let modoInduccion=false; // true = modo inducción activo
+let capInduccion='';     // capacidad filtrada durante inducción
+
+// PROGRAMAR — instantáneo, sin modal
+window.abrirProgramar=async function(id){
   const r=registros.find(x=>x._id===id);
   if(!r)return;
-  document.getElementById('prog-info').innerHTML=`<strong>${r.placa}</strong> — ${r.empresa} — ${r.cap} — ${r.nombre}`;
-  document.getElementById('prog-motivo').value='';
-  document.getElementById('overlay-prog').classList.add('open');
-};
-window.confirmarProgramar=async function(){
-  if(!idSel)return;
-  const motivo=document.getElementById('prog-motivo').value.trim();
+  const motivo=modoInduccion?'INDUCCIÓN ESPECÍFICA':'';
   try{
-    await updateDoc(doc(db,'registros',idSel),{estado:'PROGRAMADO',motivo});
-    cerrarModals();await window.recargar();
+    await updateDoc(doc(db,'registros',id),{estado:'PROGRAMADO',motivo});
+    if(modoInduccion){
+      // Finalizar modo inducción y retomar orden normal
+      modoInduccion=false;capInduccion='';
+      document.getElementById('filtro-cap').value='';
+      filtros.cap='';
+      actualizarBannerInduccion();
+    }
+    await window.recargar();
   }catch(e){alert('Error al actualizar.');}
 };
 
-// INDUCCIÓN
-window.abrirInduccion=function(id){
-  idSel=id;
-  const r=registros.find(x=>x._id===id);
-  if(!r)return;
-  document.getElementById('induc-info').innerHTML=`<strong>${r.placa}</strong> — ${r.empresa} — ${r.cap} — ${r.nombre}`;
-  document.getElementById('induc-motivo').value='';
-  document.getElementById('overlay-induc').classList.add('open');
+// INDUCCIÓN — activa modo inducción: desbloquea todos los registros según capacidad filtrada
+window.activarInduccion=function(){
+  const cap=document.getElementById('filtro-cap').value;
+  if(!cap){
+    alert('Primero selecciona una CAPACIDAD en el filtro para activar el modo Inducción.');
+    return;
+  }
+  modoInduccion=true;
+  capInduccion=cap;
+  actualizarBannerInduccion();
+  renderTabla();
 };
-window.confirmarInduccion=async function(){
-  if(!idSel)return;
-  const motivo=document.getElementById('induc-motivo').value.trim();
-  if(!motivo){alert('Debes ingresar el motivo de la inducción especial.');return;}
-  try{
-    await updateDoc(doc(db,'registros',idSel),{estado:'INDUCCIÓN',motivo});
-    cerrarModals();await window.recargar();
-  }catch(e){alert('Error al actualizar.');}
+
+window.cancelarInduccion=function(){
+  modoInduccion=false;capInduccion='';
+  actualizarBannerInduccion();
+  renderTabla();
 };
+
+function actualizarBannerInduccion(){
+  const banner=document.getElementById('banner-induccion');
+  if(modoInduccion){
+    banner.style.display='block';
+    banner.textContent='⚡ MODO INDUCCIÓN ACTIVO para capacidad '+capInduccion+': todos los registros están desbloqueados. Elige la unidad correcta y presiona PROGRAMAR. El motivo se registrará como "INDUCCIÓN ESPECÍFICA".';
+  } else {
+    banner.style.display='none';
+  }
+}
 
 // LIMPIAR
 window.limpiar=async function(id){
-  if(!confirm('¿Limpiar la programación de esta unidad? El estado volverá a "ESPERANDO PROGRAMACIÓN".'))return;
+  if(!confirm('¿Limpiar la programación? El estado volverá a "ESPERANDO PROGRAMACIÓN".'))return;
   try{
     await updateDoc(doc(db,'registros',id),{estado:'ESPERANDO PROGRAMACIÓN',motivo:''});
     await window.recargar();
   }catch(e){alert('Error al actualizar.');}
 };
 
-window.cerrarModals=function(){
-  document.getElementById('overlay-prog').classList.remove('open');
-  document.getElementById('overlay-induc').classList.remove('open');
-  idSel=null;
-};
-document.getElementById('overlay-prog').addEventListener('click',function(e){if(e.target===this)window.cerrarModals();});
-document.getElementById('overlay-induc').addEventListener('click',function(e){if(e.target===this)window.cerrarModals();});
+
 
 window.recargar();
 </script>
