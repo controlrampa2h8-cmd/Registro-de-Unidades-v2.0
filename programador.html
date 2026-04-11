@@ -6,36 +6,41 @@
 <title>Panel del Programador</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#f0eff9;--surface:#fff;--surface2:#f0efe9;--border:#e2e0d8;--border2:#c8c6bc;--text:#1a1916;--text2:#6b6960;--text3:#9b9a93;--blue-bg:#e8f0fc;--blue-text:#1a4fa0;--blue-border:#b8cef5;--green-bg:#e6f4ec;--green-text:#1a6b38;--green-border:#a8dbb8;--amber-bg:#fdf3e0;--amber-text:#8a5a00;--amber-border:#f0d080;--red-bg:#fceaea;--red-text:#a01a1a;--red-border:#f0b8b8;--purple-bg:#f0ecfc;--purple-text:#4a1fa0;--purple-border:#c8b8f5;--radius:8px;--radius-sm:5px}
+:root{
+  --bg:#f0eff9;--surface:#fff;--surface2:#f0efe9;--border:#e2e0d8;--border2:#c8c6bc;
+  --text:#1a1916;--text2:#6b6960;--text3:#9b9a93;
+  --blue-bg:#e8f0fc;--blue-text:#1a4fa0;--blue-border:#b8cef5;
+  --green-bg:#e6f4ec;--green-text:#1a6b38;--green-border:#a8dbb8;
+  --amber-bg:#fdf3e0;--amber-text:#8a5a00;--amber-border:#f0d080;
+  --red-bg:#fceaea;--red-text:#a01a1a;--red-border:#f0b8b8;
+  --purple-bg:#f0ecfc;--purple-text:#4a1fa0;--purple-border:#c8b8f5;
+  --teal-bg:#e0f5f5;--teal-text:#0a6b6b;--teal-border:#7dd0d0;
+  --radius:8px;--radius-sm:5px
+}
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);display:flex;flex-direction:column}
+
 /* TOPBAR */
 .topbar{background:#1c3a5e;color:#fff;padding:0 24px;height:52px;display:flex;align-items:center;gap:14px;flex-shrink:0}
 .topbar-icon{width:32px;height:32px;background:rgba(255,255,255,0.12);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .topbar-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
-.topbar-title{font-size:14px;font-weight:600;letter-spacing:-0.01em}
-.topbar-sub{font-size:11px;opacity:0.5}
+.topbar-title{font-size:14px;font-weight:600}.topbar-sub{font-size:11px;opacity:0.5}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
 .topbar-clock{font-size:12px;opacity:0.55;font-family:monospace;white-space:nowrap}
 .sync-info{font-size:11px;opacity:0.5;white-space:nowrap}
-.btn-refresh{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:5px 13px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn-refresh{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:5px 13px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:500}
 .btn-refresh:hover{background:rgba(255,255,255,0.22)}
+
 /* STATS */
 .stats-bar{display:flex;gap:10px;padding:12px 20px;flex-shrink:0;background:var(--bg)}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 18px;display:flex;align-items:center;gap:12px;flex:1;min-width:0}
 .stat-val{font-size:28px;font-weight:700;letter-spacing:-0.02em;line-height:1}
 .stat-lbl{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px}
-.stat.asig .stat-val{color:var(--green-text)}
-.stat.espera .stat-val{color:var(--amber-text)}
-.stat.pend .stat-val{color:#1a4fa0}
-.stat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.stat-icon.total{background:#eeeef8}
-.stat-icon.asig{background:var(--green-bg)}
-.stat-icon.espera{background:var(--amber-bg)}
-.stat-icon.pend{background:var(--blue-bg)}
+.stat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.stat-icon.total{background:#eeeef8}.stat-icon.prog{background:var(--green-bg)}.stat-icon.pend{background:var(--blue-bg)}
+
 /* FILTERS */
 .filters-bar{display:flex;align-items:center;gap:8px;padding:0 20px 10px;flex-shrink:0;flex-wrap:wrap}
-.filter-group{display:flex;align-items:center;gap:6px}
 .filter-label{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap}
 .filter-btn{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text2);white-space:nowrap;transition:all 0.12s}
 .filter-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
@@ -44,7 +49,12 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .filter-select:focus{border-color:#1a4fa0}
 .divider{width:1px;height:20px;background:var(--border);margin:0 4px}
 .results-count{font-size:12px;color:var(--text3);margin-left:auto;white-space:nowrap}
-/* TABLE AREA */
+
+/* LOCK NOTICE */
+.lock-notice{display:none;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--radius-sm);padding:8px 16px;margin:0 20px 10px;font-size:13px;color:var(--blue-text);flex-shrink:0}
+.lock-notice.visible{display:block}
+
+/* TABLE */
 .table-area{flex:1;overflow:hidden;padding:0 20px 16px;display:flex;flex-direction:column;min-height:0}
 .table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
 .table-scroll{overflow:auto;flex:1}
@@ -54,42 +64,57 @@ th{text-align:left;padding:12px 16px;font-size:12px;font-weight:600;color:var(--
 td{padding:12px 16px;border-bottom:0.5px solid var(--border);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafaf7}
+tr.row-locked td{opacity:0.45}
+tr.row-active td{background:#fffbf0}
+tr.row-active:hover td{background:#fff5dc}
+
 .num{width:30px;height:30px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text2)}
+.num.active-num{background:#1a4fa0;color:#fff;border-color:#1a4fa0}
 .placa{display:inline-block;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:3px 10px;font-family:monospace;font-size:14px;font-weight:700;letter-spacing:0.06em}
 .badge{display:inline-block;padding:4px 11px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap}
 .badge.LOCAL{background:var(--green-bg);color:var(--green-text)}
 .badge.PROVINCIA{background:var(--amber-bg);color:var(--amber-text)}
 .badge.other{background:var(--blue-bg);color:var(--blue-text)}
 .estado{display:inline-block;padding:4px 11px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap}
-.estado.asignado{background:var(--green-bg);color:var(--green-text)}
-.estado.espera{background:var(--amber-bg);color:var(--amber-text)}
-.estado.pendiente{background:var(--blue-bg);color:var(--blue-text)}
-.motivo-chip{font-size:11px;color:var(--purple-text);background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:4px;padding:2px 7px;display:inline-block;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;vertical-align:middle}
+.estado.programado{background:var(--green-bg);color:var(--green-text)}
+.estado.espera{background:var(--blue-bg);color:var(--blue-text)}
+.estado.induccion{background:var(--teal-bg);color:var(--teal-text)}
+.motivo-chip{font-size:12px;color:var(--purple-text);background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:4px;padding:3px 8px;display:inline-block;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;vertical-align:middle}
 .empty{text-align:center;padding:4rem;color:var(--text3);font-size:13px}
-.action-wrap{display:flex;gap:5px;flex-wrap:nowrap}
-.btn{padding:7px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;border:1px solid;white-space:nowrap;transition:all 0.12s}
-.btn-asig{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}.btn-asig:hover{background:#c8ebd4}
-.btn-esp{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border)}.btn-esp:hover{background:#f5e8b8}
-.btn-reset{background:var(--surface2);color:var(--text3);border-color:var(--border);font-size:11px;padding:4px 8px}.btn-reset:hover{background:var(--border)}
 .loading{text-align:center;padding:3rem;color:var(--text3);font-size:13px}
-/* Modal */
+
+/* ACTION BUTTONS */
+.action-wrap{display:flex;gap:5px;flex-wrap:nowrap;align-items:center}
+.btn{padding:7px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:1px solid;white-space:nowrap;transition:all 0.12s}
+.btn:disabled{opacity:0.3;cursor:not-allowed;pointer-events:none}
+.btn-prog{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}.btn-prog:not(:disabled):hover{background:#c8ebd4}
+.btn-induc{background:var(--teal-bg);color:var(--teal-text);border-color:var(--teal-border)}.btn-induc:not(:disabled):hover{background:#c0e8e8}
+.btn-limpiar{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border)}.btn-limpiar:hover{background:#f5cccc}
+.lock-icon{font-size:16px;color:var(--text3);margin-left:4px}
+
+/* MODALS */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
-.modal{background:var(--surface);border-radius:var(--radius);padding:24px;width:100%;max-width:460px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,0.15)}
-.modal-title{font-size:15px;font-weight:600;margin-bottom:6px}.modal-sub{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6}
+.modal{background:var(--surface);border-radius:var(--radius);padding:26px;width:100%;max-width:480px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,0.15)}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.6}
+.modal-info{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-bottom:16px;border:1px solid var(--border)}
+.modal-info strong{color:var(--text)}
 .modal-label{font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px}
 textarea{width:100%;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;resize:vertical;min-height:80px;font-family:inherit;color:var(--text);background:var(--surface)}
 textarea:focus{outline:none;border-color:#1a4fa0}
-.hint{font-size:11px;color:var(--text3);margin-top:4px}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-.btn-confirm{background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border);border-radius:var(--radius-sm);padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer}.btn-confirm:hover{background:#c8ebd4}
-.btn-cancel{background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px 14px;font-size:13px;cursor:pointer}.btn-cancel:hover{background:var(--surface2)}
+.hint{font-size:11px;color:var(--text3);margin-top:4px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.btn-confirm{background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border);border-radius:var(--radius-sm);padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer}.btn-confirm:hover{background:#c8ebd4}
+.btn-confirm-teal{background:var(--teal-bg);color:var(--teal-text);border:1px solid var(--teal-border);border-radius:var(--radius-sm);padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer}.btn-confirm-teal:hover{background:#c0e8e8}
+.btn-cancel{background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 14px;font-size:13px;cursor:pointer}.btn-cancel:hover{background:var(--surface2)}
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="topbar-icon"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg></div>
-  <div><div class="topbar-title">Panel del Programador</div><div class="topbar-sub">Asignación de carga por unidad</div></div>
+  <div><div class="topbar-title">Panel del Programador</div><div class="topbar-sub">Programación de unidades por orden de registro</div></div>
   <div class="topbar-right">
     <span class="sync-info" id="sync-info">—</span>
     <button class="btn-refresh" onclick="recargar()">↻ Actualizar</button>
@@ -99,42 +124,38 @@ textarea:focus{outline:none;border-color:#1a4fa0}
 
 <div class="stats-bar">
   <div class="stat"><div class="stat-icon total">📋</div><div><div class="stat-val" id="s-total">—</div><div class="stat-lbl">Total registros</div></div></div>
-  <div class="stat asig"><div class="stat-icon asig">✅</div><div><div class="stat-val" id="s-asig">—</div><div class="stat-lbl">Carga asignada</div></div></div>
-  <div class="stat espera"><div class="stat-icon espera">⏳</div><div><div class="stat-val" id="s-esp">—</div><div class="stat-lbl">En espera de carga</div></div></div>
-  <div class="stat pend"><div class="stat-icon pend">🔵</div><div><div class="stat-val" id="s-pend">—</div><div class="stat-lbl">Pendientes</div></div></div>
+  <div class="stat"><div class="stat-icon prog">✅</div><div><div class="stat-val" id="s-prog">—</div><div class="stat-lbl">Programadas</div></div></div>
+  <div class="stat"><div class="stat-icon pend">🔵</div><div><div class="stat-val" id="s-pend">—</div><div class="stat-lbl">No programadas</div></div></div>
 </div>
 
 <div class="filters-bar">
-  <div class="filter-group">
-    <span class="filter-label">Estado:</span>
-    <button class="filter-btn active" onclick="setFiltro('estado','TODOS',this)">Todos</button>
-    <button class="filter-btn" onclick="setFiltro('estado','PENDIENTE',this)">Pendientes</button>
-    <button class="filter-btn" onclick="setFiltro('estado','CARGA ASIGNADA',this)">Carga asignada</button>
-    <button class="filter-btn" onclick="setFiltro('estado','EN ESPERA DE CARGA',this)">En espera</button>
-  </div>
+  <span class="filter-label">Vista:</span>
+  <button class="filter-btn active" id="fb-todos" onclick="setFiltroEstado('TODOS',this)">Todos</button>
+  <button class="filter-btn" id="fb-noprog" onclick="setFiltroEstado('NO_PROG',this)">Unidades no programadas</button>
+  <button class="filter-btn" id="fb-prog" onclick="setFiltroEstado('PROGRAMADO',this)">Unidades programadas</button>
   <div class="divider"></div>
-  <div class="filter-group">
-    <span class="filter-label">Tipo:</span>
-    <select class="filter-select" id="filtro-tipo" onchange="aplicarFiltros()">
-      <option value="">Todos los tipos</option>
-      <option value="LOCAL">LOCAL</option>
-      <option value="PROVINCIA">PROVINCIA</option>
-      <option value="FLEXIBLES">FLEXIBLES</option>
-      <option value="FURGÓN">FURGÓN</option>
-      <option value="PLATAFORMA">PLATAFORMA</option>
-      <option value="PLATAFORMA FURGÓN">PLATAFORMA FURGÓN</option>
-      <option value="REMOLCADOR">REMOLCADOR</option>
-      <option value="TRASLADO INTERNO">TRASLADO INTERNO</option>
-    </select>
-  </div>
+  <span class="filter-label">Tipo:</span>
+  <select class="filter-select" id="filtro-tipo" onchange="aplicarFiltros()">
+    <option value="">Todos los tipos</option>
+    <option value="LOCAL">LOCAL</option>
+    <option value="PROVINCIA">PROVINCIA</option>
+    <option value="FLEXIBLES">FLEXIBLES</option>
+    <option value="FURGÓN">FURGÓN</option>
+    <option value="PLATAFORMA">PLATAFORMA</option>
+    <option value="PLATAFORMA FURGÓN">PLATAFORMA FURGÓN</option>
+    <option value="REMOLCADOR">REMOLCADOR</option>
+    <option value="TRASLADO INTERNO">TRASLADO INTERNO</option>
+  </select>
   <div class="divider"></div>
-  <div class="filter-group">
-    <span class="filter-label">Capacidad:</span>
-    <select class="filter-select" id="filtro-cap" onchange="aplicarFiltros()">
-      <option value="">Todas las capacidades</option>
-    </select>
-  </div>
+  <span class="filter-label">Capacidad:</span>
+  <select class="filter-select" id="filtro-cap" onchange="aplicarFiltros()">
+    <option value="">Todas las capacidades</option>
+  </select>
   <span class="results-count" id="results-count"></span>
+</div>
+
+<div class="lock-notice" id="lock-notice">
+  🔒 El sistema programa en orden de llegada. Solo la unidad más antigua no programada está habilitada. Una vez programada se habilita la siguiente.
 </div>
 
 <div class="table-area">
@@ -144,7 +165,7 @@ textarea:focus{outline:none;border-color:#1a4fa0}
       <table id="tabla" style="display:none">
         <thead>
           <tr>
-            <th style="width:40px">#</th>
+            <th style="width:44px">#</th>
             <th>Hora registro</th>
             <th>Tipo</th>
             <th>Empresa</th>
@@ -163,16 +184,34 @@ textarea:focus{outline:none;border-color:#1a4fa0}
   </div>
 </div>
 
-<div class="overlay" id="overlay">
+<!-- Modal PROGRAMAR -->
+<div class="overlay" id="overlay-prog">
   <div class="modal">
-    <div class="modal-title">Marcar como Carga Asignada</div>
-    <div class="modal-sub">Si la asignación fue por un motivo especial, escríbelo. Si es una asignación normal deja el campo vacío.</div>
-    <label class="modal-label">Motivo (opcional)</label>
-    <textarea id="modal-motivo" placeholder="Ej: Autorización de supervisión por avería de otra unidad..."></textarea>
-    <div class="hint">Deja en blanco si la asignación es normal.</div>
+    <div class="modal-title">Confirmar programación</div>
+    <div class="modal-sub">Estás a punto de programar esta unidad. Puedes añadir una observación si lo requieres.</div>
+    <div class="modal-info" id="prog-info"></div>
+    <label class="modal-label">Observación (opcional)</label>
+    <textarea id="prog-motivo" placeholder="Ej: Carga para ruta norte, prioridad alta..."></textarea>
+    <div class="hint">Deja en blanco si no aplica ninguna observación.</div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn-confirm" onclick="confirmar()">Confirmar asignación</button>
+      <button class="btn-cancel" onclick="cerrarModals()">Cancelar</button>
+      <button class="btn-confirm" onclick="confirmarProgramar()">✓ Confirmar PROGRAMAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal INDUCCIÓN -->
+<div class="overlay" id="overlay-induc">
+  <div class="modal">
+    <div class="modal-title">Programar por Inducción Especial</div>
+    <div class="modal-sub">Esta unidad no es la siguiente en el orden de registro. Debes indicar el motivo por el cual se le asigna prioridad.</div>
+    <div class="modal-info" id="induc-info"></div>
+    <label class="modal-label">Motivo de inducción <span style="color:#c0392b">*</span></label>
+    <textarea id="induc-motivo" placeholder="Ej: Unidad con inducción especial requerida por cliente, charla de seguridad específica, autorización de supervisión..."></textarea>
+    <div class="hint">Este campo es obligatorio para programar fuera de orden.</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="cerrarModals()">Cancelar</button>
+      <button class="btn-confirm-teal" onclick="confirmarInduccion()">✓ Confirmar Inducción</button>
     </div>
   </div>
 </div>
@@ -189,6 +228,11 @@ let filtros={estado:'TODOS',tipo:'',cap:''};
 const pad=n=>String(n).padStart(2,'0');
 function fmtDate(d){return`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
 function tick(){document.getElementById('clock').textContent=fmtDate(new Date());}tick();setInterval(tick,1000);
+
+// Normalizar estado: PENDIENTE legacy → ESPERANDO PROGRAMACIÓN
+function normEstado(r){return r.estado==='PROGRAMADO'||r.estado==='INDUCCIÓN'?r.estado:'ESPERANDO PROGRAMACIÓN';}
+function esProgramado(r){return r.estado==='PROGRAMADO'||r.estado==='INDUCCIÓN';}
+function noProgramado(r){return !esProgramado(r);}
 
 window.recargar=async function(){
   document.getElementById('sync-info').textContent='Actualizando...';
@@ -210,25 +254,20 @@ window.recargar=async function(){
 setInterval(()=>window.recargar(),30000);
 
 function poblarFiltroCapacidad(){
-  const caps=[...new Set(registros.map(r=>r.cap).filter(Boolean))].sort((a,b)=>{
-    const na=parseInt(a)||0,nb=parseInt(b)||0;return na-nb;
-  });
+  const caps=[...new Set(registros.map(r=>r.cap).filter(Boolean))].sort((a,b)=>(parseInt(a)||0)-(parseInt(b)||0));
   const sel=document.getElementById('filtro-cap');
-  const current=sel.value;
+  const cur=sel.value;
   sel.innerHTML='<option value="">Todas las capacidades</option>';
   caps.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
-  if(current)sel.value=current;
+  if(cur)sel.value=cur;
 }
 
-window.setFiltro=function(key,val,el){
-  filtros[key]=val;
-  if(key==='estado'){
-    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-    el.classList.add('active');
-  }
+window.setFiltroEstado=function(val,el){
+  filtros.estado=val;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
   aplicarFiltros();
 };
-
 window.aplicarFiltros=function(){
   filtros.tipo=document.getElementById('filtro-tipo').value;
   filtros.cap=document.getElementById('filtro-cap').value;
@@ -237,10 +276,17 @@ window.aplicarFiltros=function(){
 
 function getLista(){
   let lista=[...registros];
-  if(filtros.estado!=='TODOS')lista=lista.filter(r=>(r.estado||'PENDIENTE')===filtros.estado);
+  if(filtros.estado==='NO_PROG')lista=lista.filter(r=>noProgramado(r));
+  else if(filtros.estado==='PROGRAMADO')lista=lista.filter(r=>esProgramado(r));
   if(filtros.tipo)lista=lista.filter(r=>r.tipo===filtros.tipo);
   if(filtros.cap)lista=lista.filter(r=>r.cap===filtros.cap);
   return lista;
+}
+
+// Obtener el ID del primer registro NO programado en la lista actual (más antiguo)
+function getPrimerNoProgramadoId(lista){
+  const primero=lista.find(r=>noProgramado(r));
+  return primero?primero._id:null;
 }
 
 function tipoBadge(tipo){
@@ -248,60 +294,143 @@ function tipoBadge(tipo){
   return`<span class="badge ${cls}">${tipo||'—'}</span>`;
 }
 
+function estadoBadge(r){
+  const est=normEstado(r);
+  if(est==='PROGRAMADO')return`<span class="estado programado">PROGRAMADO</span>`;
+  if(est==='INDUCCIÓN')return`<span class="estado induccion">INDUCCIÓN</span>`;
+  return`<span class="estado espera">ESPERANDO PROGRAMACIÓN</span>`;
+}
+
 function renderTabla(){
   const lista=getLista();
   const tbody=document.getElementById('tbody');
   document.getElementById('results-count').textContent=lista.length+' resultado'+(lista.length===1?'':'s');
+
+  // Determinar cuál es el primer no-programado de la lista actual
+  const primerNoProg=getPrimerNoProgramadoId(lista);
+  const hayNoProgramados=lista.some(r=>noProgramado(r));
+
+  // Mostrar aviso de bloqueo solo si hay no programados en vista de no-programados o todos
+  const notice=document.getElementById('lock-notice');
+  notice.classList.toggle('visible', hayNoProgramados && filtros.estado!=='PROGRAMADO');
+
   if(!lista.length){tbody.innerHTML='<tr><td colspan="11" class="empty">No hay registros para los filtros seleccionados</td></tr>';return;}
-  tbody.innerHTML=lista.map(r=>{
-    const est=r.estado||'PENDIENTE';
-    const num=registros.indexOf(r)+1;
-    const estadoHtml=`<span class="estado ${est==='CARGA ASIGNADA'?'asignado':est==='EN ESPERA DE CARGA'?'espera':'pendiente'}">${est}</span>`;
+
+  tbody.innerHTML=lista.map((r,i)=>{
+    const numGlobal=registros.indexOf(r)+1;
+    const prog=esProgramado(r);
+    const esElPrimero=r._id===primerNoProg;
+    // Si no está programado y no es el primero → bloqueado
+    const bloqueado=!prog&&!esElPrimero;
+
+    const rowClass=prog?'':''+( esElPrimero?'row-active':'row-locked');
+    const numClass=esElPrimero&&!prog?'num active-num':'num';
     const motivoHtml=r.motivo?`<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>`:`<span style="color:var(--text3)">—</span>`;
-    return`<tr>
-      <td><span class="num">${num}</span></td>
+
+    let accionHtml='';
+    if(prog){
+      // Ya programado → solo LIMPIAR
+      accionHtml=`<div class="action-wrap"><button class="btn btn-limpiar" onclick="limpiar('${r._id}')">Limpiar</button></div>`;
+    } else if(bloqueado){
+      // Bloqueado → botones deshabilitados + candado
+      accionHtml=`<div class="action-wrap">
+        <button class="btn btn-prog" disabled>PROGRAMAR</button>
+        <button class="btn btn-induc" disabled>Inducción</button>
+        <span class="lock-icon">🔒</span>
+      </div>`;
+    } else {
+      // Habilitado (primer no programado o inducción)
+      accionHtml=`<div class="action-wrap">
+        <button class="btn btn-prog" onclick="abrirProgramar('${r._id}')">PROGRAMAR</button>
+        <button class="btn btn-induc" onclick="abrirInduccion('${r._id}')">Inducción</button>
+      </div>`;
+    }
+
+    // Para registros bloqueados que no son el primero, permitir INDUCCIÓN
+    if(bloqueado){
+      accionHtml=`<div class="action-wrap">
+        <button class="btn btn-prog" disabled>PROGRAMAR</button>
+        <button class="btn btn-induc" onclick="abrirInduccion('${r._id}')">Inducción</button>
+        <span class="lock-icon">🔒</span>
+      </div>`;
+    }
+
+    return`<tr class="${rowClass}">
+      <td><span class="${numClass}">${numGlobal}</span></td>
       <td style="white-space:nowrap;font-family:monospace">${r.ts}</td>
       <td>${tipoBadge(r.tipo)}</td>
-      <td style="white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis" title="${r.empresa}">${r.empresa}</td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.empresa}">${r.empresa}</td>
       <td><span class="placa">${r.placa}</span></td>
       <td style="white-space:nowrap">${r.cap}</td>
-      <td style="font-weight:600;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis" title="${r.nombre}">${r.nombre}</td>
+      <td style="font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.nombre}">${r.nombre}</td>
       <td style="white-space:nowrap">${r.tel}</td>
-      <td>${estadoHtml}</td>
+      <td>${estadoBadge(r)}</td>
       <td>${motivoHtml}</td>
-      <td><div class="action-wrap">
-        <button class="btn btn-asig" onclick="abrirModal('${r._id}')">Carga asignada</button>
-        <button class="btn btn-esp" onclick="marcarEspera('${r._id}')">En espera</button>
-        ${est!=='PENDIENTE'?`<button class="btn btn-reset" onclick="resetear('${r._id}')">↩</button>`:''}
-      </div></td>
+      <td>${accionHtml}</td>
     </tr>`;
   }).join('');
 }
 
 function updateStats(){
   document.getElementById('s-total').textContent=registros.length;
-  document.getElementById('s-asig').textContent=registros.filter(r=>r.estado==='CARGA ASIGNADA').length;
-  document.getElementById('s-esp').textContent=registros.filter(r=>r.estado==='EN ESPERA DE CARGA').length;
-  document.getElementById('s-pend').textContent=registros.filter(r=>!r.estado||r.estado==='PENDIENTE').length;
+  document.getElementById('s-prog').textContent=registros.filter(r=>esProgramado(r)).length;
+  document.getElementById('s-pend').textContent=registros.filter(r=>noProgramado(r)).length;
 }
 
-window.abrirModal=function(id){idSel=id;document.getElementById('modal-motivo').value='';document.getElementById('overlay').classList.add('open');};
-window.cerrarModal=function(){document.getElementById('overlay').classList.remove('open');idSel=null;};
-window.confirmar=async function(){
+// PROGRAMAR
+window.abrirProgramar=function(id){
+  idSel=id;
+  const r=registros.find(x=>x._id===id);
+  if(!r)return;
+  document.getElementById('prog-info').innerHTML=`<strong>${r.placa}</strong> — ${r.empresa} — ${r.cap} — ${r.nombre}`;
+  document.getElementById('prog-motivo').value='';
+  document.getElementById('overlay-prog').classList.add('open');
+};
+window.confirmarProgramar=async function(){
   if(!idSel)return;
-  const motivo=document.getElementById('modal-motivo').value.trim();
-  try{await updateDoc(doc(db,'registros',idSel),{estado:'CARGA ASIGNADA',motivo});cerrarModal();await window.recargar();}
-  catch(e){alert('Error al actualizar.');}
+  const motivo=document.getElementById('prog-motivo').value.trim();
+  try{
+    await updateDoc(doc(db,'registros',idSel),{estado:'PROGRAMADO',motivo});
+    cerrarModals();await window.recargar();
+  }catch(e){alert('Error al actualizar.');}
 };
-window.marcarEspera=async function(id){
-  try{await updateDoc(doc(db,'registros',id),{estado:'EN ESPERA DE CARGA',motivo:''});await window.recargar();}
-  catch(e){alert('Error al actualizar.');}
+
+// INDUCCIÓN
+window.abrirInduccion=function(id){
+  idSel=id;
+  const r=registros.find(x=>x._id===id);
+  if(!r)return;
+  document.getElementById('induc-info').innerHTML=`<strong>${r.placa}</strong> — ${r.empresa} — ${r.cap} — ${r.nombre}`;
+  document.getElementById('induc-motivo').value='';
+  document.getElementById('overlay-induc').classList.add('open');
 };
-window.resetear=async function(id){
-  try{await updateDoc(doc(db,'registros',id),{estado:'PENDIENTE',motivo:''});await window.recargar();}
-  catch(e){alert('Error al actualizar.');}
+window.confirmarInduccion=async function(){
+  if(!idSel)return;
+  const motivo=document.getElementById('induc-motivo').value.trim();
+  if(!motivo){alert('Debes ingresar el motivo de la inducción especial.');return;}
+  try{
+    await updateDoc(doc(db,'registros',idSel),{estado:'INDUCCIÓN',motivo});
+    cerrarModals();await window.recargar();
+  }catch(e){alert('Error al actualizar.');}
 };
-document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)window.cerrarModal();});
+
+// LIMPIAR
+window.limpiar=async function(id){
+  if(!confirm('¿Limpiar la programación de esta unidad? El estado volverá a "ESPERANDO PROGRAMACIÓN".'))return;
+  try{
+    await updateDoc(doc(db,'registros',id),{estado:'ESPERANDO PROGRAMACIÓN',motivo:''});
+    await window.recargar();
+  }catch(e){alert('Error al actualizar.');}
+};
+
+window.cerrarModals=function(){
+  document.getElementById('overlay-prog').classList.remove('open');
+  document.getElementById('overlay-induc').classList.remove('open');
+  idSel=null;
+};
+document.getElementById('overlay-prog').addEventListener('click',function(e){if(e.target===this)window.cerrarModals();});
+document.getElementById('overlay-induc').addEventListener('click',function(e){if(e.target===this)window.cerrarModals();});
+
 window.recargar();
 </script>
 </body>
