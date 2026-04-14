@@ -130,7 +130,6 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import{getFirestore,collection,addDoc,getDocs,doc,getDoc}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
@@ -251,26 +250,44 @@ window.capturarFoto=function(){
 };
 
 async function procesarOCR(dataUrl){
-  const placa=document.getElementById('f-placa').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
-  setOcr('info','🔍 Verificando placa en la foto, por favor espera...');
+  const placaIngresada=document.getElementById('f-placa').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  setOcr('info','🔍 Analizando la foto con IA, por favor espera...');
   try{
-    const result=await Tesseract.recognize(dataUrl,'eng',{
-      tessedit_char_whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-      tessedit_pageseg_mode:'11'
+    // Convertir dataUrl a base64 puro
+    const base64=dataUrl.split(',')[1];
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:100,
+        messages:[{
+          role:'user',
+          content:[
+            {type:'image',source:{type:'base64',media_type:'image/jpeg',data:base64}},
+            {type:'text',text:'Lee la placa vehicular que aparece en esta imagen. Responde ÚNICAMENTE con los caracteres de la placa, sin guiones, sin espacios, sin puntos, solo letras y números. Por ejemplo si la placa es "ABC-123" responde "ABC123". Si no puedes leer una placa, responde "NOPLACA".'}
+          ]
+        }]
+      })
     });
-    const textoOCR=result.data.text.toUpperCase().replace(/[^A-Z0-9]/g,'');
-    const coincide=verificarCoincidencia(textoOCR,placa);
+    const data=await resp.json();
+    const textoIA=(data.content&&data.content[0]&&data.content[0].text||'').toUpperCase().replace(/[^A-Z0-9]/g,'').trim();
+    
+    if(textoIA==='NOPLACA'||!textoIA){
+      setOcr('warn','No se pudo leer la placa en la foto. Asegúrate de que la placa esté centrada, bien iluminada y enfocada, luego retoma la foto.');
+      fotoOk=false;return;
+    }
+
+    const coincide=textoIA===placaIngresada||textoIA.includes(placaIngresada)||placaIngresada.includes(textoIA);
     if(coincide){
-      setOcr('ok','✓ Placa verificada: la foto coincide con "'+document.getElementById('f-placa').value+'".');
+      setOcr('ok','✓ Placa verificada correctamente. La foto muestra "'+textoIA+'" y coincide con la placa ingresada.');
       fotoOk=true;
-      // Avanzar al paso 3
       paso(3);
-      const info=placasDB[placa];
+      const info=placasDB[placaIngresada];
       if(info&&info.tipo==='LOCAL'){
         if(!zona){setGeo('warn','warn','No hay zona configurada. Contacta al administrador.');}
         else{setGeo('info','info','Unidad LOCAL: debes estar dentro de "'+zona.nombre+'" (radio: '+zona.radio+' m). Presiona verificar.');document.getElementById('btn-geo').style.display='inline-block';}
       } else {
-        // PROVINCIA u otros: capturar ubicación y permitir guardar directamente
         document.getElementById('field-coords').style.display='flex';
         setGeo('warn','warn','Unidad '+info.tipo+': se capturará tu ubicación al registrar.');
         document.getElementById('btn-guardar').style.display='inline-block';
@@ -278,11 +295,11 @@ async function procesarOCR(dataUrl){
         geoOk=true;
       }
     } else {
-      setOcr('err','✗ La placa en la foto no coincide con "'+document.getElementById('f-placa').value+'". Asegúrate de enfocar bien la placa e intenta nuevamente.');
+      setOcr('err','✗ La placa detectada en la foto es "'+textoIA+'" pero ingresaste "'+document.getElementById('f-placa').value+'". Verifica que sea la placa correcta e intenta nuevamente.');
       fotoOk=false;
     }
   }catch(e){
-    setOcr('warn','No se pudo leer la placa automáticamente. Asegúrate que esté bien iluminada y retoma la foto.');
+    setOcr('warn','Error al analizar la foto. Verifica tu conexión e intenta nuevamente.');
     fotoOk=false;
   }
 }
