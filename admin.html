@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2236;--surface3:#222d45;--border:#2a3650;--border2:#3a4a6a;--text:#e8ecf4;--text2:#8892a8;--text3:#5a6480;--cyan:#00e5ff;--cyan-bg:rgba(0,229,255,0.08);--cyan-border:rgba(0,229,255,0.25);--green:#00e676;--green-bg:rgba(0,230,118,0.1);--green-border:rgba(0,230,118,0.3);--amber:#ffab00;--amber-bg:rgba(255,171,0,0.1);--amber-border:rgba(255,171,0,0.3);--red:#ff5252;--red-bg:rgba(255,82,82,0.1);--red-border:rgba(255,82,82,0.3);--purple:#b388ff;--purple-bg:rgba(179,136,255,0.1);--purple-border:rgba(179,136,255,0.3);--radius:10px;--radius-sm:6px;--font-display:'Orbitron',sans-serif;--font-body:'Rajdhani',sans-serif}
-body{background:var(--bg);font-family:var(--font-body);color:var(--text);min-height:100vh}::selection{background:var(--cyan);color:var(--bg)}
+body{background:var(--bg);font-family:var(--font-body);color:var(--text);min-height:100vh;overflow-x:hidden}::selection{background:var(--cyan);color:var(--bg)}
 .topbar{background:linear-gradient(90deg,#0d1224,#1a1040,#0d1224);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);position:relative}.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purple),transparent)}
 .topbar-icon{width:40px;height:40px;background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:10px;display:flex;align-items:center;justify-content:center}
 .topbar-icon svg{width:22px;height:22px;stroke:var(--purple);fill:none;stroke-width:2}
@@ -72,6 +72,29 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(0,229,255,0.03)}
 .col-filter{width:100%;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:5px 8px;font-size:13px;background:var(--surface);color:var(--text);font-family:var(--font-body)}
 .col-filter:focus{outline:none;border-color:var(--cyan);background:var(--surface)}
 .col-filter::placeholder{color:var(--text3);font-size:12px}
+
+.hist-filter-bar{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius)}
+.hfg{display:flex;flex-direction:column;gap:4px;min-width:140px}
+.hfl{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em}
+.hf-sel{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 12px;font-size:14px;background:var(--surface);color:var(--text);font-family:var(--font-body);outline:none;cursor:pointer}
+.hf-sel:focus{border-color:var(--cyan)}
+.hf-sel option{background:var(--surface);color:var(--text)}
+.hf-input{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 12px;font-size:14px;background:var(--surface);color:var(--text);font-family:var(--font-body);outline:none;width:100%}
+.hf-input:focus{border-color:var(--cyan)}
+.hf-input::placeholder{color:var(--text3)}
+/* Responsive */
+@media(max-width:768px){
+  .stats-row{grid-template-columns:repeat(2,1fr)!important}
+  .hist-filter-bar{gap:8px}
+  .hfg{min-width:120px;flex:1}
+  .container{padding:10px}
+  .tabs{font-size:13px}
+  .tab{padding:8px 12px!important;font-size:13px!important}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:1fr 1fr!important}
+  .hfg{min-width:100%;flex:none}
+}
 </style>
 </head>
 <body>
@@ -200,38 +223,53 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(0,229,255,0.03)}
   <div class="pane" id="pane-historial">
     <div class="stats-row">
       <div class="stat"><div class="stat-val" id="h-total">—</div><div class="stat-lbl">Total</div></div>
-      <div class="stat asig"><div class="stat-val" id="h-asig">—</div><div class="stat-lbl">Carga asignada</div></div>
-      <div class="stat espera"><div class="stat-val" id="h-esp">—</div><div class="stat-lbl">En espera</div></div>
+      <div class="stat asig"><div class="stat-val" id="h-asig">—</div><div class="stat-lbl">Programadas</div></div>
+      <div class="stat espera"><div class="stat-val" id="h-esp">—</div><div class="stat-lbl">No disponibles</div></div>
       <div class="stat pend"><div class="stat-val" id="h-pend">—</div><div class="stat-lbl">Pendientes</div></div>
     </div>
+    <!-- Filtros barra historial -->
+    <div class="hist-filter-bar">
+      <div class="hfg"><span class="hfl">Tipo:</span>
+        <select class="hf-sel" id="hf-tipo" onchange="filtrarHistorial()">
+          <option value="">Todos los tipos</option>
+          <option value="LOCAL">LOCAL</option><option value="PROVINCIA">PROVINCIA</option>
+          <option value="FLEXIBLES">FLEXIBLES</option><option value="FURGÓN">FURGÓN</option>
+          <option value="PLATAFORMA">PLATAFORMA</option><option value="PLATAFORMA FURGÓN">PLATAFORMA FURGÓN</option>
+          <option value="REMOLCADOR">REMOLCADOR</option><option value="TRASLADO INTERNO">TRASLADO INTERNO</option>
+        </select>
+      </div>
+      <div class="hfg"><span class="hfl">Capacidad:</span>
+        <select class="hf-sel" id="hf-cap" onchange="filtrarHistorial()">
+          <option value="">Todas las capacidades</option>
+        </select>
+      </div>
+      <div class="hfg"><span class="hfl">Estado:</span>
+        <select class="hf-sel" id="hf-est" onchange="filtrarHistorial()">
+          <option value="">Todos los estados</option>
+          <option value="PROGRAMADO">PROGRAMADO</option>
+          <option value="UNIDAD NO DISPONIBLE">NO DISPONIBLE</option>
+          <option value="ESPERANDO">ESPERANDO</option>
+        </select>
+      </div>
+      <div class="hfg" style="flex:1"><span class="hfl">Buscar:</span>
+        <input class="hf-input" id="hf-buscar" placeholder="Placa, empresa, conductor, licencia..." oninput="filtrarHistorial()">
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="limpiarHistorial()" style="flex-shrink:0;align-self:flex-end;margin-bottom:4px">Limpiar historial</button>
+    </div>
     <div class="card" style="padding:0;overflow:hidden">
-      <div class="search-row">
-        <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">Todos los registros</span>
-        <button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="limpiarHistorial()">Limpiar historial</button>
+      <div style="padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+        <span style="font-size:13px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">Registros</span>
+        <span id="hist-count" style="font-size:13px;color:var(--text3)"></span>
+        <span style="font-size:12px;color:var(--text3);margin-left:auto">Los registros se eliminan automáticamente a los 7 días</span>
       </div>
       <div id="loading-hist" class="loading">Cargando historial...</div>
       <div class="table-wrap" id="table-hist" style="display:none">
-        <table style="min-width:1000px">
-          <thead>
-        <tr>
-          <th>Fecha/Hora</th><th>Tipo</th><th>Empresa</th><th>Placa</th><th>Cap.</th>
-          <th>Licencia</th><th>Conductor</th><th>Teléfono</th><th>Estado</th><th>Fecha acción</th><th>Motivo</th><th>Acciones</th>
-        </tr>
-        <tr id="filter-row" style="background:var(--surface2)">
-          <td><input class="col-filter" id="cf-ts" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
-          <td><input class="col-filter" id="cf-tipo" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
-          <td><input class="col-filter" id="cf-emp" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
-          <td><input class="col-filter" id="cf-placa" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
-          <td><input class="col-filter" id="cf-cap" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
-          <td><input class="col-filter" id="cf-lic" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
-          <td><input class="col-filter" id="cf-cond" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
-          <td><input class="col-filter" id="cf-tel" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
-          <td><input class="col-filter" id="cf-est" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
-          <td></td>
-          <td><input class="col-filter" id="cf-mot" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
-          <td></td>
-        </tr>
-      </thead>
+        <table style="min-width:900px;width:100%">
+          <thead><tr>
+            <th>Fecha/Hora registro</th><th>Tipo</th><th>Empresa</th><th>Placa</th>
+            <th>Cap.</th><th>Licencia</th><th>Conductor</th><th>Teléfono</th>
+            <th>Fecha acción</th><th>Motivo</th><th>Acciones</th>
+          </tr></thead>
           <tbody id="tbody-hist"></tbody>
         </table>
       </div>
@@ -440,40 +478,90 @@ window.eliminarZona=async function(){
 };
 
 // === HISTORIAL ===
+let _allRegs=[];
+const padH=n=>String(n).padStart(2,'0');
+
+function fmtFechaAccion(r){
+  if(!r.fechaAccion)return'<span style="color:var(--text3)">—</span>';
+  const d=new Date(r.fechaAccion);
+  const hora=`${padH(d.getDate())}/${padH(d.getMonth()+1)}/${d.getFullYear()}<br>${padH(d.getHours())}:${padH(d.getMinutes())}`;
+  const est=r.estado||'';
+  if(est==='PROGRAMADO')return`<span style="color:var(--green-text);font-weight:700;font-size:13px">PROGRAMADO</span><br><span style="font-size:12px;color:var(--text2)">${hora.replace('<br>',' ')}</span>`;
+  if(est==='UNIDAD NO DISPONIBLE')return`<span style="color:var(--red-text);font-weight:700;font-size:13px">NO DISPONIBLE</span><br><span style="font-size:12px;color:var(--text2)">${hora.replace('<br>',' ')}</span>`;
+  return`<span style="font-size:13px;color:var(--text2)">${hora.replace('<br>',' ')}</span>`;
+}
+
 async function cargarHistorial(){
   try{
     const q=query(collection(db,'registros'),orderBy('tsNum','asc'));
     const snap=await getDocs(q);
-    const regs=snap.docs.map(d=>({...d.data(),_id:d.id}));
-    document.getElementById('h-total').textContent=regs.length;
-    document.getElementById('h-asig').textContent=regs.filter(r=>r.estado==='CARGA ASIGNADA').length;
-    document.getElementById('h-esp').textContent=regs.filter(r=>r.estado==='EN ESPERA DE CARGA').length;
-    document.getElementById('h-pend').textContent=regs.filter(r=>!r.estado||r.estado==='PENDIENTE').length;
-    const tbody=document.getElementById('tbody-hist');
-    if(!regs.length){tbody.innerHTML='<tr><td colspan="12" class="empty">No hay registros aún</td></tr>';}
-    else tbody.innerHTML=regs.map((r,i)=>{
-      const est=r.estado||'PENDIENTE';
-      return`<tr>
-
-        <td style="font-size:11px;white-space:nowrap;font-family:monospace">${r.ts}</td>
-        <td>${tipoBadge(r.tipo||'')}</td>
-        <td style="white-space:nowrap;font-size:12px">${r.empresa}</td>
-        <td><span class="placa-tag">${r.placa}</span></td>
-        <td>${r.cap}</td><td>${r.lic}</td>
-        <td style="font-weight:600;white-space:nowrap;font-size:12px">${r.nombre}</td>
-        <td>${r.tel}</td>
-        <td style="font-size:11px;color:var(--text3);font-family:monospace">${r.coords}</td>
-        <td><span class="estado ${est==='CARGA ASIGNADA'?'asignado':est==='EN ESPERA DE CARGA'?'espera':'pendiente'}">${est}</span></td>
-        <td>${r.motivo?`<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>`:'—'}</td>
-        <td><button class="del-btn" onclick="eliminarReg('${r._id}')">✕</button></td>
-      </tr>`;
-    }).join('');
+    const ahora=Date.now();const MS7=7*24*60*60*1000;
+    // Auto-eliminar registros > 7 días
+    const viejos=snap.docs.filter(d=>{const r=d.data();return r.tsNum&&(ahora-r.tsNum)>MS7;});
+    if(viejos.length>0){const b=writeBatch(db);viejos.forEach(d=>b.delete(doc(db,'registros',d.id)));await b.commit();}
+    _allRegs=snap.docs.filter(d=>{const r=d.data();return !r.tsNum||(ahora-r.tsNum)<=MS7;}).map(d=>({...d.data(),_id:d.id}));
+    // Poblar selector capacidades
+    const caps=[...new Set(_allRegs.map(r=>r.cap).filter(Boolean))].sort((a,b)=>(parseInt(a)||0)-(parseInt(b)||0));
+    const sc=document.getElementById('hf-cap');if(sc){const cur=sc.value;sc.innerHTML='<option value="">Todas las capacidades</option>';caps.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sc.appendChild(o);});if(cur)sc.value=cur;}
+    renderHistorial(_allRegs);
     document.getElementById('loading-hist').style.display='none';
     document.getElementById('table-hist').style.display='block';
   }catch(e){document.getElementById('loading-hist').textContent='Error al cargar historial.';}
 }
+
+function renderHistorial(regs){
+  const total=_allRegs.length;
+  document.getElementById('h-total').textContent=total;
+  document.getElementById('h-asig').textContent=_allRegs.filter(r=>r.estado==='PROGRAMADO').length;
+  document.getElementById('h-esp').textContent=_allRegs.filter(r=>r.estado==='UNIDAD NO DISPONIBLE').length;
+  document.getElementById('h-pend').textContent=_allRegs.filter(r=>!r.estado||r.estado==='PENDIENTE'||r.estado==='ESPERANDO PROGRAMACIÓN').length;
+  const cnt=document.getElementById('hist-count');if(cnt)cnt.textContent=regs.length!==total?`${regs.length} de ${total} registros`:`${total} registros`;
+  const tbody=document.getElementById('tbody-hist');
+  if(!regs.length){tbody.innerHTML='<tr><td colspan="11" class="empty">No hay registros para los filtros seleccionados</td></tr>';return;}
+  tbody.innerHTML=regs.map(r=>{
+    const est=r.estado||'ESPERANDO PROGRAMACIÓN';
+    const estCls=est==='PROGRAMADO'?'asignado':est==='UNIDAD NO DISPONIBLE'?'espera':'pendiente';
+    const mot=r.motivo?`<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>`:'—';
+    return`<tr>
+      <td style="white-space:nowrap;font-size:14px;color:var(--text2)">${r.ts}</td>
+      <td>${tipoBadge(r.tipo||'')}</td>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px" title="${r.empresa}">${r.empresa}</td>
+      <td><span class="placa-tag">${r.placa}</span></td>
+      <td style="font-size:14px">${r.cap}</td>
+      <td style="font-size:14px">${r.lic}</td>
+      <td style="font-weight:600;font-size:14px;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis" title="${r.nombre}">${r.nombre}</td>
+      <td style="font-size:14px">${r.tel}</td>
+      <td style="line-height:1.5">${fmtFechaAccion(r)}</td>
+      <td>${mot}</td>
+      <td><div style="display:flex;gap:6px;align-items:center;flex-wrap:nowrap">
+        <button class="edit-btn" style="font-size:12px;padding:4px 10px;white-space:nowrap;cursor:pointer" onclick="retornarReg('${r._id}')" title="Retornar al programador">↩ Retornar</button>
+        <button class="del-btn" onclick="eliminarReg('${r._id}')" title="Eliminar permanentemente" style="font-size:16px">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+window.filtrarHistorial=function(){
+  const tipo=(document.getElementById('hf-tipo')?.value||'').toLowerCase();
+  const cap=(document.getElementById('hf-cap')?.value||'').toLowerCase();
+  const est=(document.getElementById('hf-est')?.value||'').toLowerCase();
+  const buscar=(document.getElementById('hf-buscar')?.value||'').toLowerCase().trim();
+  const filtered=_allRegs.filter(r=>{
+    if(tipo&&!(r.tipo||'').toLowerCase().includes(tipo))return false;
+    if(cap&&!(r.cap||'').toLowerCase().includes(cap))return false;
+    if(est&&!(r.estado||'').toLowerCase().includes(est))return false;
+    if(buscar){const h=[r.ts,r.empresa,r.placa,r.cap,r.lic,r.nombre,r.tel,r.motivo,r.estado].join(' ').toLowerCase();if(!h.includes(buscar))return false;}
+    return true;
+  });
+  renderHistorial(filtered);
+};
+window.retornarReg=async function(id){
+  if(!confirm('¿Retornar esta unidad a la cola del programador?'))return;
+  try{await updateDoc(doc(db,'registros',id),{estado:'ESPERANDO PROGRAMACIÓN',motivo:'',fechaAccion:null});cargarHistorial();}
+  catch(e){alert('Error al retornar.');}
+};
 window.eliminarReg=async function(id){
-  if(!confirm('¿Eliminar este registro?'))return;
+  if(!confirm('¿Eliminar este registro de forma permanente?'))return;
   try{await deleteDoc(doc(db,'registros',id));cargarHistorial();}catch(e){alert('Error.');}
 };
 window.limpiarHistorial=async function(){
