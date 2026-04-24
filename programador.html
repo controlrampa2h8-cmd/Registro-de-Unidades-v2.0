@@ -5,108 +5,128 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Panel del Programador</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f0eff9;--surface:#fff;--surface2:#f0efe9;--border:#e2e0d8;--border2:#c8c6bc;
-  --text:#1a1916;--text2:#6b6960;--text3:#9b9a93;
-  --blue-bg:#e8f0fc;--blue-text:#1a4fa0;--blue-border:#b8cef5;
-  --green-bg:#e6f4ec;--green-text:#1a6b38;--green-border:#a8dbb8;
-  --amber-bg:#fdf3e0;--amber-text:#8a5a00;--amber-border:#f0d080;
-  --red-bg:#fceaea;--red-text:#a01a1a;--red-border:#f0b8b8;
-  --purple-bg:#f0ecfc;--purple-text:#4a1fa0;--purple-border:#c8b8f5;
-  --teal-bg:#e0f5f5;--teal-text:#0a6b6b;--teal-border:#7dd0d0;
-  --gray-bg:#f0efe9;--gray-text:#5a5a5a;--gray-border:#c8c6bc;
-  --radius:8px;--radius-sm:5px
+  --bg:#0a0e1a;--surface:#111827;--surface2:#1a2236;--surface3:#222d45;
+  --border:#2a3650;--border2:#3a4a6a;
+  --text:#e8ecf4;--text2:#8892a8;--text3:#5a6480;
+  --cyan:#00e5ff;--cyan-bg:rgba(0,229,255,0.08);--cyan-border:rgba(0,229,255,0.25);
+  --green:#00e676;--green-bg:rgba(0,230,118,0.1);--green-border:rgba(0,230,118,0.3);
+  --amber:#ffab00;--amber-bg:rgba(255,171,0,0.1);--amber-border:rgba(255,171,0,0.3);
+  --red:#ff5252;--red-bg:rgba(255,82,82,0.1);--red-border:rgba(255,82,82,0.3);
+  --purple:#b388ff;--purple-bg:rgba(179,136,255,0.1);--purple-border:rgba(179,136,255,0.3);
+  --teal:#1de9b6;--teal-bg:rgba(29,233,182,0.1);--teal-border:rgba(29,233,182,0.3);
+  --radius:10px;--radius-sm:6px;
+  --font-display:'Orbitron',sans-serif;--font-body:'Rajdhani',sans-serif;
 }
 html,body{height:100%;overflow:hidden}
-body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);display:flex;flex-direction:column}
+body{background:var(--bg);font-family:var(--font-body);color:var(--text);display:flex;flex-direction:column}
+::selection{background:var(--cyan);color:var(--bg)}
 
-.topbar{background:#1c3a5e;color:#fff;padding:0 24px;height:52px;display:flex;align-items:center;gap:14px;flex-shrink:0}
-.topbar-icon{width:32px;height:32px;background:rgba(255,255,255,0.12);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.topbar-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
-.topbar-title{font-size:14px;font-weight:600}.topbar-sub{font-size:11px;opacity:0.5}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
-.topbar-clock{font-size:12px;opacity:0.55;font-family:monospace;white-space:nowrap}
-.sync-info{font-size:11px;opacity:0.5;white-space:nowrap}
-.btn-refresh{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:5px 13px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:500}
-.btn-refresh:hover{background:rgba(255,255,255,0.22)}
+/* TOPBAR */
+.topbar{background:linear-gradient(90deg,#0d1224 0%,#162040 50%,#0d1224 100%);padding:0 28px;height:60px;display:flex;align-items:center;gap:16px;flex-shrink:0;border-bottom:1px solid var(--border)}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
+.topbar{position:relative}
+.topbar-icon{width:40px;height:40px;background:var(--cyan-bg);border:1px solid var(--cyan-border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.topbar-icon svg{width:22px;height:22px;stroke:var(--cyan);fill:none;stroke-width:2}
+.topbar-title{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--cyan);letter-spacing:0.08em;text-transform:uppercase}
+.topbar-sub{font-size:13px;color:var(--text2);letter-spacing:0.04em}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.topbar-clock{font-family:var(--font-display);font-size:16px;color:var(--cyan);letter-spacing:0.1em}
+.sync-info{font-size:13px;color:var(--text3)}
+.btn-refresh{background:var(--cyan-bg);border:1px solid var(--cyan-border);color:var(--cyan);padding:8px 18px;border-radius:var(--radius-sm);font-size:14px;cursor:pointer;font-family:var(--font-body);font-weight:600;letter-spacing:0.04em}
+.btn-refresh:hover{background:rgba(0,229,255,0.18)}
 
-.stats-bar{display:flex;gap:10px;padding:12px 20px;flex-shrink:0;background:var(--bg)}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 18px;display:flex;align-items:center;gap:12px;flex:1;min-width:0}
-.stat-val{font-size:28px;font-weight:700;letter-spacing:-0.02em;line-height:1}
-.stat-lbl{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px}
-.stat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.si-total{background:#eeeef8}.si-prog{background:var(--green-bg)}.si-pend{background:var(--blue-bg)}.si-nodis{background:var(--red-bg)}
+/* STATS */
+.stats-bar{display:flex;gap:12px;padding:14px 24px;flex-shrink:0;background:var(--bg)}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 22px;display:flex;align-items:center;gap:16px;flex:1;min-width:0;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat.s-total::before{background:var(--cyan)}.stat.s-prog::before{background:var(--green)}.stat.s-pend::before{background:var(--amber)}.stat.s-nodis::before{background:var(--red)}
+.stat-val{font-family:var(--font-display);font-size:36px;font-weight:900;line-height:1;letter-spacing:0.02em}
+.stat.s-total .stat-val{color:var(--cyan)}.stat.s-prog .stat-val{color:var(--green)}.stat.s-pend .stat-val{color:var(--amber)}.stat.s-nodis .stat-val{color:var(--red)}
+.stat-lbl{font-size:14px;color:var(--text2);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}
 
-.filters-bar{display:flex;align-items:center;gap:8px;padding:0 20px 10px;flex-shrink:0;flex-wrap:wrap}
-.filter-label{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap}
-.filter-btn{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text2);white-space:nowrap;transition:all 0.12s}
-.filter-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
-.filter-btn:hover:not(.active){background:var(--surface2)}
-.filter-select{border:1px solid var(--border2);border-radius:20px;padding:6px 14px;font-size:13px;background:var(--surface);color:var(--text2);cursor:pointer;outline:none}
-.filter-select:focus{border-color:#1a4fa0}
-.divider{width:1px;height:20px;background:var(--border);margin:0 4px}
-.results-count{font-size:12px;color:var(--text3);margin-left:auto;white-space:nowrap}
+/* FILTERS */
+.filters-bar{display:flex;align-items:center;gap:10px;padding:0 24px 12px;flex-shrink:0;flex-wrap:wrap}
+.filter-label{font-size:14px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em}
+.filter-btn{padding:8px 18px;border-radius:30px;font-size:15px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font-body);letter-spacing:0.02em;transition:all 0.15s}
+.filter-btn.active{background:var(--cyan);color:var(--bg);border-color:var(--cyan);font-weight:700}
+.filter-btn:hover:not(.active){background:var(--surface3);border-color:var(--cyan-border);color:var(--text)}
+.filter-select{border:1px solid var(--border2);border-radius:30px;padding:8px 18px;font-size:15px;font-weight:600;background:var(--surface2);color:var(--text2);cursor:pointer;outline:none;font-family:var(--font-body)}
+.filter-select:focus{border-color:var(--cyan)}
+.filter-select option{background:var(--surface);color:var(--text)}
+.divider{width:1px;height:24px;background:var(--border);margin:0 6px}
+.results-count{font-size:14px;color:var(--text3);margin-left:auto;letter-spacing:0.04em}
 
-.notice{padding:8px 16px;margin:0 20px 10px;font-size:13px;border-radius:var(--radius-sm);flex-shrink:0;display:none}
+/* NOTICES */
+.notice{padding:10px 20px;margin:0 24px 10px;font-size:15px;border-radius:var(--radius-sm);flex-shrink:0;display:none;font-weight:500}
 .notice.visible{display:block}
-.notice.blue{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue-text)}
-.notice.teal{background:var(--teal-bg);border:1px solid var(--teal-border);color:var(--teal-text);font-weight:500}
+.notice.blue{background:var(--cyan-bg);border:1px solid var(--cyan-border);color:var(--cyan)}
+.notice.teal{background:var(--teal-bg);border:1px solid var(--teal-border);color:var(--teal);font-weight:600}
 
-.table-area{flex:1;overflow:hidden;padding:0 20px 16px;display:flex;flex-direction:column;min-height:0}
+/* TABLE */
+.table-area{flex:1;overflow:hidden;padding:0 24px 16px;display:flex;flex-direction:column;min-height:0}
 .table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
 .table-scroll{overflow:auto;flex:1}
-table{width:100%;border-collapse:collapse;font-size:14px}
+.table-scroll::-webkit-scrollbar{width:8px;height:8px}
+.table-scroll::-webkit-scrollbar-track{background:var(--surface)}
+.table-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.table-scroll::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+table{width:100%;border-collapse:collapse;font-size:17px}
 thead{position:sticky;top:0;z-index:2}
-th{text-align:left;padding:12px 16px;font-size:12px;font-weight:600;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:0.04em;background:#f8f8f6}
-td{padding:12px 16px;border-bottom:0.5px solid var(--border);vertical-align:middle}
+th{text-align:left;padding:14px 18px;font-size:14px;font-weight:700;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:0.1em;background:var(--surface2);font-family:var(--font-body)}
+td{padding:14px 18px;border-bottom:1px solid rgba(42,54,80,0.5);vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:#fafaf7}
-tr.row-habilitado td{background:#fffbf0}
-tr.row-habilitado:hover td{background:#fff5dc}
-tr.row-locked td{opacity:0.4}
-tr.row-locked:hover td{background:transparent;opacity:0.4}
+tr:hover td{background:rgba(0,229,255,0.03)}
+tr.row-habilitado td{background:rgba(0,229,255,0.06);border-left:3px solid var(--cyan)}
+tr.row-habilitado:hover td{background:rgba(0,229,255,0.1)}
+tr.row-locked td{opacity:0.35}
+tr.row-locked:hover td{opacity:0.35}
 
-.num{width:30px;height:30px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text2)}
-.num.activo{background:#1a4fa0;color:#fff;border-color:#1a4fa0}
-.placa{display:inline-block;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:3px 10px;font-family:monospace;font-size:14px;font-weight:700;letter-spacing:0.06em}
-.badge{display:inline-block;padding:4px 11px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap}
-.badge.LOCAL{background:var(--green-bg);color:var(--green-text)}
-.badge.PROVINCIA{background:var(--amber-bg);color:var(--amber-text)}
-.badge.other{background:var(--blue-bg);color:var(--blue-text)}
-.estado-chip{display:inline-block;padding:4px 11px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap}
-.ec-prog{background:var(--green-bg);color:var(--green-text)}
-.ec-espera{background:var(--blue-bg);color:var(--blue-text)}
-.ec-nodis{background:var(--red-bg);color:var(--red-text)}
-.motivo-chip{font-size:12px;color:var(--purple-text);background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:4px;padding:3px 8px;display:inline-block;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default}
-.empty{text-align:center;padding:4rem;color:var(--text3);font-size:13px}
-.loading{text-align:center;padding:3rem;color:var(--text3);font-size:13px}
+.placa{display:inline-block;background:var(--surface3);border:1px solid var(--border2);border-radius:5px;padding:4px 12px;font-family:var(--font-display);font-size:16px;font-weight:700;letter-spacing:0.1em;color:var(--cyan)}
+.badge{display:inline-block;padding:5px 14px;border-radius:30px;font-size:14px;font-weight:700;letter-spacing:0.06em}
+.badge.LOCAL{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.badge.PROVINCIA{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.badge.other{background:var(--cyan-bg);color:var(--cyan);border:1px solid var(--cyan-border)}
+.cap-tag{display:inline-block;background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border);border-radius:30px;padding:4px 14px;font-size:15px;font-weight:700;font-family:var(--font-display);letter-spacing:0.06em}
+.estado-chip{display:inline-block;padding:5px 14px;border-radius:30px;font-size:14px;font-weight:700;letter-spacing:0.04em}
+.ec-prog{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.ec-espera{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.ec-nodis{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.motivo-chip{font-size:14px;color:var(--purple);background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:5px;padding:4px 10px;display:inline-block;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{text-align:center;padding:4rem;color:var(--text3);font-size:18px}
+.loading{text-align:center;padding:3rem;color:var(--text3);font-size:18px}
 
-.action-wrap{display:flex;gap:5px;flex-wrap:nowrap;align-items:center}
-.btn{padding:7px 13px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:1px solid;white-space:nowrap;transition:all 0.12s}
-.btn:disabled{opacity:0.25;cursor:not-allowed;pointer-events:none}
-.btn-prog{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}.btn-prog:not(:disabled):hover{background:#c8ebd4}
-.btn-induc{background:var(--teal-bg);color:var(--teal-text);border-color:var(--teal-border)}.btn-induc:not(:disabled):hover{background:#c0e8e8}
-.btn-nodis{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border)}.btn-nodis:not(:disabled):hover{background:#f5cccc}
-.btn-limpiar{background:var(--gray-bg);color:var(--gray-text);border-color:var(--gray-border)}.btn-limpiar:hover{background:#e0dfd7}
-.btn-cancelar{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border);font-size:12px;padding:5px 10px}.btn-cancelar:hover{background:#f5e8b8}
-.lock-icon{font-size:16px;color:var(--text3)}
-.cap-tag{display:inline-block;background:#eeeef8;color:#3a3a8a;border-radius:20px;padding:2px 9px;font-size:12px;font-weight:700}
+/* BUTTONS */
+.action-wrap{display:flex;gap:6px;flex-wrap:nowrap;align-items:center}
+.btn{padding:8px 16px;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;border:1px solid;white-space:nowrap;font-family:var(--font-body);letter-spacing:0.04em;text-transform:uppercase;transition:all 0.15s}
+.btn:disabled{opacity:0.2;cursor:not-allowed;pointer-events:none}
+.btn-prog{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}.btn-prog:not(:disabled):hover{background:rgba(0,230,118,0.25)}
+.btn-induc{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-border)}.btn-induc:not(:disabled):hover{background:rgba(29,233,182,0.25)}
+.btn-nodis{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}.btn-nodis:not(:disabled):hover{background:rgba(255,82,82,0.25)}
+.btn-limpiar{background:var(--surface3);color:var(--text2);border-color:var(--border2)}.btn-limpiar:hover{background:var(--border)}
+.btn-cancelar{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border);font-size:13px;padding:6px 12px}.btn-cancelar:hover{background:rgba(255,171,0,0.2)}
+.lock-icon{font-size:18px;color:var(--text3)}
 
-/* Modals */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .overlay.open{display:flex}
-.modal{background:var(--surface);border-radius:var(--radius);padding:26px;width:100%;max-width:480px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,0.15)}
-.modal-title{font-size:16px;font-weight:600;margin-bottom:6px}
-.modal-sub{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6}
-.modal-info{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-bottom:16px;border:1px solid var(--border)}
-.modal-label{font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px}
-textarea{width:100%;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;resize:vertical;min-height:80px;font-family:inherit;color:var(--text);background:var(--surface)}
-textarea:focus{outline:none;border-color:#1a4fa0}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
-.btn-confirm{border-radius:var(--radius-sm);padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid}
-.btn-confirm.red{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border)}.btn-confirm.red:hover{background:#f5cccc}
-.btn-cancel-m{background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 14px;font-size:13px;cursor:pointer}.btn-cancel-m:hover{background:var(--surface2)}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:28px;width:100%;max-width:500px;box-shadow:0 0 60px rgba(0,229,255,0.1)}
+.modal-title{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--cyan);margin-bottom:8px;letter-spacing:0.06em}
+.modal-sub{font-size:15px;color:var(--text2);margin-bottom:18px;line-height:1.6}
+.modal-info{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 16px;font-size:15px;margin-bottom:16px;border:1px solid var(--border);color:var(--text)}
+.modal-label{font-size:14px;font-weight:600;color:var(--text2);display:block;margin-bottom:6px}
+textarea{width:100%;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;font-size:15px;resize:vertical;min-height:90px;font-family:var(--font-body);color:var(--text);background:var(--surface2)}
+textarea:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 2px var(--cyan-bg)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.btn-confirm{border-radius:var(--radius-sm);padding:10px 22px;font-size:15px;font-weight:700;cursor:pointer;border:1px solid;font-family:var(--font-body);letter-spacing:0.04em}
+.btn-confirm.red{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}.btn-confirm.red:hover{background:rgba(255,82,82,0.25)}
+.btn-cancel-m{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 18px;font-size:15px;cursor:pointer;font-family:var(--font-body)}.btn-cancel-m:hover{background:var(--surface3)}
+
+/* Glow effects */
+@keyframes glow{0%,100%{box-shadow:0 0 5px var(--cyan-border)}50%{box-shadow:0 0 15px var(--cyan-border)}}
+tr.row-habilitado td:first-child{position:relative}
 </style>
 </head>
 <body>
@@ -116,87 +136,69 @@ textarea:focus{outline:none;border-color:#1a4fa0}
   <div><div class="topbar-title">Panel del Programador</div><div class="topbar-sub">Programación de unidades por orden de registro</div></div>
   <div class="topbar-right">
     <span class="sync-info" id="sync-info">—</span>
-    <button class="btn-refresh" onclick="recargar()">↻ Actualizar</button>
+    <button class="btn-refresh" onclick="recargar()">↻ ACTUALIZAR</button>
     <span class="topbar-clock" id="clock"></span>
   </div>
 </div>
 
 <div class="stats-bar">
-  <div class="stat"><div class="stat-icon si-total">📋</div><div><div class="stat-val" id="s-total">—</div><div class="stat-lbl">Total registros</div></div></div>
-  <div class="stat"><div class="stat-icon si-prog">✅</div><div><div class="stat-val" id="s-prog">—</div><div class="stat-lbl">Programadas</div></div></div>
-  <div class="stat"><div class="stat-icon si-pend">🔵</div><div><div class="stat-val" id="s-pend">—</div><div class="stat-lbl">No programadas</div></div></div>
-  <div class="stat"><div class="stat-icon si-nodis">🚫</div><div><div class="stat-val" id="s-nodis">—</div><div class="stat-lbl">No disponibles</div></div></div>
+  <div class="stat s-total"><div><div class="stat-val" id="s-total">—</div><div class="stat-lbl">Total registros</div></div></div>
+  <div class="stat s-prog"><div><div class="stat-val" id="s-prog">—</div><div class="stat-lbl">Programadas</div></div></div>
+  <div class="stat s-pend"><div><div class="stat-val" id="s-pend">—</div><div class="stat-lbl">No programadas</div></div></div>
+  <div class="stat s-nodis"><div><div class="stat-val" id="s-nodis">—</div><div class="stat-lbl">No disponibles</div></div></div>
 </div>
 
 <div class="filters-bar">
   <span class="filter-label">Vista:</span>
   <button class="filter-btn active" onclick="setFiltroEstado('TODOS',this)">Todos</button>
-  <button class="filter-btn" onclick="setFiltroEstado('NO_PROG',this)">Unidades no programadas</button>
-  <button class="filter-btn" onclick="setFiltroEstado('PROGRAMADO',this)">Unidades programadas</button>
-  <button class="filter-btn" onclick="setFiltroEstado('NO_DISP',this)">Unidades no disponibles</button>
+  <button class="filter-btn" onclick="setFiltroEstado('NO_PROG',this)">No programadas</button>
+  <button class="filter-btn" onclick="setFiltroEstado('PROGRAMADO',this)">Programadas</button>
+  <button class="filter-btn" onclick="setFiltroEstado('NO_DISP',this)">No disponibles</button>
   <div class="divider"></div>
   <span class="filter-label">Tipo:</span>
   <select class="filter-select" id="filtro-tipo" onchange="aplicarFiltros()">
-    <option value="">Todos los tipos</option>
-    <option value="LOCAL">LOCAL</option>
-    <option value="PROVINCIA">PROVINCIA</option>
-    <option value="FLEXIBLES">FLEXIBLES</option>
-    <option value="FURGÓN">FURGÓN</option>
-    <option value="PLATAFORMA">PLATAFORMA</option>
-    <option value="PLATAFORMA FURGÓN">PLATAFORMA FURGÓN</option>
-    <option value="REMOLCADOR">REMOLCADOR</option>
-    <option value="TRASLADO INTERNO">TRASLADO INTERNO</option>
+    <option value="">Todos</option>
+    <option value="LOCAL">LOCAL</option><option value="PROVINCIA">PROVINCIA</option>
+    <option value="FLEXIBLES">FLEXIBLES</option><option value="FURGÓN">FURGÓN</option>
+    <option value="PLATAFORMA">PLATAFORMA</option><option value="PLATAFORMA FURGÓN">PLATAFORMA FURGÓN</option>
+    <option value="REMOLCADOR">REMOLCADOR</option><option value="TRASLADO INTERNO">TRASLADO INTERNO</option>
   </select>
   <div class="divider"></div>
   <span class="filter-label">Capacidad:</span>
   <select class="filter-select" id="filtro-cap" onchange="aplicarFiltros()">
-    <option value="">Todas las capacidades</option>
+    <option value="">Todas</option>
   </select>
   <span class="results-count" id="results-count"></span>
 </div>
 
-<div class="notice blue visible" id="notice-orden">
-  🔒 Por cada capacidad, solo el registro más antiguo no programado tiene acciones habilitadas. Los demás están bloqueados hasta que se gestione el primero.
-</div>
+<div class="notice blue visible" id="notice-orden">🔒 POR CADA CAPACIDAD, SOLO EL REGISTRO MÁS ANTIGUO TIENE ACCIONES HABILITADAS</div>
 <div class="notice teal" id="notice-induccion"></div>
 
 <div class="table-area">
   <div class="table-card">
     <div class="table-scroll">
-      <div id="loading-table" class="loading">Cargando registros...</div>
+      <div id="loading-table" class="loading">CARGANDO REGISTROS...</div>
       <table id="tabla" style="display:none">
-        <thead>
-          <tr>
-            <th style="width:44px">#</th>
-            <th>Hora registro</th>
-            <th>Tipo</th>
-            <th>Empresa</th>
-            <th>Placa</th>
-            <th>Capacidad</th>
-            <th>Conductor</th>
-            <th>Teléfono</th>
-            <th>Estado</th>
-            <th>Motivo</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th>Hora registro</th><th>Tipo</th><th>Empresa</th><th>Placa</th>
+          <th>Capacidad</th><th>Conductor</th><th>Teléfono</th><th>Estado</th><th>Motivo</th><th>Acción</th>
+        </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<!-- Modal NO DISPONIBLE -->
 <div class="overlay" id="overlay-nodis">
   <div class="modal">
-    <div class="modal-title">Marcar como No Disponible</div>
+    <div class="modal-title">⛔ Marcar como No Disponible</div>
     <div class="modal-sub">Indica el motivo por el cual esta unidad no está disponible. Este campo es obligatorio.</div>
     <div class="modal-info" id="nodis-info"></div>
-    <label class="modal-label">Motivo de no disponibilidad <span style="color:#c0392b">*</span></label>
-    <textarea id="nodis-motivo" placeholder="Ej: Unidad en mantenimiento, conductor con descanso médico, falla mecánica..."></textarea>
+    <label class="modal-label">Motivo de no disponibilidad *</label>
+    <textarea id="nodis-motivo" placeholder="Ej: Unidad en mantenimiento, falla mecánica..."></textarea>
     <div class="modal-actions">
       <button class="btn-cancel-m" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn-confirm red" onclick="confirmarNoDisponible()">Confirmar NO DISPONIBLE</button>
+      <button class="btn-confirm red" onclick="confirmarNoDisponible()">CONFIRMAR NO DISPONIBLE</button>
     </div>
   </div>
 </div>
@@ -207,15 +209,12 @@ import{getFirestore,collection,getDocs,doc,updateDoc,orderBy,query}from"https://
 const cfg={apiKey:"AIzaSyBZrsVQINRIfBL8YuU3iDOX21cQtAF5w44",authDomain:"registro-de-unidades-9dd2d.firebaseapp.com",projectId:"registro-de-unidades-9dd2d",storageBucket:"registro-de-unidades-9dd2d.firebasestorage.app",messagingSenderId:"832510139261",appId:"1:832510139261:web:708c0c386f55362fb64a14"};
 const app=initializeApp(cfg);const db=getFirestore(app);
 
-let registros=[], idSel=null;
-let filtros={estado:'TODOS',tipo:'',cap:''};
-let modoInduccion=false, capInduccion='';
+let registros=[],idSel=null,filtros={estado:'TODOS',tipo:'',cap:''},modoInduccion=false,capInduccion='';
 
 const pad=n=>String(n).padStart(2,'0');
 function fmtDate(d){return`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
 function tick(){document.getElementById('clock').textContent=fmtDate(new Date());}tick();setInterval(tick,1000);
 
-// Estado helpers
 function esProgramado(r){return r.estado==='PROGRAMADO';}
 function esNoDisponible(r){return r.estado==='UNIDAD NO DISPONIBLE';}
 function esPendiente(r){return !esProgramado(r)&&!esNoDisponible(r);}
@@ -227,147 +226,78 @@ window.recargar=async function(){
     const snap=await getDocs(q);
     registros=snap.docs.map(d=>({...d.data(),_id:d.id}));
     poblarFiltroCapacidad();renderTabla();updateStats();
-    const now=new Date();
-    document.getElementById('sync-info').textContent='Actualizado: '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+    document.getElementById('sync-info').textContent='Actualizado: '+pad(new Date().getHours())+':'+pad(new Date().getMinutes())+':'+pad(new Date().getSeconds());
     document.getElementById('loading-table').style.display='none';
     document.getElementById('tabla').style.display='table';
-  }catch(e){
-    document.getElementById('sync-info').textContent='Error al cargar';
-    document.getElementById('loading-table').textContent='Error al cargar los registros.';
-  }
+  }catch(e){document.getElementById('loading-table').textContent='ERROR AL CARGAR';}
 };
 setInterval(()=>window.recargar(),30000);
 
 function poblarFiltroCapacidad(){
   const caps=[...new Set(registros.map(r=>r.cap).filter(Boolean))].sort((a,b)=>(parseInt(a)||0)-(parseInt(b)||0));
   const sel=document.getElementById('filtro-cap');const cur=sel.value;
-  sel.innerHTML='<option value="">Todas las capacidades</option>';
+  sel.innerHTML='<option value="">Todas</option>';
   caps.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
   if(cur)sel.value=cur;
 }
 
-window.setFiltroEstado=function(val,el){
-  filtros.estado=val;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  aplicarFiltros();
-};
-window.aplicarFiltros=function(){
-  filtros.tipo=document.getElementById('filtro-tipo').value;
-  filtros.cap=document.getElementById('filtro-cap').value;
-  renderTabla();
-};
+window.setFiltroEstado=function(v,el){filtros.estado=v;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');aplicarFiltros();};
+window.aplicarFiltros=function(){filtros.tipo=document.getElementById('filtro-tipo').value;filtros.cap=document.getElementById('filtro-cap').value;renderTabla();};
 
 function getLista(){
-  let lista=[...registros];
-  if(filtros.estado==='NO_PROG') lista=lista.filter(r=>esPendiente(r));
-  else if(filtros.estado==='PROGRAMADO') lista=lista.filter(r=>esProgramado(r));
-  else if(filtros.estado==='NO_DISP') lista=lista.filter(r=>esNoDisponible(r));
-  if(filtros.tipo) lista=lista.filter(r=>r.tipo===filtros.tipo);
-  if(filtros.cap) lista=lista.filter(r=>r.cap===filtros.cap);
-  return lista;
+  let l=[...registros];
+  if(filtros.estado==='NO_PROG')l=l.filter(r=>esPendiente(r));
+  else if(filtros.estado==='PROGRAMADO')l=l.filter(r=>esProgramado(r));
+  else if(filtros.estado==='NO_DISP')l=l.filter(r=>esNoDisponible(r));
+  if(filtros.tipo)l=l.filter(r=>r.tipo===filtros.tipo);
+  if(filtros.cap)l=l.filter(r=>r.cap===filtros.cap);
+  return l;
 }
 
-// Para cada capacidad, el ID del primer registro pendiente (más antiguo)
-function getPrimerosPorCapacidad(){
-  const map={};
-  // Recorrer todos los registros (ordenados por tsNum asc) — no solo los filtrados
-  registros.forEach(r=>{
-    if(esPendiente(r)&&!map[r.cap]) map[r.cap]=r._id;
-  });
-  return map;
-}
-
-function tipoBadge(tipo){
-  const cls=tipo==='LOCAL'?'LOCAL':tipo==='PROVINCIA'?'PROVINCIA':'other';
-  return`<span class="badge ${cls}">${tipo||'—'}</span>`;
-}
-
+function getPrimerosPorCap(){const m={};registros.forEach(r=>{if(esPendiente(r)&&!m[r.cap])m[r.cap]=r._id;});return m;}
+function tipoBadge(t){return`<span class="badge ${t==='LOCAL'?'LOCAL':t==='PROVINCIA'?'PROVINCIA':'other'}">${t||'—'}</span>`;}
 function estadoBadge(r){
-  if(esProgramado(r)) return`<span class="estado-chip ec-prog">PROGRAMADO</span>`;
-  if(esNoDisponible(r)) return`<span class="estado-chip ec-nodis">UNIDAD NO DISPONIBLE</span>`;
-  return`<span class="estado-chip ec-espera">ESPERANDO PROGRAMACIÓN</span>`;
+  if(esProgramado(r))return`<span class="estado-chip ec-prog">PROGRAMADO</span>`;
+  if(esNoDisponible(r))return`<span class="estado-chip ec-nodis">NO DISPONIBLE</span>`;
+  return`<span class="estado-chip ec-espera">ESPERANDO</span>`;
 }
 
 function renderTabla(){
-  const lista=getLista();
-  const tbody=document.getElementById('tbody');
+  const lista=getLista(),tbody=document.getElementById('tbody');
   document.getElementById('results-count').textContent=lista.length+' resultado'+(lista.length===1?'':'s');
-
-  // Calcular primeros por capacidad (sobre TODOS los registros, no solo los filtrados)
-  const primerosPorCap=getPrimerosPorCapacidad();
-
-  const hayPendientes=lista.some(r=>esPendiente(r));
-  document.getElementById('notice-orden').classList.toggle('visible', hayPendientes&&filtros.estado!=='PROGRAMADO'&&filtros.estado!=='NO_DISP');
+  const primeros=getPrimerosPorCap();
+  const hayP=lista.some(r=>esPendiente(r));
+  document.getElementById('notice-orden').classList.toggle('visible',hayP&&filtros.estado!=='PROGRAMADO'&&filtros.estado!=='NO_DISP');
   const ni=document.getElementById('notice-induccion');
-  if(modoInduccion){
-    ni.className='notice teal visible';
-    ni.textContent='⚡ MODO INDUCCIÓN ACTIVO — Capacidad: '+capInduccion+'. Todos los registros de esta capacidad están desbloqueados. Elige la unidad y presiona PROGRAMAR. El motivo quedará como "INDUCCIÓN ESPECÍFICA".';
-  } else {
-    ni.className='notice teal';ni.textContent='';
-  }
+  if(modoInduccion){ni.className='notice teal visible';ni.textContent='⚡ MODO INDUCCIÓN — Capacidad: '+capInduccion+'. Todos desbloqueados. Elige y presiona PROGRAMAR.';}
+  else{ni.className='notice teal';}
 
-  if(!lista.length){tbody.innerHTML='<tr><td colspan="11" class="empty">No hay registros para los filtros seleccionados</td></tr>';return;}
-
+  if(!lista.length){tbody.innerHTML='<tr><td colspan="10" class="empty">NO HAY REGISTROS PARA ESTOS FILTROS</td></tr>';return;}
   tbody.innerHTML=lista.map(r=>{
-    const numGlobal=registros.indexOf(r)+1;
-    const prog=esProgramado(r);
-    const noDis=esNoDisponible(r);
-    const esPrimeroDeCapacidad=primerosPorCap[r.cap]===r._id;
-    // En modo inducción: si la capacidad coincide, habilitar todos los pendientes de esa capacidad
-    const habilitadoPorInduccion=modoInduccion&&esPendiente(r)&&r.cap===capInduccion;
-    const habilitado=esPrimeroDeCapacidad||habilitadoPorInduccion;
-    const bloqueado=esPendiente(r)&&!habilitado;
+    const prog=esProgramado(r),noDis=esNoDisponible(r);
+    const esPrimero=primeros[r.cap]===r._id;
+    const habInduc=modoInduccion&&esPendiente(r)&&r.cap===capInduccion;
+    const hab=esPrimero||habInduc;
+    const bloq=esPendiente(r)&&!hab;
+    let cls=prog||noDis?'':hab?'row-habilitado':'row-locked';
+    const mot=r.motivo?`<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>`:`<span style="color:var(--text3)">—</span>`;
+    let acc='';
+    if(prog||noDis){acc=`<div class="action-wrap"><button class="btn btn-limpiar" onclick="limpiar('${r._id}')">LIMPIAR</button></div>`;}
+    else if(habInduc){acc=`<div class="action-wrap"><button class="btn btn-prog" onclick="programarInduccion('${r._id}')">PROGRAMAR</button><button class="btn btn-cancelar" onclick="cancelarInduccion()">✕</button></div>`;}
+    else if(hab){acc=`<div class="action-wrap"><button class="btn btn-prog" onclick="programar('${r._id}')">PROGRAMAR</button><button class="btn btn-induc" onclick="iniciarInduccion('${r.cap}')">INDUCCIÓN</button><button class="btn btn-nodis" onclick="abrirNoDisponible('${r._id}')">NO DISPONIBLE</button></div>`;}
+    else{acc=`<div class="action-wrap"><button class="btn btn-prog" disabled>PROGRAMAR</button><button class="btn btn-induc" disabled>INDUCCIÓN</button><button class="btn btn-nodis" disabled>NO DISPONIBLE</button><span class="lock-icon">🔒</span></div>`;}
 
-    // Clases de fila
-    let rowClass='';
-    if(prog||noDis) rowClass='';
-    else if(habilitado&&!modoInduccion) rowClass='row-habilitado';
-    else if(habilitadoPorInduccion) rowClass='row-habilitado';
-    else rowClass='row-locked';
-
-    const numClass=habilitado&&!prog&&!noDis?'num activo':'num';
-    const motivoHtml=r.motivo?`<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>`:`<span style="color:var(--text3)">—</span>`;
-
-    let accionHtml='';
-    if(prog||noDis){
-      // Programado o no disponible → solo Limpiar
-      accionHtml=`<div class="action-wrap"><button class="btn btn-limpiar" onclick="limpiar('${r._id}')">Limpiar</button></div>`;
-    } else if(habilitadoPorInduccion){
-      // Modo inducción activo para esta capacidad
-      accionHtml=`<div class="action-wrap">
-        <button class="btn btn-prog" onclick="programarInduccion('${r._id}')">PROGRAMAR</button>
-        <button class="btn btn-cancelar" onclick="cancelarInduccion()">✕ Cancelar</button>
-      </div>`;
-    } else if(habilitado){
-      // Primer registro de su capacidad → todas las acciones disponibles
-      accionHtml=`<div class="action-wrap">
-        <button class="btn btn-prog" onclick="programar('${r._id}')">PROGRAMAR</button>
-        <button class="btn btn-induc" onclick="iniciarInduccion('${r.cap}')">INDUCCIÓN</button>
-        <button class="btn btn-nodis" onclick="abrirNoDisponible('${r._id}')">NO DISPONIBLE</button>
-      </div>`;
-    } else {
-      // Bloqueado
-      accionHtml=`<div class="action-wrap">
-        <button class="btn btn-prog" disabled>PROGRAMAR</button>
-        <button class="btn btn-induc" disabled>INDUCCIÓN</button>
-        <button class="btn btn-nodis" disabled>NO DISPONIBLE</button>
-        <span class="lock-icon">🔒</span>
-      </div>`;
-    }
-
-    return`<tr class="${rowClass}">
-      <td><span class="${numClass}">${numGlobal}</span></td>
-      <td style="white-space:nowrap;font-family:monospace">${r.ts}</td>
+    return`<tr class="${cls}">
+      <td style="white-space:nowrap;font-family:var(--font-display);font-size:15px;letter-spacing:0.05em;color:var(--text2)">${r.ts}</td>
       <td>${tipoBadge(r.tipo)}</td>
-      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.empresa}">${r.empresa}</td>
+      <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.empresa}">${r.empresa}</td>
       <td><span class="placa">${r.placa}</span></td>
       <td><span class="cap-tag">${r.cap}</span></td>
-      <td style="font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.nombre}">${r.nombre}</td>
-      <td style="white-space:nowrap">${r.tel}</td>
+      <td style="font-weight:700;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.nombre}">${r.nombre}</td>
+      <td style="white-space:nowrap;color:var(--text2)">${r.tel}</td>
       <td>${estadoBadge(r)}</td>
-      <td>${motivoHtml}</td>
-      <td>${accionHtml}</td>
+      <td>${mot}</td>
+      <td>${acc}</td>
     </tr>`;
   }).join('');
 }
@@ -379,68 +309,15 @@ function updateStats(){
   document.getElementById('s-nodis').textContent=registros.filter(r=>esNoDisponible(r)).length;
 }
 
-// PROGRAMAR instantáneo
-window.programar=async function(id){
-  try{await updateDoc(doc(db,'registros',id),{estado:'PROGRAMADO',motivo:''});await window.recargar();}
-  catch(e){alert('Error al actualizar.');}
-};
-
-// INDUCCIÓN: activar modo inducción para la capacidad indicada
-window.iniciarInduccion=function(cap){
-  modoInduccion=true;capInduccion=cap;
-  // Aplicar filtro de capacidad automáticamente
-  document.getElementById('filtro-cap').value=cap;
-  filtros.cap=cap;
-  renderTabla();
-};
-
-// PROGRAMAR en modo inducción
-window.programarInduccion=async function(id){
-  try{
-    await updateDoc(doc(db,'registros',id),{estado:'PROGRAMADO',motivo:'INDUCCIÓN ESPECÍFICA'});
-    modoInduccion=false;capInduccion='';
-    document.getElementById('filtro-cap').value='';filtros.cap='';
-    await window.recargar();
-  }catch(e){alert('Error al actualizar.');}
-};
-
-window.cancelarInduccion=function(){
-  modoInduccion=false;capInduccion='';
-  document.getElementById('filtro-cap').value='';filtros.cap='';
-  renderTabla();
-};
-
-// NO DISPONIBLE
-window.abrirNoDisponible=function(id){
-  idSel=id;
-  const r=registros.find(x=>x._id===id);
-  if(!r)return;
-  document.getElementById('nodis-info').innerHTML=`<strong>${r.placa}</strong> — ${r.empresa} — <span class="cap-tag">${r.cap}</span> — ${r.nombre}`;
-  document.getElementById('nodis-motivo').value='';
-  document.getElementById('overlay-nodis').classList.add('open');
-};
-window.confirmarNoDisponible=async function(){
-  if(!idSel)return;
-  const motivo=document.getElementById('nodis-motivo').value.trim();
-  if(!motivo){alert('Debes ingresar el motivo de no disponibilidad.');return;}
-  try{
-    await updateDoc(doc(db,'registros',idSel),{estado:'UNIDAD NO DISPONIBLE',motivo});
-    cerrarModal();await window.recargar();
-  }catch(e){alert('Error al actualizar.');}
-};
-
-// LIMPIAR — regresa a estado inicial
-window.limpiar=async function(id){
-  if(!confirm('¿Limpiar esta unidad? El estado volverá a "ESPERANDO PROGRAMACIÓN".'))return;
-  try{
-    await updateDoc(doc(db,'registros',id),{estado:'ESPERANDO PROGRAMACIÓN',motivo:''});
-    await window.recargar();
-  }catch(e){alert('Error al actualizar.');}
-};
-
+window.programar=async function(id){try{await updateDoc(doc(db,'registros',id),{estado:'PROGRAMADO',motivo:''});await window.recargar();}catch(e){alert('Error');}};
+window.iniciarInduccion=function(cap){modoInduccion=true;capInduccion=cap;document.getElementById('filtro-cap').value=cap;filtros.cap=cap;renderTabla();};
+window.programarInduccion=async function(id){try{await updateDoc(doc(db,'registros',id),{estado:'PROGRAMADO',motivo:'INDUCCIÓN ESPECÍFICA'});modoInduccion=false;capInduccion='';document.getElementById('filtro-cap').value='';filtros.cap='';await window.recargar();}catch(e){alert('Error');}};
+window.cancelarInduccion=function(){modoInduccion=false;capInduccion='';document.getElementById('filtro-cap').value='';filtros.cap='';renderTabla();};
+window.abrirNoDisponible=function(id){idSel=id;const r=registros.find(x=>x._id===id);if(!r)return;document.getElementById('nodis-info').innerHTML=`<strong>${r.placa}</strong> — ${r.empresa} — ${r.cap} — ${r.nombre}`;document.getElementById('nodis-motivo').value='';document.getElementById('overlay-nodis').classList.add('open');};
+window.confirmarNoDisponible=async function(){if(!idSel)return;const m=document.getElementById('nodis-motivo').value.trim();if(!m){alert('Debes ingresar el motivo.');return;}try{await updateDoc(doc(db,'registros',idSel),{estado:'UNIDAD NO DISPONIBLE',motivo:m});cerrarModal();await window.recargar();}catch(e){alert('Error');}};
+window.limpiar=async function(id){if(!confirm('¿Limpiar programación?'))return;try{await updateDoc(doc(db,'registros',id),{estado:'ESPERANDO PROGRAMACIÓN',motivo:''});await window.recargar();}catch(e){alert('Error');}};
 window.cerrarModal=function(){document.getElementById('overlay-nodis').classList.remove('open');idSel=null;};
 document.getElementById('overlay-nodis').addEventListener('click',function(e){if(e.target===this)window.cerrarModal();});
-
 window.recargar();
 </script>
 </body>

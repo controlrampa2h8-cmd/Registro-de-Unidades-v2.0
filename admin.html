@@ -5,28 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Panel Administrador</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#f5f4f0;--surface:#fff;--surface2:#f0efe9;--border:#e2e0d8;--border2:#c8c6bc;--text:#1a1916;--text2:#6b6960;--text3:#9b9a93;--blue-bg:#e8f0fc;--blue-text:#1a4fa0;--blue-border:#b8cef5;--green-bg:#e6f4ec;--green-text:#1a6b38;--green-border:#a8dbb8;--amber-bg:#fdf3e0;--amber-text:#8a5a00;--amber-border:#f0d080;--red-bg:#fceaea;--red-text:#a01a1a;--red-border:#f0b8b8;--purple-bg:#f0ecfc;--purple-text:#4a1fa0;--purple-border:#c8b8f5;--radius:10px;--radius-sm:6px}
-body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);min-height:100vh}
-.topbar{background:#2d1a4a;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px}
-.topbar-icon{width:36px;height:36px;background:rgba(255,255,255,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center}
-.topbar-icon svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2}
-.topbar-title{font-size:15px;font-weight:600}.topbar-sub{font-size:11px;opacity:0.5;margin-top:2px}.topbar-clock{margin-left:auto;font-size:12px;opacity:0.5;font-family:monospace}
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2236;--surface3:#222d45;--border:#2a3650;--border2:#3a4a6a;--text:#e8ecf4;--text2:#8892a8;--text3:#5a6480;--cyan:#00e5ff;--cyan-bg:rgba(0,229,255,0.08);--cyan-border:rgba(0,229,255,0.25);--green:#00e676;--green-bg:rgba(0,230,118,0.1);--green-border:rgba(0,230,118,0.3);--amber:#ffab00;--amber-bg:rgba(255,171,0,0.1);--amber-border:rgba(255,171,0,0.3);--red:#ff5252;--red-bg:rgba(255,82,82,0.1);--red-border:rgba(255,82,82,0.3);--purple:#b388ff;--purple-bg:rgba(179,136,255,0.1);--purple-border:rgba(179,136,255,0.3);--radius:10px;--radius-sm:6px;--font-display:'Orbitron',sans-serif;--font-body:'Rajdhani',sans-serif}
+body{background:var(--bg);font-family:var(--font-body);color:var(--text);min-height:100vh}::selection{background:var(--cyan);color:var(--bg)}
+.topbar{background:linear-gradient(90deg,#0d1224,#1a1040,#0d1224);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);position:relative}.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purple),transparent)}
+.topbar-icon{width:40px;height:40px;background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.topbar-icon svg{width:22px;height:22px;stroke:var(--purple);fill:none;stroke-width:2}
+.topbar-title{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--purple);letter-spacing:0.08em;text-transform:uppercase}.topbar-sub{font-size:13px;color:var(--text2);letter-spacing:0.04em}.topbar-clock{margin-left:auto;font-family:var(--font-display);font-size:16px;color:var(--purple);letter-spacing:0.1em}
 .container{max-width:1100px;margin:0 auto;padding:20px 16px}
 .tabs{display:flex;gap:2px;margin-bottom:20px;border-bottom:1px solid var(--border);overflow-x:auto}
 .tab{padding:10px 18px;font-size:13px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500;white-space:nowrap}
-.tab.active{color:var(--text);border-bottom-color:var(--text)}.pane{display:none}.pane.active{display:block}
+.tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}.pane{display:none}.pane.active{display:block}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
-.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px}
+.card-title{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .field{display:flex;flex-direction:column;gap:5px}
-.field label{font-size:12px;font-weight:500;color:var(--text2)}
-.field input,.field select{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 11px;font-size:13px;background:var(--surface);color:var(--text);width:100%}
-.field input:focus,.field select:focus{outline:none;border-color:#1a4fa0;box-shadow:0 0 0 3px rgba(26,79,160,0.08)}
+.field label{font-size:14px;font-weight:600;color:var(--text2)}
+.field input,.field select{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;font-size:15px;background:var(--surface2);color:var(--text);font-family:var(--font-body);width:100%}
+.field input:focus,.field select:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px var(--cyan-bg)}
 .req{color:#c0392b}
 .actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
 .btn{padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;border:1px solid;transition:all 0.15s}
-.btn-primary{background:var(--text);color:#fff;border-color:var(--text)}.btn-primary:hover{background:#333}
+.btn-primary{background:var(--cyan-bg);color:var(--cyan);border-color:var(--cyan-border)}.btn-primary:hover{background:rgba(0,229,255,0.2)}
 .btn-ghost{background:transparent;color:var(--text2);border-color:var(--border2)}.btn-ghost:hover{background:var(--surface2)}
 .btn-danger{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border)}.btn-danger:hover{background:#f5cccc}
 .btn-green{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}.btn-green:hover{background:#c8ebd4}
@@ -35,10 +36,10 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .msg.ok{background:var(--green-bg);color:var(--green-text)}.msg.err{background:var(--red-bg);color:var(--red-text)}.msg.warn{background:var(--amber-bg);color:var(--amber-text)}
 .zone-info-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--text2);margin-bottom:14px}
 .table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:9px 12px;font-size:11px;font-weight:600;color:var(--text3);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.04em;background:var(--surface2);white-space:nowrap}
-td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
-tr:last-child td{border-bottom:none}tr:hover td{background:var(--surface2)}
+table{width:100%;border-collapse:collapse;font-size:16px}
+th{text-align:left;padding:12px 14px;font-size:13px;font-weight:700;color:var(--text3);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.04em;background:var(--surface2);white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid rgba(42,54,80,0.5);vertical-align:middle}
+tr:last-child td{border-bottom:none}tr:hover td{background:rgba(0,229,255,0.03)}
 .placa-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:2px 8px;font-family:monospace;font-size:12px;font-weight:700;letter-spacing:0.06em}
 .lic-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:2px 8px;font-family:monospace;font-size:12px;font-weight:600}
 .badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
@@ -48,16 +49,16 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--surface2)}
 .estado{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
 .estado.asignado{background:var(--green-bg);color:var(--green-text)}.estado.espera{background:var(--amber-bg);color:var(--amber-text)}.estado.pendiente{background:var(--blue-bg);color:var(--blue-text)}
 .motivo-chip{font-size:11px;color:var(--purple-text);background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:4px;padding:3px 8px;display:inline-block;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.empty{text-align:center;padding:2.5rem;color:var(--text3);font-size:13px}
+.empty{text-align:center;padding:3rem;color:var(--text3);font-size:16px}
 .del-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px 8px;border-radius:4px;font-size:13px}.del-btn:hover{color:var(--red-text);background:var(--red-bg)}
 .edit-btn{background:var(--blue-bg);color:var(--blue-text);border:1px solid var(--blue-border);border-radius:4px;padding:4px 10px;font-size:12px;cursor:pointer}.edit-btn:hover{opacity:0.8}
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;text-align:center}
-.stat-val{font-size:26px;font-weight:700;letter-spacing:-0.02em}.stat-lbl{font-size:11px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:0.04em}
+.stat-val{font-family:var(--font-display);font-size:34px;font-weight:900;letter-spacing:0.02em}.stat-lbl{font-size:13px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:0.08em}
 .stat.asig .stat-val{color:var(--green-text)}.stat.espera .stat-val{color:var(--amber-text)}.stat.pend .stat-val{color:#1a4fa0}
 .search-row{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .search-input{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 12px;font-size:13px;width:220px;color:var(--text)}.search-input:focus{outline:none;border-color:#1a4fa0}
-.loading{text-align:center;padding:2rem;color:var(--text3);font-size:13px}
+.loading{text-align:center;padding:2rem;color:var(--text3);font-size:16px}
 .import-box{background:var(--green-bg);border:1px solid var(--green-border);border-radius:var(--radius);padding:16px 20px;margin-bottom:16px}
 .import-box h3{font-size:13px;font-weight:600;color:var(--green-text);margin-bottom:6px}
 .import-box p{font-size:12.5px;color:var(--green-text);opacity:0.85;line-height:1.6;margin-bottom:12px}
@@ -207,7 +208,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:var(--surface2)}
       <div id="loading-hist" class="loading">Cargando historial...</div>
       <div class="table-wrap" id="table-hist" style="display:none">
         <table style="min-width:1000px">
-          <thead><tr><th>#</th><th>Fecha/Hora</th><th>Tipo</th><th>Empresa</th><th>Placa</th><th>Cap.</th><th>Licencia</th><th>Conductor</th><th>Teléfono</th><th>Ubicación</th><th>Estado</th><th>Motivo</th><th></th></tr></thead>
+          <thead><tr><th>Fecha/Hora</th><th>Tipo</th><th>Empresa</th><th>Placa</th><th>Cap.</th><th>Licencia</th><th>Conductor</th><th>Teléfono</th><th>Ubicación</th><th>Estado</th><th>Motivo</th><th></th></tr></thead>
           <tbody id="tbody-hist"></tbody>
         </table>
       </div>
@@ -426,11 +427,11 @@ async function cargarHistorial(){
     document.getElementById('h-esp').textContent=regs.filter(r=>r.estado==='EN ESPERA DE CARGA').length;
     document.getElementById('h-pend').textContent=regs.filter(r=>!r.estado||r.estado==='PENDIENTE').length;
     const tbody=document.getElementById('tbody-hist');
-    if(!regs.length){tbody.innerHTML='<tr><td colspan="13" class="empty">No hay registros aún</td></tr>';}
+    if(!regs.length){tbody.innerHTML='<tr><td colspan="12" class="empty">No hay registros aún</td></tr>';}
     else tbody.innerHTML=regs.map((r,i)=>{
       const est=r.estado||'PENDIENTE';
       return`<tr>
-        <td style="font-weight:600;color:var(--text3)">${i+1}</td>
+
         <td style="font-size:11px;white-space:nowrap;font-family:monospace">${r.ts}</td>
         <td>${tipoBadge(r.tipo||'')}</td>
         <td style="white-space:nowrap;font-size:12px">${r.empresa}</td>
