@@ -68,6 +68,10 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(0,229,255,0.03)}
 .excel-drop:hover{border-color:#1a4fa0;color:#1a4fa0}
 .excel-drop input[type=file]{display:none}
 @media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+
+.col-filter{width:100%;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:5px 8px;font-size:13px;background:var(--surface);color:var(--text);font-family:var(--font-body)}
+.col-filter:focus{outline:none;border-color:var(--cyan);background:var(--surface)}
+.col-filter::placeholder{color:var(--text3);font-size:12px}
 </style>
 </head>
 <body>
@@ -208,7 +212,26 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(0,229,255,0.03)}
       <div id="loading-hist" class="loading">Cargando historial...</div>
       <div class="table-wrap" id="table-hist" style="display:none">
         <table style="min-width:1000px">
-          <thead><tr><th>Fecha/Hora</th><th>Tipo</th><th>Empresa</th><th>Placa</th><th>Cap.</th><th>Licencia</th><th>Conductor</th><th>Teléfono</th><th>Ubicación</th><th>Estado</th><th>Motivo</th><th></th></tr></thead>
+          <thead>
+        <tr>
+          <th>Fecha/Hora</th><th>Tipo</th><th>Empresa</th><th>Placa</th><th>Cap.</th>
+          <th>Licencia</th><th>Conductor</th><th>Teléfono</th><th>Estado</th><th>Fecha acción</th><th>Motivo</th><th>Acciones</th>
+        </tr>
+        <tr id="filter-row" style="background:var(--surface2)">
+          <td><input class="col-filter" id="cf-ts" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
+          <td><input class="col-filter" id="cf-tipo" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
+          <td><input class="col-filter" id="cf-emp" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
+          <td><input class="col-filter" id="cf-placa" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
+          <td><input class="col-filter" id="cf-cap" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
+          <td><input class="col-filter" id="cf-lic" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
+          <td><input class="col-filter" id="cf-cond" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
+          <td><input class="col-filter" id="cf-tel" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
+          <td><input class="col-filter" id="cf-est" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
+          <td></td>
+          <td><input class="col-filter" id="cf-mot" placeholder="Filtrar..." oninput="filtrarHistorial()"></td>
+          <td></td>
+        </tr>
+      </thead>
           <tbody id="tbody-hist"></tbody>
         </table>
       </div>
@@ -223,7 +246,7 @@ const BD_CONDUCTORES = {"Q06962543": {"nombre": "RODOLFO QUISPE CONDE"}, "P48579
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import{getFirestore,collection,getDocs,doc,setDoc,deleteDoc,getDoc,orderBy,query,writeBatch}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import{getFirestore,collection,getDocs,doc,setDoc,deleteDoc,updateDoc,getDoc,orderBy,query,writeBatch}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyBZrsVQINRIfBL8YuU3iDOX21cQtAF5w44",authDomain:"registro-de-unidades-9dd2d.firebaseapp.com",projectId:"registro-de-unidades-9dd2d",storageBucket:"registro-de-unidades-9dd2d.firebasestorage.app",messagingSenderId:"832510139261",appId:"1:832510139261:web:708c0c386f55362fb64a14"};
 const app=initializeApp(cfg);const db=getFirestore(app);
 
