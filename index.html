@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Registro de Unidades</title>
 <style>
-/* ========== ESTILOS (igual que tu código original) ========== */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#f5f4f0;--surface:#fff;--surface2:#f0efe9;--border:#e2e0d8;--border2:#c8c6bc;--text:#1a1916;--text2:#6b6960;--text3:#9b9a93;--blue-bg:#e8f0fc;--blue-text:#1a4fa0;--blue-border:#b8cef5;--green-bg:#e6f4ec;--green-text:#1a6b38;--green-border:#a8dbb8;--amber-bg:#fdf3e0;--amber-text:#8a5a00;--amber-border:#f0d080;--red-bg:#fceaea;--red-text:#a01a1a;--red-border:#f0b8b8;--radius:10px;--radius-sm:6px}
 body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);min-height:100vh}
@@ -71,6 +70,7 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 <div class="container">
   <div id="init-msg" class="loading">Conectando con la base de datos...</div>
   <div id="app-content" style="display:none">
+
     <!-- PASO 1: DATOS -->
     <div class="card" id="card-1">
       <div class="section-divider"><span class="step-badge active" id="b1">1</span><span class="step-label">Datos de la unidad</span></div>
@@ -89,6 +89,7 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
         <button class="btn btn-primary" id="btn-continuar-datos" onclick="continuarDatos()" disabled>Continuar →</button>
       </div>
     </div>
+
     <!-- PASO 2: FOTO -->
     <div class="card locked" id="card-2">
       <div class="section-divider"><span class="step-badge" id="b2">2</span><span class="step-label">Foto de la placa de tu unidad</span></div>
@@ -107,6 +108,7 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
         <button class="btn btn-ghost" id="btn-retomar" onclick="retomar()" style="display:none">↺ Retomar foto</button>
       </div>
     </div>
+
     <!-- PASO 3: UBICACIÓN -->
     <div class="card locked" id="card-3">
       <div class="section-divider"><span class="step-badge" id="b3">3</span><span class="step-label">Verificación de ubicación</span></div>
@@ -121,15 +123,16 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
       </div>
       <div class="msg" id="msg"></div>
     </div>
+
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore-compat.js"></script>
 <script>
-// ========== CONFIGURACIÓN ==========
+// Configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBZrsVQINRIfBL8YuU3iDOX21cQtAF5w44",
   authDomain: "registro-de-unidades-9dd2d.firebaseapp.com",
@@ -143,12 +146,10 @@ const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// ========== VARIABLES GLOBALES ==========
 let zona = null, geoOk = false, fotoOk = false, userLat = null, userLng = null, streamActivo = null;
 let placasDB = {}, conductoresDB = {};
 let datosCargados = false;
 
-// ========== FUNCIONES AUXILIARES ==========
 const pad = n => String(n).padStart(2,'0');
 function fmtDate(d) { return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
 function tick() {
@@ -160,28 +161,23 @@ tick(); setInterval(tick, 1000);
 
 function showError(msg) {
   const el = document.getElementById('init-msg');
-  el.innerHTML = msg + '<br><button onclick="location.reload()" class="btn btn-primary" style="margin-top:8px">Reintentar</button>';
+  el.innerHTML = msg + '<br><button onclick="location.reload()" style="margin-top:8px;padding:6px 12px;background:#1a4fa0;color:#fff;border:none;border-radius:5px;cursor:pointer">Reintentar</button>';
 }
 
-// ========== CARGA DE DATOS DESDE FIRESTORE ==========
 async function cargarDatos() {
   try {
     console.log("Cargando datos desde Firestore...");
-    // Cargar zona
     const zd = await db.collection('config').doc('zona').get();
     if (zd.exists) zona = zd.data();
-    // Cargar placas
     const ps = await db.collection('placas').get();
     placasDB = {};
     ps.forEach(d => { placasDB[d.id] = d.data(); });
     console.log("Placas cargadas:", Object.keys(placasDB).length);
-    // Cargar conductores
     const cs = await db.collection('conductores').get();
     conductoresDB = {};
     cs.forEach(d => { conductoresDB[d.id] = d.data(); });
     console.log("Conductores cargados:", Object.keys(conductoresDB).length);
     
-    // Todo OK, mostrar interfaz
     document.getElementById('init-msg').style.display = 'none';
     document.getElementById('app-content').style.display = 'block';
     paso(1);
@@ -196,7 +192,6 @@ async function cargarDatos() {
   }
 }
 
-// ========== AUTENTICACIÓN ANÓNIMA ==========
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     console.log("Usuario ya autenticado:", user.uid);
@@ -206,7 +201,6 @@ auth.onAuthStateChanged(async (user) => {
     try {
       await auth.signInAnonymously();
       console.log("Inicio anónimo exitoso");
-      // El evento onAuthStateChanged se disparará de nuevo con el usuario ya autenticado.
     } catch(err) {
       console.error("Error en signInAnonymously:", err);
       let errorMsg = "No se pudo autenticar anónimamente. ";
@@ -217,7 +211,6 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
-// ========== MANEJO DE PASOS (sin cambios) ==========
 function paso(n) {
   [1,2,3].forEach(i => {
     if(i>1) document.getElementById('card-'+i).classList.toggle('locked', i>n);
@@ -239,7 +232,6 @@ function haversine(a,b,c,d) {
   return R * 2 * Math.atan2(Math.sqrt(k), Math.sqrt(1-k));
 }
 
-// ========== PASO 1 ==========
 window.onPlaca = function(el) {
   if (!datosCargados) return;
   const v = el.value.toUpperCase().replace(/\s/g,'');
@@ -290,7 +282,6 @@ window.continuarDatos = function() {
   document.getElementById('btn-abrir-cam').style.display = 'inline-block';
 };
 
-// ========== CÁMARA Y OCR (sin cambios) ==========
 window.abrirCamara = async function() {
   document.getElementById('btn-abrir-cam').style.display = 'none';
   document.getElementById('cam-wrap').style.display = 'block';
@@ -456,7 +447,6 @@ window.retomar = function() {
   abrirCamara();
 };
 
-// ========== PASO 3: UBICACIÓN ==========
 window.verificarUbicacion = function() {
   if(!zona) { setGeo('warn','warn','Sin zona configurada. Contacta al administrador.'); return; }
   setGeo('info','info','Obteniendo ubicación GPS...');
@@ -487,7 +477,6 @@ window.verificarUbicacion = function() {
   }, { enableHighAccuracy: true, timeout: 10000 });
 };
 
-// ========== GUARDAR REGISTRO ==========
 window.guardar = async function() {
   const placa = document.getElementById('f-placa').value.trim().toUpperCase();
   const lic = document.getElementById('f-lic').value.trim();
