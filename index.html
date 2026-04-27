@@ -157,31 +157,43 @@ function tick() {
 }
 tick(); setInterval(tick, 1000);
 
-auth.signInAnonymously().catch(err => {
-  document.getElementById('init-msg').textContent = 'Error de autenticación. Recarga la página.';
-  console.error(err);
-});
+function showError(msg) {
+  document.getElementById('init-msg').innerHTML = msg + '<br><button onclick="location.reload()">Recargar</button>';
+}
 
-auth.onAuthStateChanged(async (user) => {
-  if (user) await init();
-  else document.getElementById('init-msg').textContent = 'No se pudo autenticar. Intenta de nuevo.';
-});
-
-async function init() {
+// Autenticación y carga de datos
+async function cargarDatos() {
   try {
     const zd = await db.collection('config').doc('zona').get();
     if (zd.exists) zona = zd.data();
     const ps = await db.collection('placas').get();
+    placasDB = {};
     ps.forEach(d => { placasDB[d.id] = d.data(); });
     const cs = await db.collection('conductores').get();
+    conductoresDB = {};
     cs.forEach(d => { conductoresDB[d.id] = d.data(); });
     document.getElementById('init-msg').style.display = 'none';
     document.getElementById('app-content').style.display = 'block';
     paso(1);
   } catch(e) {
-    document.getElementById('init-msg').textContent = 'Error al cargar datos. Recarga la página.';
+    console.error(e);
+    showError("Error al cargar los datos. Verifica las reglas de Firestore.");
   }
 }
+
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    await cargarDatos();
+  } else {
+    try {
+      await auth.signInAnonymously();
+      await cargarDatos();
+    } catch(err) {
+      console.error(err);
+      showError("No se pudo autenticar. Habilita el inicio anónimo en Firebase Console.");
+    }
+  }
+});
 
 function paso(n) {
   [1,2,3].forEach(i => {
@@ -206,7 +218,6 @@ function haversine(a,b,c,d) {
 }
 
 window.onPlaca = function(el) {
-  // Al cambiar la placa después de tener foto verificada, invalidar todo
   if (fotoOk) {
     fotoOk = false;
     setOcr('', '');
@@ -259,7 +270,6 @@ window.continuarDatos = function() {
   if (!nombre || nombre === 'Licencia no encontrada') { showMsg('Licencia no registrada.', 'err'); return; }
   if (!tel) { showMsg('Ingresa tu teléfono.', 'err'); return; }
 
-  // Bloquear campos
   document.getElementById('f-placa').readOnly = true;
   document.getElementById('f-lic').readOnly = true;
   document.getElementById('f-tel').readOnly = true;
@@ -269,7 +279,6 @@ window.continuarDatos = function() {
   document.getElementById('btn-abrir-cam').style.display = 'inline-block';
 };
 
-// ----- CÁMARA Y OCR -----
 window.abrirCamara = async function() {
   document.getElementById('btn-abrir-cam').style.display = 'none';
   document.getElementById('cam-wrap').style.display = 'block';
@@ -419,7 +428,6 @@ window.retomar = function() {
   fotoOk = false; geoOk = false;
   setGeo('','','Presiona el botón para verificar tu ubicación.');
   setOcr('','');
-  // Desbloquear campos si estaban bloqueados
   if (camposBloqueados) {
     document.getElementById('f-placa').readOnly = false;
     document.getElementById('f-lic').readOnly = false;
@@ -520,7 +528,6 @@ function showMsg(txt,type) {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('f-tel').addEventListener('input', checkContinuar);
 });
-// No llamamos a paso(1) aquí porque esperamos autenticación
 </script>
 </body>
 </html>
