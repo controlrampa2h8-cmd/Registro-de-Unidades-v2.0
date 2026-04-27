@@ -313,4 +313,340 @@ auth.onAuthStateChanged(async (user) => {
     await cargarHistorial();
   } else {
     document.getElementById('loading-placas').innerHTML = 'Error de autenticación. Recarga la página.';
-    document.getElementById('loading-cond').innerHTML
+    document.getElementById('loading-cond').innerHTML = 'Error de autenticación.';
+    document.getElementById('loading-hist').innerHTML = 'Error de autenticación.';
+  }
+});
+
+// ----- PLACAS -----
+async function cargarPlacas() {
+  try {
+    const snap = await db.collection('placas').get();
+    placasCache = {};
+    snap.forEach(d => { placasCache[d.id] = d.data(); });
+    renderPlacas();
+    document.getElementById('loading-placas').style.display = 'none';
+    document.getElementById('table-placas').style.display = 'block';
+  } catch(e) { document.getElementById('loading-placas').textContent = 'Error al cargar placas.'; }
+}
+function renderPlacas(q) {
+  let entries = Object.entries(placasCache);
+  const sq = (q || busqPlaca || '').toLowerCase();
+  if (sq) entries = entries.filter(([k,v]) => k.toLowerCase().includes(sq) || v.empresa.toLowerCase().includes(sq) || (v.tipo || '').toLowerCase().includes(sq));
+  document.getElementById('cnt-placas').textContent = Object.keys(placasCache).length;
+  const tbody = document.getElementById('tbody-placas');
+  if (!entries.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No hay placas</td></tr>'; return; }
+  tbody.innerHTML = entries.map(([p,i]) => `
+    <tr>
+      <td><span class="placa-tag">${p}</span></td>
+      <td>${tipoBadge(i.tipo)}</td>
+      <td>${i.empresa}</td>
+      <td>${i.cap}</td>
+      <td><button class="edit-btn" onclick="editarPlaca('${p}')">Editar</button> <button class="del-btn" onclick="eliminarPlaca('${p}')">✕</button></td>
+    </tr>
+  `).join('');
+}
+window.buscarPlacas = function(q) { busqPlaca = q; renderPlacas(q); };
+window.guardarPlaca = async function() {
+  const p = document.getElementById('p-placa').value.trim().toUpperCase();
+  const t = document.getElementById('p-tipo').value;
+  const e = document.getElementById('p-empresa').value.trim();
+  const c = document.getElementById('p-cap').value.trim();
+  if (!p || !t || !e || !c) { showMsg('msg-placa', 'Completa todos los campos.', 'err'); return; }
+  try {
+    await db.collection('placas').doc(p).set({ tipo: t, empresa: e, cap: c });
+    placasCache[p] = { tipo: t, empresa: e, cap: c };
+    cancelarEdPlaca();
+    renderPlacas();
+    showMsg('msg-placa', 'Placa guardada correctamente.', 'ok');
+  } catch(err) { showMsg('msg-placa', 'Error al guardar.', 'err'); }
+};
+window.editarPlaca = function(p) {
+  editPlaca = p; const i = placasCache[p];
+  if (!i) return;
+  document.getElementById('p-placa').value = p; document.getElementById('p-placa').readOnly = true;
+  document.getElementById('p-tipo').value = i.tipo;
+  document.getElementById('p-empresa').value = i.empresa;
+  document.getElementById('p-cap').value = i.cap;
+  document.getElementById('placa-form-title').textContent = 'Editando placa: ' + p;
+  document.getElementById('btn-save-placa').textContent = 'Guardar cambios';
+  document.getElementById('btn-cancel-placa').style.display = 'inline-block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+window.cancelarEdPlaca = function() {
+  editPlaca = null;
+  ['p-placa', 'p-empresa', 'p-cap'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('p-tipo').value = '';
+  document.getElementById('p-placa').readOnly = false;
+  document.getElementById('placa-form-title').textContent = 'Agregar nueva placa';
+  document.getElementById('btn-save-placa').textContent = 'Agregar placa';
+  document.getElementById('btn-cancel-placa').style.display = 'none';
+};
+window.eliminarPlaca = async function(p) {
+  if (!confirm('¿Eliminar placa ' + p + '?')) return;
+  try {
+    await db.collection('placas').doc(p).delete();
+    delete placasCache[p];
+    renderPlacas();
+  } catch(e) { alert('Error al eliminar.'); }
+};
+
+// ----- CONDUCTORES -----
+async function cargarConductores() {
+  try {
+    const snap = await db.collection('conductores').get();
+    conductoresCache = {};
+    snap.forEach(d => { conductoresCache[d.id] = d.data(); });
+    renderConductores();
+    document.getElementById('loading-cond').style.display = 'none';
+    document.getElementById('table-cond').style.display = 'block';
+  } catch(e) { document.getElementById('loading-cond').textContent = 'Error al cargar.'; }
+}
+function renderConductores(q) {
+  let entries = Object.entries(conductoresCache);
+  const sq = (q || busqCond || '').toLowerCase();
+  if (sq) entries = entries.filter(([k,v]) => k.toLowerCase().includes(sq) || v.nombre.toLowerCase().includes(sq));
+  document.getElementById('cnt-cond').textContent = Object.keys(conductoresCache).length;
+  const tbody = document.getElementById('tbody-cond');
+  if (!entries.length) { tbody.innerHTML = '<tr><td colspan="3" class="empty">No hay conductores registrados</td></tr>'; return; }
+  tbody.innerHTML = entries.map(([lic, i]) => `
+    <tr>
+      <td><span class="lic-tag">${lic}</span></td>
+      <td style="font-weight:500">${i.nombre}</td>
+      <td><button class="edit-btn" onclick="editarConductor('${lic}')">Editar</button> <button class="del-btn" onclick="eliminarConductor('${lic}')">✕</button></td>
+    </tr>
+  `).join('');
+}
+window.buscarConductores = function(q) { busqCond = q; renderConductores(q); };
+window.guardarConductor = async function() {
+  const lic = document.getElementById('c-lic').value.trim();
+  const nombre = document.getElementById('c-nombre').value.trim().toUpperCase();
+  if (!lic || !nombre) { showMsg('msg-cond', 'Completa todos los campos.', 'err'); return; }
+  try {
+    await db.collection('conductores').doc(lic).set({ nombre });
+    conductoresCache[lic] = { nombre };
+    cancelarEdCond();
+    renderConductores();
+    showMsg('msg-cond', 'Conductor guardado.', 'ok');
+  } catch(err) { showMsg('msg-cond', 'Error al guardar.', 'err'); }
+};
+window.editarConductor = function(lic) {
+  editCond = lic; const i = conductoresCache[lic];
+  if (!i) return;
+  document.getElementById('c-lic').value = lic; document.getElementById('c-lic').readOnly = true;
+  document.getElementById('c-nombre').value = i.nombre;
+  document.getElementById('cond-form-title').textContent = 'Editando conductor: ' + lic;
+  document.getElementById('btn-save-cond').textContent = 'Guardar cambios';
+  document.getElementById('btn-cancel-cond').style.display = 'inline-block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+window.cancelarEdCond = function() {
+  editCond = null;
+  ['c-lic', 'c-nombre'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('c-lic').readOnly = false;
+  document.getElementById('cond-form-title').textContent = 'Agregar conductor';
+  document.getElementById('btn-save-cond').textContent = 'Agregar conductor';
+  document.getElementById('btn-cancel-cond').style.display = 'none';
+};
+window.eliminarConductor = async function(lic) {
+  if (!confirm('¿Eliminar conductor ' + lic + '?')) return;
+  try {
+    await db.collection('conductores').doc(lic).delete();
+    delete conductoresCache[lic];
+    renderConductores();
+  } catch(e) { alert('Error.'); }
+};
+
+// ----- ZONA -----
+async function cargarZona() {
+  try {
+    const zd = await db.collection('config').doc('zona').get();
+    const zc = document.getElementById('zone-current');
+    if (zd.exists) {
+      const z = zd.data();
+      zc.innerHTML = '<strong>' + z.nombre + '</strong><br><span style="color:var(--text3)">Centro: ' + z.lat + ', ' + z.lng + ' | Radio: ' + z.radio + ' m</span>';
+      document.getElementById('a-lat').value = z.lat;
+      document.getElementById('a-lng').value = z.lng;
+      document.getElementById('a-radio').value = z.radio;
+      document.getElementById('a-nombre').value = z.nombre;
+    } else zc.textContent = 'Sin zona configurada aún.';
+  } catch(e) {}
+}
+window.guardarZona = async function() {
+  const lat = parseFloat(document.getElementById('a-lat').value);
+  const lng = parseFloat(document.getElementById('a-lng').value);
+  const radio = parseInt(document.getElementById('a-radio').value);
+  const nombre = document.getElementById('a-nombre').value.trim() || 'Zona sin nombre';
+  if (isNaN(lat) || isNaN(lng) || isNaN(radio) || radio < 1) { showMsg('msg-zona', 'Completa todos los campos.', 'err'); return; }
+  try {
+    await db.collection('config').doc('zona').set({ lat, lng, radio, nombre });
+    cargarZona();
+    showMsg('msg-zona', 'Zona guardada.', 'ok');
+  } catch(e) { showMsg('msg-zona', 'Error al guardar.', 'err'); }
+};
+window.eliminarZona = async function() {
+  if (!confirm('¿Eliminar la zona configurada?')) return;
+  try {
+    await db.collection('config').doc('zona').delete();
+    cargarZona();
+    showMsg('msg-zona', 'Zona eliminada.', 'warn');
+  } catch(e) {}
+};
+
+// ----- HISTORIAL -----
+function fmtFechaAccion(r) {
+  if (!r.fechaAccion) return '<span style="color:var(--text3)">—</span>';
+  const d = new Date(r.fechaAccion);
+  const hora = `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const est = r.estado || '';
+  if (est === 'PROGRAMADO') return `<span style="color:var(--green);font-weight:700;font-size:13px">PROGRAMADO</span><br><span style="font-size:12px;color:var(--text2)">${hora}</span>`;
+  if (est === 'UNIDAD NO DISPONIBLE') return `<span style="color:var(--red);font-weight:700;font-size:13px">NO DISPONIBLE</span><br><span style="font-size:12px;color:var(--text2)">${hora}</span>`;
+  return `<span style="font-size:13px;color:var(--text3)">${hora}</span>`;
+}
+async function cargarHistorial() {
+  try {
+    const snap = await db.collection('registros').orderBy('tsNum', 'asc').get();
+    const ahora = Date.now(); const MS7 = 7 * 24 * 60 * 60 * 1000;
+    const viejos = snap.docs.filter(d => { const r = d.data(); return r.tsNum && (ahora - r.tsNum) > MS7; });
+    if (viejos.length > 0) {
+      const batch = db.batch();
+      viejos.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+    }
+    _allRegs = snap.docs.filter(d => { const r = d.data(); return !r.tsNum || (ahora - r.tsNum) <= MS7; }).map(d => ({ ...d.data(), _id: d.id }));
+    const caps = [...new Set(_allRegs.map(r => r.cap).filter(Boolean))].sort((a,b)=> (parseInt(a)||0) - (parseInt(b)||0));
+    const sc = document.getElementById('hf-cap');
+    if (sc) {
+      const cur = sc.value;
+      sc.innerHTML = '<option value="">Todas las capacidades</option>';
+      caps.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sc.appendChild(o); });
+      if (cur) sc.value = cur;
+    }
+    renderHistorial(_allRegs);
+    document.getElementById('loading-hist').style.display = 'none';
+    document.getElementById('table-hist').style.display = 'block';
+  } catch(e) { document.getElementById('loading-hist').textContent = 'Error al cargar historial.'; }
+}
+function renderHistorial(regs) {
+  const total = _allRegs.length;
+  document.getElementById('h-total').textContent = total;
+  document.getElementById('h-asig').textContent = _allRegs.filter(r => r.estado === 'PROGRAMADO').length;
+  document.getElementById('h-esp').textContent = _allRegs.filter(r => r.estado === 'UNIDAD NO DISPONIBLE').length;
+  document.getElementById('h-pend').textContent = _allRegs.filter(r => !r.estado || r.estado === 'PENDIENTE' || r.estado === 'ESPERANDO PROGRAMACIÓN').length;
+  const cnt = document.getElementById('hist-count');
+  if (cnt) cnt.textContent = regs.length !== total ? `${regs.length} de ${total} registros` : `${total} registros`;
+  const tbody = document.getElementById('tbody-hist');
+  if (!regs.length) { tbody.innerHTML = '<tr><td colspan="11" class="empty">No hay registros para los filtros seleccionados</td></tr>'; return; }
+  tbody.innerHTML = regs.map(r => {
+    const mot = r.motivo ? `<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>` : '—';
+    return `
+      <tr>
+        <td style="white-space:nowrap">${r.ts}</td>
+        <td>${tipoBadge(r.tipo || '')}</td>
+        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.empresa}">${r.empresa}</td>
+        <td><span class="placa-tag">${r.placa}</span></td>
+        <td>${r.cap}</td>
+        <td>${r.lic}</td>
+        <td style="font-weight:600">${r.nombre}</td>
+        <td>${r.tel}</td>
+        <td>${fmtFechaAccion(r)}</td>
+        <td>${mot}</td>
+        <td><div style="display:flex;gap:6px;"><button class="edit-btn" style="font-size:12px;padding:4px 10px;" onclick="retornarReg('${r._id}')">↩ Retornar</button><button class="del-btn" onclick="eliminarReg('${r._id}')">🗑</button></div></td>
+      </tr>
+    `;
+  }).join('');
+}
+window.filtrarHistorial = function() {
+  const tipo = (document.getElementById('hf-tipo')?.value || '').toLowerCase();
+  const cap = (document.getElementById('hf-cap')?.value || '').toLowerCase();
+  const est = (document.getElementById('hf-est')?.value || '').toLowerCase();
+  const buscar = (document.getElementById('hf-buscar')?.value || '').toLowerCase().trim();
+  const filtered = _allRegs.filter(r => {
+    if (tipo && !(r.tipo || '').toLowerCase().includes(tipo)) return false;
+    if (cap && !(r.cap || '').toLowerCase().includes(cap)) return false;
+    if (est && !(r.estado || '').toLowerCase().includes(est)) return false;
+    if (buscar) {
+      const haystack = [r.ts, r.empresa, r.placa, r.cap, r.lic, r.nombre, r.tel, r.motivo, r.estado].join(' ').toLowerCase();
+      if (!haystack.includes(buscar)) return false;
+    }
+    return true;
+  });
+  renderHistorial(filtered);
+};
+window.retornarReg = async function(id) {
+  if (!confirm('¿Retornar esta unidad a la cola del programador?')) return;
+  try {
+    await db.collection('registros').doc(id).update({ estado: 'ESPERANDO PROGRAMACIÓN', motivo: '', fechaAccion: null });
+    cargarHistorial();
+  } catch(e) { alert('Error al retornar.'); }
+};
+window.eliminarReg = async function(id) {
+  if (!confirm('¿Eliminar este registro de forma permanente?')) return;
+  try {
+    await db.collection('registros').doc(id).delete();
+    cargarHistorial();
+  } catch(e) { alert('Error.'); }
+};
+window.limpiarHistorial = async function() {
+  if (!confirm('⚠️ ¡ADVERTENCIA! Esto eliminará TODOS los registros de forma permanente.\n¿Estás completamente seguro?')) return;
+  if (!confirm('Última oportunidad. Escribe "ELIMINAR" para confirmar.')) return;
+  const code = prompt('Escribe ELIMINAR para continuar:');
+  if (code !== 'ELIMINAR') return;
+  try {
+    const snap = await db.collection('registros').get();
+    const batch = db.batch();
+    snap.docs.forEach(d => batch.delete(d.ref));
+    await batch.commit();
+    await cargarHistorial();
+    alert('Historial limpiado correctamente.');
+  } catch(e) { alert('Error: ' + e.message); }
+};
+
+// Importación masiva desde datos embebidos
+window.importarBDInicial = async function() {
+  if (!confirm('¿Cargar las 445 unidades del Excel a Firebase? Si ya existen serán actualizadas.')) return;
+  const entries = Object.entries(BD_PLACAS);
+  const total = entries.length;
+  document.getElementById('prog-placas').style.display = 'block';
+  let done = 0;
+  for (let i = 0; i < entries.length; i += 400) {
+    const batch = db.batch();
+    entries.slice(i, i+400).forEach(([p, info]) => { batch.set(db.collection('placas').doc(p), info); placasCache[p] = info; });
+    await batch.commit();
+    done += Math.min(400, entries.length - i);
+    document.getElementById('prog-fill-placas').style.width = Math.round(done/total*100) + '%';
+  }
+  renderPlacas();
+  showMsg('msg-import-placas', '✓ ' + total + ' unidades cargadas correctamente a Firebase.', 'ok');
+};
+window.importarConductoresBD = async function() {
+  if (!confirm('¿Cargar los 310 conductores del Excel a Firebase? Si ya existen serán actualizados.')) return;
+  const entries = Object.entries(BD_CONDUCTORES);
+  const total = entries.length;
+  document.getElementById('prog-cond').style.display = 'block';
+  let done = 0;
+  for (let i = 0; i < entries.length; i += 400) {
+    const batch = db.batch();
+    entries.slice(i, i+400).forEach(([lic, info]) => { batch.set(db.collection('conductores').doc(lic), info); conductoresCache[lic] = info; });
+    await batch.commit();
+    done += Math.min(400, entries.length - i);
+    document.getElementById('prog-fill-cond').style.width = Math.round(done/total*100) + '%';
+  }
+  renderConductores();
+  showMsg('msg-import-cond', '✓ ' + total + ' conductores cargados correctamente a Firebase.', 'ok');
+};
+
+// Cambio de pestañas
+window.switchTab = function(t) {
+  document.querySelectorAll('.tab').forEach((el, idx) => {
+    el.classList.toggle('active', ['placas','conductores','zona','historial'][idx] === t);
+  });
+  document.querySelectorAll('.pane').forEach(el => el.classList.remove('active'));
+  document.getElementById('pane-' + t).classList.add('active');
+  if (t === 'historial') cargarHistorial();
+  if (t === 'zona') cargarZona();
+  if (t === 'conductores') cargarConductores();
+};
+</script>
+</body>
+</html>
