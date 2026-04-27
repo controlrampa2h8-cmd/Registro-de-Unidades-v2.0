@@ -21,8 +21,6 @@
 }
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--text);display:flex;flex-direction:column;font-size:15px}
-
-/* TOPBAR */
 .topbar{background:var(--surface);border-bottom:2px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;gap:14px;flex-shrink:0;box-shadow:var(--shadow)}
 .topbar-icon{width:38px;height:38px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .topbar-icon svg{width:20px;height:20px;stroke:var(--blue);fill:none;stroke-width:2}
@@ -33,16 +31,12 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,-apple-system,sans-se
 .sync-info{font-size:12px;color:var(--text3)}
 .btn-refresh{background:var(--blue);color:#fff;border:none;padding:8px 18px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;font-weight:600;letter-spacing:0.02em}
 .btn-refresh:hover{background:#1648c8}
-
-/* STATS */
 .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px 28px;flex-shrink:0;background:var(--bg)}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 20px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px}
 .stat-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .si-t{background:var(--blue-bg)}.si-p{background:var(--green-bg)}.si-n{background:var(--amber-bg)}.si-d{background:var(--red-bg)}
 .stat-val{font-size:30px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-0.02em}
 .stat-lbl{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-top:2px}
-
-/* FILTERS */
 .filters-bar{display:flex;align-items:center;gap:10px;padding:0 28px 12px;flex-shrink:0;flex-wrap:wrap}
 .filter-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em}
 .filter-btn{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text2);transition:all 0.12s}
@@ -52,14 +46,10 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,-apple-system,sans-se
 .filter-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-bg)}
 .divider-v{width:1px;height:22px;background:var(--border);margin:0 4px}
 .results-count{font-size:13px;color:var(--text3);margin-left:auto;font-weight:500}
-
-/* NOTICES */
 .notice{padding:9px 18px;margin:0 28px 10px;font-size:13px;border-radius:var(--radius-sm);flex-shrink:0;display:none;font-weight:500;line-height:1.5}
 .notice.visible{display:block}
 .notice.info{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue)}
 .notice.teal{background:var(--teal-bg);border:1px solid var(--teal-border);color:var(--teal);font-weight:600}
-
-/* TABLE */
 .table-area{flex:1;overflow:hidden;padding:0 28px 18px;display:flex;flex-direction:column;min-height:0}
 .table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;box-shadow:var(--shadow)}
 .table-scroll{overflow:auto;flex:1}
@@ -75,7 +65,6 @@ tr:hover td{background:var(--surface2)}
 tr.row-act td{background:#fffbf0;border-left:3px solid #f59e0b}
 tr.row-act:hover td{background:#fef3c7}
 tr.row-locked td{opacity:0.38;pointer-events:none}
-
 .placa-tag{display:inline-block;background:var(--surface3);border:1px solid var(--border2);border-radius:4px;padding:3px 10px;font-family:'Consolas','Courier New',monospace;font-size:14px;font-weight:700;letter-spacing:0.08em;color:var(--text)}
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:0.04em}
 .badge.LOCAL{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
@@ -90,8 +79,6 @@ tr.row-locked td{opacity:0.38;pointer-events:none}
 .empty{text-align:center;padding:4rem;color:var(--text3);font-size:15px}
 .loading{text-align:center;padding:3rem;color:var(--text3);font-size:15px}
 .lock-icon{color:var(--text3);font-size:16px;display:inline-block;margin-left:4px}
-
-/* ACTION BUTTONS */
 .action-wrap{display:flex;gap:5px;flex-wrap:nowrap;align-items:center}
 .btn{padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:1px solid;white-space:nowrap;transition:all 0.12s;letter-spacing:0.02em}
 .btn:disabled{opacity:0.25;cursor:not-allowed;pointer-events:none}
@@ -99,8 +86,6 @@ tr.row-locked td{opacity:0.38;pointer-events:none}
 .btn-induc{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-border)}.btn-induc:not(:disabled):hover{background:#d1fae5}
 .btn-nodis{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}.btn-nodis:not(:disabled):hover{background:#fee2e2}
 .btn-cancelar{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border);font-size:12px;padding:5px 10px}.btn-cancelar:hover{background:#fef3c7}
-
-/* Modal */
 .overlay{position:fixed;inset:0;background:rgba(17,24,39,0.5);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
 .overlay.open{display:flex}
 .modal{background:var(--surface);border-radius:var(--radius);padding:28px;width:100%;max-width:500px;border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,0.15)}
@@ -120,8 +105,8 @@ textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--
   <div class="topbar-icon"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg></div>
   <div><div class="topbar-title">Panel del Programador</div><div class="topbar-sub">Gestión y programación de unidades por orden de registro</div></div>
   <div class="topbar-right">
-    <span class="sync-info" id="sync-info">—</span>
-    <button class="btn-refresh" onclick="recargar()">↻ Actualizar</button>
+    <span class="sync-info" id="sync-info">Conectando...</span>
+    <button class="btn-refresh" onclick="forzarRefresh()">↻ Actualizar</button>
     <span class="topbar-clock" id="clock"></span>
   </div>
 </div>
@@ -135,13 +120,13 @@ textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--
 
 <div class="filters-bar">
   <span class="filter-label">Vista:</span>
-  <button class="filter-btn active" onclick="setFiltro('TODOS',this)">Todos</button>
-  <button class="filter-btn" onclick="setFiltro('NO_PROG',this)">No programadas</button>
-  <button class="filter-btn" onclick="setFiltro('PROGRAMADO',this)">Programadas</button>
-  <button class="filter-btn" onclick="setFiltro('NO_DISP',this)">No disponibles</button>
+  <button class="filter-btn active" data-filter="TODOS">Todos</button>
+  <button class="filter-btn" data-filter="NO_PROG">No programadas</button>
+  <button class="filter-btn" data-filter="PROGRAMADO">Programadas</button>
+  <button class="filter-btn" data-filter="NO_DISP">No disponibles</button>
   <div class="divider-v"></div>
   <span class="filter-label">Tipo:</span>
-  <select class="filter-select" id="filtro-tipo" onchange="aplicarFiltros()">
+  <select class="filter-select" id="filtro-tipo">
     <option value="">Todos los tipos</option>
     <option value="LOCAL">LOCAL</option><option value="PROVINCIA">PROVINCIA</option>
     <option value="FLEXIBLES">FLEXIBLES</option><option value="FURGÓN">FURGÓN</option>
@@ -150,9 +135,7 @@ textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--
   </select>
   <div class="divider-v"></div>
   <span class="filter-label">Capacidad:</span>
-  <select class="filter-select" id="filtro-cap" onchange="aplicarFiltros()">
-    <option value="">Todas las capacidades</option>
-  </select>
+  <select class="filter-select" id="filtro-cap"><option value="">Todas las capacidades</option></select>
   <span class="results-count" id="results-count"></span>
 </div>
 
@@ -166,10 +149,7 @@ textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--
     <div class="table-scroll">
       <div id="loading-table" class="loading">Cargando registros...</div>
       <table id="tabla" style="display:none">
-        <thead><tr>
-          <th>Hora de registro</th><th>Tipo</th><th>Empresa</th><th>Placa</th>
-          <th>Capacidad</th><th>Conductor</th><th>Teléfono</th><th>Estado</th><th>Motivo</th><th>Acción</th>
-        </tr></thead>
+        <thead><tr><th>Hora de registro</th><th>Tipo</th><th>Empresa</th><th>Placa</th><th>Capacidad</th><th>Conductor</th><th>Teléfono</th><th>Estado</th><th>Motivo</th><th>Acción</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
@@ -179,10 +159,10 @@ textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--
 <div class="overlay" id="overlay-nodis">
   <div class="modal">
     <div class="modal-title">Marcar como No Disponible</div>
-    <div class="modal-sub">Indica el motivo por el cual esta unidad no está disponible. Este campo es obligatorio.</div>
+    <div class="modal-sub">Indica el motivo por el cual esta unidad no está disponible. Campo obligatorio.</div>
     <div class="modal-info" id="nodis-info"></div>
     <label class="modal-label">Motivo de no disponibilidad *</label>
-    <textarea id="nodis-motivo" placeholder="Ej: Unidad en mantenimiento, falla mecánica, conductor con descanso médico..."></textarea>
+    <textarea id="nodis-motivo" placeholder="Ej: Unidad en mantenimiento, falla mecánica..."></textarea>
     <div class="modal-actions">
       <button class="btn-cancel-m" onclick="cerrarModal()">Cancelar</button>
       <button class="btn-confirm-red" onclick="confirmarNoDisponible()">Confirmar NO DISPONIBLE</button>
@@ -190,138 +170,176 @@ textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--
   </div>
 </div>
 
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import{getFirestore,collection,getDocs,doc,updateDoc,orderBy,query}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-const cfg={apiKey:"AIzaSyBZrsVQINRIfBL8YuU3iDOX21cQtAF5w44",authDomain:"registro-de-unidades-9dd2d.firebaseapp.com",projectId:"registro-de-unidades-9dd2d",storageBucket:"registro-de-unidades-9dd2d.firebasestorage.app",messagingSenderId:"832510139261",appId:"1:832510139261:web:708c0c386f55362fb64a14"};
-const app=initializeApp(cfg);const db=getFirestore(app);
-
-let registros=[],idSel=null,filtros={estado:'TODOS',tipo:'',cap:''},modoInduccion=false,capInduccion='';
-const MS_48H=48*60*60*1000;
-
-const pad=n=>String(n).padStart(2,'0');
-function fmtDate(d){return`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
-function tick(){document.getElementById('clock').textContent=fmtDate(new Date());}tick();setInterval(tick,1000);
-
-function esProgramado(r){return r.estado==='PROGRAMADO';}
-function esNoDisponible(r){return r.estado==='UNIDAD NO DISPONIBLE';}
-function esPendiente(r){return !esProgramado(r)&&!esNoDisponible(r);}
-// Ocultar registros con acción ejecutada que superen 48h
-function estaVencido(r){
-  if(!esPendiente(r)&&r.fechaAccion){return(Date.now()-r.fechaAccion)>MS_48H;}
-  return false;
-}
-
-window.recargar=async function(){
-  document.getElementById('sync-info').textContent='Actualizando...';
-  try{
-    const q=query(collection(db,'registros'),orderBy('tsNum','asc'));
-    const snap=await getDocs(q);
-    // Filtrar los vencidos (48h) para no mostrarlos
-    registros=snap.docs.map(d=>({...d.data(),_id:d.id})).filter(r=>!estaVencido(r));
-    poblarCap();renderTabla();updateStats();
-    document.getElementById('sync-info').textContent='Actualizado: '+pad(new Date().getHours())+':'+pad(new Date().getMinutes())+':'+pad(new Date().getSeconds());
-    document.getElementById('loading-table').style.display='none';
-    document.getElementById('tabla').style.display='table';
-  }catch(e){document.getElementById('loading-table').textContent='Error al cargar los registros.';}
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBZrsVQINRIfBL8YuU3iDOX21cQtAF5w44",
+  authDomain: "registro-de-unidades-9dd2d.firebaseapp.com",
+  projectId: "registro-de-unidades-9dd2d",
+  storageBucket: "registro-de-unidades-9dd2d.firebasestorage.app",
+  messagingSenderId: "832510139261",
+  appId: "1:832510139261:web:708c0c386f55362fb64a14"
 };
-setInterval(()=>window.recargar(),30000);
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-function poblarCap(){
-  const caps=[...new Set(registros.map(r=>r.cap).filter(Boolean))].sort((a,b)=>(parseInt(a)||0)-(parseInt(b)||0));
-  const sel=document.getElementById('filtro-cap');const cur=sel.value;
-  sel.innerHTML='<option value="">Todas las capacidades</option>';
-  caps.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
-  if(cur)sel.value=cur;
+let registros = [];
+let filtros = { estado: 'TODOS', tipo: '', cap: '' };
+let modoInduccion = false;
+let capInduccion = '';
+let unsubscribe = null;
+
+const MS_48H = 48*60*60*1000;
+
+// Utils
+const pad = n => String(n).padStart(2,'0');
+function fmtDate(d) { return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
+function tick() { document.getElementById('clock').textContent = fmtDate(new Date()); }
+tick(); setInterval(tick, 1000);
+
+function esProgramado(r) { return r.estado === 'PROGRAMADO'; }
+function esNoDisponible(r) { return r.estado === 'UNIDAD NO DISPONIBLE'; }
+function esPendiente(r) { return !esProgramado(r) && !esNoDisponible(r); }
+function estaVencido(r) { return !esPendiente(r) && r.fechaAccion && (Date.now() - r.fechaAccion) > MS_48H; }
+
+auth.signInAnonymously().catch(e => console.error(e));
+auth.onAuthStateChanged(user => { if(user) iniciarSuscripcion(); else document.getElementById('loading-table').textContent = 'Error de autenticación. Recarga.'; });
+
+function iniciarSuscripcion() {
+  if(unsubscribe) unsubscribe();
+  unsubscribe = db.collection('registros').orderBy('tsNum', 'asc').onSnapshot(snapshot => {
+    registros = snapshot.docs.map(d => ({ ...d.data(), _id: d.id })).filter(r => !estaVencido(r));
+    poblarCapacidades();
+    aplicarFiltros();
+    actualizarEstadisticas();
+    document.getElementById('loading-table').style.display = 'none';
+    document.getElementById('tabla').style.display = 'table';
+    document.getElementById('sync-info').textContent = `Actualizado: ${pad(new Date().getHours())}:${pad(new Date().getMinutes())}`;
+  }, error => console.error(error));
 }
 
-window.setFiltro=function(v,el){filtros.estado=v;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');aplicarFiltros();};
-window.aplicarFiltros=function(){filtros.tipo=document.getElementById('filtro-tipo').value;filtros.cap=document.getElementById('filtro-cap').value;renderTabla();};
-
-function getLista(){
-  let l=[...registros];
-  if(filtros.estado==='NO_PROG')l=l.filter(r=>esPendiente(r));
-  else if(filtros.estado==='PROGRAMADO')l=l.filter(r=>esProgramado(r));
-  else if(filtros.estado==='NO_DISP')l=l.filter(r=>esNoDisponible(r));
-  if(filtros.tipo)l=l.filter(r=>r.tipo===filtros.tipo);
-  if(filtros.cap)l=l.filter(r=>r.cap===filtros.cap);
-  return l;
+function poblarCapacidades() {
+  const caps = [...new Set(registros.map(r => r.cap).filter(Boolean))].sort((a,b)=>(parseInt(a)||0)-(parseInt(b)||0));
+  const sel = document.getElementById('filtro-cap');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Todas las capacidades</option>';
+  caps.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+  if(cur) sel.value = cur;
 }
 
-function getPrimeros(){const m={};registros.forEach(r=>{if(esPendiente(r)&&!m[r.cap])m[r.cap]=r._id;});return m;}
-
-function tipoBadge(t){const c=t==='LOCAL'?'LOCAL':t==='PROVINCIA'?'PROVINCIA':'other';return`<span class="badge ${c}">${t||'—'}</span>`;}
-function estadoBadge(r){
-  if(esProgramado(r))return`<span class="estado-chip ec-prog">PROGRAMADO</span>`;
-  if(esNoDisponible(r))return`<span class="estado-chip ec-nodis">NO DISPONIBLE</span>`;
-  return`<span class="estado-chip ec-espera">ESPERANDO</span>`;
+function aplicarFiltros() {
+  filtros.tipo = document.getElementById('filtro-tipo').value;
+  filtros.cap = document.getElementById('filtro-cap').value;
+  renderizarTabla();
 }
 
-function renderTabla(){
-  const lista=getLista(),tbody=document.getElementById('tbody');
-  document.getElementById('results-count').textContent=lista.length+' resultado'+(lista.length===1?'':'s');
-  const primeros=getPrimeros();
-  const ni=document.getElementById('notice-induccion');
-  if(modoInduccion){ni.className='notice teal visible';ni.textContent='⚡ MODO INDUCCIÓN ACTIVO — Capacidad '+capInduccion+'. Selecciona la unidad y presiona PROGRAMAR. El motivo se registrará como "INDUCCIÓN ESPECÍFICA".';}
-  else ni.className='notice teal';
-  if(!lista.length){tbody.innerHTML='<tr><td colspan="10" class="empty">No hay registros para los filtros seleccionados</td></tr>';return;}
+function renderizarTabla() {
+  let lista = [...registros];
+  if(filtros.estado === 'NO_PROG') lista = lista.filter(r => esPendiente(r));
+  else if(filtros.estado === 'PROGRAMADO') lista = lista.filter(r => esProgramado(r));
+  else if(filtros.estado === 'NO_DISP') lista = lista.filter(r => esNoDisponible(r));
+  if(filtros.tipo) lista = lista.filter(r => r.tipo === filtros.tipo);
+  if(filtros.cap) lista = lista.filter(r => r.cap === filtros.cap);
 
-  tbody.innerHTML=lista.map(r=>{
-    const prog=esProgramado(r),noDis=esNoDisponible(r),pend=esPendiente(r);
-    const esPrim=primeros[r.cap]===r._id;
-    const habInd=modoInduccion&&pend&&r.cap===capInduccion;
-    const hab=esPrim||habInd;
-    const bloq=pend&&!hab;
-    const cls=prog||noDis?'':hab?'row-act':'row-locked';
-    const mot=r.motivo?`<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>`:`<span style="color:var(--text3)">—</span>`;
-    let acc='';
-    if(prog||noDis){
-      // Sin LIMPIAR — esa acción es solo del Admin
-      acc=`<span style="font-size:12px;color:var(--text3);font-style:italic">Solo Admin puede limpiar</span>`;
-    } else if(habInd){
-      acc=`<div class="action-wrap"><button class="btn btn-prog" onclick="programarInduccion('${r._id}')">PROGRAMAR</button><button class="btn btn-cancelar" onclick="cancelarInduccion()">✕ Cancelar</button></div>`;
-    } else if(hab){
-      acc=`<div class="action-wrap"><button class="btn btn-prog" onclick="programar('${r._id}')">PROGRAMAR</button><button class="btn btn-induc" onclick="iniciarInduccion('${r.cap}')">INDUCCIÓN</button><button class="btn btn-nodis" onclick="abrirNoDisponible('${r._id}')">NO DISPONIBLE</button></div>`;
-    } else {
-      acc=`<span class="lock-icon">🔒</span>`;
-    }
-    return`<tr class="${cls}">
-      <td style="white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--text2)">${r.ts}</td>
+  document.getElementById('results-count').textContent = lista.length + ' resultado' + (lista.length===1?'':'s');
+  const primeros = obtenerPrimerosNoProgramados();
+  const tbody = document.getElementById('tbody');
+  const ni = document.getElementById('notice-induccion');
+  if(modoInduccion){
+    ni.className='notice teal visible';
+    ni.textContent=`⚡ MODO INDUCCIÓN ACTIVO — Capacidad ${capInduccion}. Selecciona la unidad y presiona PROGRAMAR. El motivo se registrará como "INDUCCIÓN ESPECÍFICA".`;
+  } else ni.className='notice teal';
+
+  if(!lista.length) { tbody.innerHTML = `<tr><td colspan="10" class="empty">No hay registros para los filtros seleccionados</td></tr>`; return; }
+
+  tbody.innerHTML = lista.map(r => {
+    const prog = esProgramado(r), noDis = esNoDisponible(r), pend = esPendiente(r);
+    const esPrim = primeros[r.cap] === r._id;
+    const habInd = modoInduccion && pend && r.cap === capInduccion;
+    const hab = esPrim || habInd;
+    const bloqueado = pend && !hab;
+    const cls = (prog || noDis) ? '' : (hab ? 'row-act' : 'row-locked');
+    const motivoHTML = r.motivo ? `<span class="motivo-chip" title="${r.motivo}">${r.motivo}</span>` : `<span style="color:var(--text3)">—</span>`;
+    let accionHTML = '';
+    if(prog || noDis) accionHTML = `<span style="font-size:12px;color:var(--text3);font-style:italic">Solo Admin puede limpiar</span>`;
+    else if(habInd) accionHTML = `<div class="action-wrap"><button class="btn btn-prog" onclick="programarInduccion('${r._id}')">PROGRAMAR</button><button class="btn btn-cancelar" onclick="cancelarInduccion()">✕ Cancelar</button></div>`;
+    else if(hab) accionHTML = `<div class="action-wrap"><button class="btn btn-prog" onclick="programar('${r._id}')">PROGRAMAR</button><button class="btn btn-induc" onclick="iniciarInduccion('${r.cap}')">INDUCCIÓN</button><button class="btn btn-nodis" onclick="abrirNoDisponible('${r._id}')">NO DISPONIBLE</button></div>`;
+    else accionHTML = `<span class="lock-icon">🔒</span>`;
+
+    return `<tr class="${cls}">
+      <td style="white-space:nowrap;font-variant-numeric:tabular-nums">${r.ts}</td>
       <td>${tipoBadge(r.tipo)}</td>
-      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500" title="${r.empresa}">${r.empresa}</td>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.empresa}">${r.empresa}</td>
       <td><span class="placa-tag">${r.placa}</span></td>
       <td><span class="cap-tag">${r.cap}</span></td>
-      <td style="font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.nombre}">${r.nombre}</td>
-      <td style="color:var(--text2)">${r.tel}</td>
+      <td style="font-weight:600">${r.nombre}</td>
+      <td>${r.tel}</td>
       <td>${estadoBadge(r)}</td>
-      <td>${mot}</td>
-      <td>${acc}</td>
+      <td>${motivoHTML}</td>
+      <td>${accionHTML}</td>
     </tr>`;
   }).join('');
 }
 
-function updateStats(){
-  const vis=registros;
-  document.getElementById('s-total').textContent=vis.length;
-  document.getElementById('s-prog').textContent=vis.filter(r=>esProgramado(r)).length;
-  document.getElementById('s-pend').textContent=vis.filter(r=>esPendiente(r)).length;
-  document.getElementById('s-nodis').textContent=vis.filter(r=>esNoDisponible(r)).length;
+function tipoBadge(t) { const c = (t==='LOCAL'?'LOCAL':t==='PROVINCIA'?'PROVINCIA':'other'); return `<span class="badge ${c}">${t||'—'}</span>`; }
+function estadoBadge(r) {
+  if(esProgramado(r)) return `<span class="estado-chip ec-prog">PROGRAMADO</span>`;
+  if(esNoDisponible(r)) return `<span class="estado-chip ec-nodis">NO DISPONIBLE</span>`;
+  return `<span class="estado-chip ec-espera">ESPERANDO</span>`;
+}
+function obtenerPrimerosNoProgramados() { const m={}; registros.forEach(r=>{ if(esPendiente(r) && !m[r.cap]) m[r.cap]=r._id; }); return m; }
+function actualizarEstadisticas() {
+  const vis = registros;
+  document.getElementById('s-total').textContent = vis.length;
+  document.getElementById('s-prog').textContent = vis.filter(r=>esProgramado(r)).length;
+  document.getElementById('s-pend').textContent = vis.filter(r=>esPendiente(r)).length;
+  document.getElementById('s-nodis').textContent = vis.filter(r=>esNoDisponible(r)).length;
 }
 
-async function ejecutarAccion(id,estado,motivo){
-  try{await updateDoc(doc(db,'registros',id),{estado,motivo,fechaAccion:Date.now()});await window.recargar();}
-  catch(e){alert('Error al actualizar.');}
+// Acciones
+async function ejecutarAccion(id, estado, motivo) {
+  try {
+    await db.collection('registros').doc(id).update({ estado, motivo, fechaAccion: Date.now() });
+  } catch(e) { alert('Error al actualizar.'); }
 }
+window.programar = function(id) { ejecutarAccion(id, 'PROGRAMADO', ''); };
+window.iniciarInduccion = function(cap) { modoInduccion = true; capInduccion = cap; document.getElementById('filtro-cap').value = cap; filtros.cap = cap; renderizarTabla(); };
+window.programarInduccion = async function(id) {
+  await ejecutarAccion(id, 'PROGRAMADO', 'INDUCCIÓN ESPECÍFICA');
+  modoInduccion = false; capInduccion = ''; document.getElementById('filtro-cap').value = ''; filtros.cap = ''; renderizarTabla();
+};
+window.cancelarInduccion = function() { modoInduccion = false; capInduccion = ''; document.getElementById('filtro-cap').value = ''; filtros.cap = ''; renderizarTabla(); };
+window.abrirNoDisponible = function(id) {
+  window._nodisId = id; const r = registros.find(x => x._id === id);
+  if(!r) return;
+  document.getElementById('nodis-info').innerHTML = `<strong>${r.placa}</strong> — ${r.empresa} — ${r.cap} — ${r.nombre}`;
+  document.getElementById('nodis-motivo').value = '';
+  document.getElementById('overlay-nodis').classList.add('open');
+};
+window.confirmarNoDisponible = async function() {
+  const motivo = document.getElementById('nodis-motivo').value.trim();
+  if(!motivo) { alert('Debes ingresar el motivo.'); return; }
+  await ejecutarAccion(window._nodisId, 'UNIDAD NO DISPONIBLE', motivo);
+  cerrarModal();
+};
+window.cerrarModal = function() { document.getElementById('overlay-nodis').classList.remove('open'); window._nodisId = null; };
+window.forzarRefresh = function() { /* ya es en tiempo real, pero recargamos la suscripción */ if(unsubscribe) unsubscribe(); iniciarSuscripcion(); };
 
-window.programar=function(id){ejecutarAccion(id,'PROGRAMADO','');};
-window.iniciarInduccion=function(cap){modoInduccion=true;capInduccion=cap;document.getElementById('filtro-cap').value=cap;filtros.cap=cap;renderTabla();};
-window.programarInduccion=function(id){ejecutarAccion(id,'PROGRAMADO','INDUCCIÓN ESPECÍFICA').then(()=>{modoInduccion=false;capInduccion='';document.getElementById('filtro-cap').value='';filtros.cap='';});};
-window.cancelarInduccion=function(){modoInduccion=false;capInduccion='';document.getElementById('filtro-cap').value='';filtros.cap='';renderTabla();};
-window.abrirNoDisponible=function(id){idSel=id;const r=registros.find(x=>x._id===id);if(!r)return;document.getElementById('nodis-info').innerHTML=`<strong>${r.placa}</strong> — ${r.empresa} — ${r.cap} — ${r.nombre}`;document.getElementById('nodis-motivo').value='';document.getElementById('overlay-nodis').classList.add('open');};
-window.confirmarNoDisponible=async function(){if(!idSel)return;const m=document.getElementById('nodis-motivo').value.trim();if(!m){alert('Debes ingresar el motivo.');return;}ejecutarAccion(idSel,'UNIDAD NO DISPONIBLE',m);cerrarModal();};
-window.cerrarModal=function(){document.getElementById('overlay-nodis').classList.remove('open');idSel=null;};
-document.getElementById('overlay-nodis').addEventListener('click',function(e){if(e.target===this)window.cerrarModal();});
-window.recargar();
+// Filtros UI
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filtros.estado = btn.getAttribute('data-filter');
+    renderizarTabla();
+  });
+});
+document.getElementById('filtro-tipo').addEventListener('change', aplicarFiltros);
+document.getElementById('filtro-cap').addEventListener('change', aplicarFiltros);
+document.getElementById('overlay-nodis').addEventListener('click', e => { if(e.target === document.getElementById('overlay-nodis')) cerrarModal(); });
 </script>
 </body>
 </html>

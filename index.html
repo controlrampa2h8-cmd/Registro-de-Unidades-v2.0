@@ -19,7 +19,6 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .step-badge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--border2);color:var(--text2);font-size:11px;font-weight:700;flex-shrink:0}
 .step-badge.active{background:#1a4fa0;color:#fff}.step-badge.done{background:#1a6b38;color:#fff}
 .step-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em}
-/* Geo */
 .geo-box{border-radius:var(--radius-sm);border:1px solid var(--border);padding:11px 14px;font-size:13px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px;background:var(--surface2);color:var(--text2);line-height:1.5}
 .geo-box.ok{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}
 .geo-box.err{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border)}
@@ -29,7 +28,6 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .dot.ok{background:#1a6b38}.dot.err{background:#a01a1a}.dot.warn{background:#8a5a00}.dot.info{background:#1a4fa0}
 .dist-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px}
 .dist-fill{height:100%;border-radius:3px;transition:width 0.4s}.fill-ok{background:#1a6b38}.fill-err{background:#c0392b}
-/* Camera */
 .camera-wrap{border-radius:var(--radius);overflow:hidden;background:#111;position:relative;margin-bottom:12px}
 .camera-wrap video{width:100%;display:block;max-height:260px;object-fit:cover}
 .plate-guide-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
@@ -41,7 +39,6 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .ocr-box.err{background:var(--red-bg);color:var(--red-text);border:1px solid var(--red-border)}
 .ocr-box.warn{background:var(--amber-bg);color:var(--amber-text);border:1px solid var(--amber-border)}
 .ocr-box.info{background:var(--blue-bg);color:var(--blue-text);border:1px solid var(--blue-border)}
-/* Form */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .field{display:flex;flex-direction:column;gap:5px}
 .field label{font-size:12px;font-weight:500;color:var(--text2)}
@@ -131,301 +128,374 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import{getFirestore,collection,addDoc,getDocs,doc,getDoc}from"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-const cfg={apiKey:"AIzaSyBZrsVQINRIfBL8YuU3iDOX21cQtAF5w44",authDomain:"registro-de-unidades-9dd2d.firebaseapp.com",projectId:"registro-de-unidades-9dd2d",storageBucket:"registro-de-unidades-9dd2d.firebasestorage.app",messagingSenderId:"832510139261",appId:"1:832510139261:web:708c0c386f55362fb64a14"};
-const app=initializeApp(cfg);const db=getFirestore(app);
-window._db=db;window._col=collection;window._add=addDoc;
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBZrsVQINRIfBL8YuU3iDOX21cQtAF5w44",
+  authDomain: "registro-de-unidades-9dd2d.firebaseapp.com",
+  projectId: "registro-de-unidades-9dd2d",
+  storageBucket: "registro-de-unidades-9dd2d.firebasestorage.app",
+  messagingSenderId: "832510139261",
+  appId: "1:832510139261:web:708c0c386f55362fb64a14"
+};
 
-let zona=null,geoOk=false,fotoOk=false,userLat=null,userLng=null,streamActivo=null;
-let placasDB={},conductoresDB={};
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-const pad=n=>String(n).padStart(2,'0');
-function fmtDate(d){return`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;}
-function tick(){const n=fmtDate(new Date());document.getElementById('clock').textContent=n;document.getElementById('f-timestamp').value=n;}
-tick();setInterval(tick,1000);
+let zona = null, geoOk = false, fotoOk = false, userLat = null, userLng = null, streamActivo = null;
+let placasDB = {}, conductoresDB = {};
+let camposBloqueados = false;
 
-async function init(){
-  try{
-    const zd=await getDoc(doc(db,'config','zona'));if(zd.exists())zona=zd.data();
-    const ps=await getDocs(collection(db,'placas'));ps.forEach(d=>{placasDB[d.id]=d.data();});
-    const cs=await getDocs(collection(db,'conductores'));cs.forEach(d=>{conductoresDB[d.id]=d.data();});
-    document.getElementById('init-msg').style.display='none';
-    document.getElementById('app-content').style.display='block';
-  }catch(e){document.getElementById('init-msg').textContent='Error al conectar. Recarga la página.';}
+const pad = n => String(n).padStart(2,'0');
+function fmtDate(d) { return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
+function tick() {
+  document.getElementById('clock').textContent = fmtDate(new Date());
+  document.getElementById('f-timestamp').value = fmtDate(new Date());
+}
+tick(); setInterval(tick, 1000);
+
+auth.signInAnonymously().catch(err => {
+  document.getElementById('init-msg').textContent = 'Error de autenticación. Recarga la página.';
+  console.error(err);
+});
+
+auth.onAuthStateChanged(async (user) => {
+  if (user) await init();
+  else document.getElementById('init-msg').textContent = 'No se pudo autenticar. Intenta de nuevo.';
+});
+
+async function init() {
+  try {
+    const zd = await db.collection('config').doc('zona').get();
+    if (zd.exists) zona = zd.data();
+    const ps = await db.collection('placas').get();
+    ps.forEach(d => { placasDB[d.id] = d.data(); });
+    const cs = await db.collection('conductores').get();
+    cs.forEach(d => { conductoresDB[d.id] = d.data(); });
+    document.getElementById('init-msg').style.display = 'none';
+    document.getElementById('app-content').style.display = 'block';
+    paso(1);
+  } catch(e) {
+    document.getElementById('init-msg').textContent = 'Error al cargar datos. Recarga la página.';
+  }
 }
 
-// Manejo de pasos
-function paso(n){
-  [1,2,3].forEach(i=>{
-    if(i>1) document.getElementById('card-'+i).classList.toggle('locked',i>n);
-    const b=document.getElementById('b'+i);
-    if(i<n){b.className='step-badge done';b.textContent='✓';}
-    else if(i===n){b.className='step-badge active';b.textContent=i;}
-    else{b.className='step-badge';b.textContent=i;}
+function paso(n) {
+  [1,2,3].forEach(i => {
+    if(i>1) document.getElementById('card-'+i).classList.toggle('locked', i>n);
+    const b = document.getElementById('b'+i);
+    if(i<n) { b.className = 'step-badge done'; b.textContent = '✓'; }
+    else if(i===n) { b.className = 'step-badge active'; b.textContent = i; }
+    else { b.className = 'step-badge'; b.textContent = i; }
   });
 }
 
-function setGeo(t,dc,txt){
-  document.getElementById('geo-box').className='geo-box '+(t||'');
-  document.getElementById('geo-dot').className='dot '+(dc||'');
-  document.getElementById('geo-text').textContent=txt;
+function setGeo(t,dc,txt) {
+  const box = document.getElementById('geo-box');
+  if (t) box.className = 'geo-box '+t;
+  document.getElementById('geo-dot').className = 'dot '+(dc||'');
+  document.getElementById('geo-text').textContent = txt;
 }
-function haversine(a,b,c,d){const R=6371000,r=x=>x*Math.PI/180;const k=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return R*2*Math.atan2(Math.sqrt(k),Math.sqrt(1-k));}
+function haversine(a,b,c,d) {
+  const R=6371000, r=x=>x*Math.PI/180;
+  const k=Math.sin(r(c-a)/2)**2 + Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;
+  return R*2*Math.atan2(Math.sqrt(k), Math.sqrt(1-k));
+}
 
-// PASO 1: Al escribir placa
-window.onPlaca=function(el){
-  const v=el.value.toUpperCase().replace(/\s/g,'');el.value=v;
-  const info=placasDB[v];
-  document.getElementById('f-tipo').value=info?info.tipo:'';
-  document.getElementById('f-empresa').value=info?info.empresa:'';
-  document.getElementById('f-cap').value=info?info.cap:'';
-  checkContinuar();
-};
-
-// PASO 1: Al escribir licencia
-window.onLicencia=function(el){
-  const lic=el.value.trim();
-  const f=document.getElementById('f-nombre');
-  if(lic.length>=4){
-    const info=conductoresDB[lic];
-    if(info){f.value=info.nombre;f.className='auto';f.style.color='';}
-    else{f.value='Licencia no encontrada';f.className='err-field';}
-  } else {
-    f.value='';f.className='auto';
+window.onPlaca = function(el) {
+  // Al cambiar la placa después de tener foto verificada, invalidar todo
+  if (fotoOk) {
+    fotoOk = false;
+    setOcr('', '');
+    if (!document.getElementById('card-3').classList.contains('locked')) {
+      paso(2);
+      document.getElementById('btn-geo').style.display = 'none';
+      document.getElementById('btn-guardar').style.display = 'none';
+      document.getElementById('dist-wrap').style.display = 'none';
+      setGeo('','','Presiona el botón para verificar tu ubicación.');
+      geoOk = false;
+    }
   }
+  const v = el.value.toUpperCase().replace(/\s/g,'');
+  el.value = v;
+  const info = placasDB[v];
+  document.getElementById('f-tipo').value = info ? info.tipo : '';
+  document.getElementById('f-empresa').value = info ? info.empresa : '';
+  document.getElementById('f-cap').value = info ? info.cap : '';
   checkContinuar();
 };
 
-function checkContinuar(){
-  const placa=document.getElementById('f-placa').value.trim().toUpperCase();
-  const lic=document.getElementById('f-lic').value.trim();
-  const tel=document.getElementById('f-tel').value.trim();
-  const nombre=document.getElementById('f-nombre').value.trim();
-  const placaOk=!!placasDB[placa];
-  const licOk=nombre&&nombre!=='Licencia no encontrada';
-  const telOk=tel.length>=7;
-  document.getElementById('btn-continuar-datos').disabled=!(placaOk&&licOk&&telOk);
+window.onLicencia = function(el) {
+  const lic = el.value.trim();
+  const f = document.getElementById('f-nombre');
+  if (lic.length >= 4) {
+    const info = conductoresDB[lic];
+    if (info) { f.value = info.nombre; f.className = 'auto'; f.style.color = ''; }
+    else { f.value = 'Licencia no encontrada'; f.className = 'err-field'; }
+  } else { f.value = ''; f.className = 'auto'; }
+  checkContinuar();
+};
+
+function checkContinuar() {
+  const placa = document.getElementById('f-placa').value.trim().toUpperCase();
+  const lic = document.getElementById('f-lic').value.trim();
+  const tel = document.getElementById('f-tel').value.trim();
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const placaOk = !!placasDB[placa];
+  const licOk = nombre && nombre !== 'Licencia no encontrada';
+  const telOk = tel.length >= 7;
+  document.getElementById('btn-continuar-datos').disabled = !(placaOk && licOk && telOk);
 }
 
-// PASO 1 → PASO 2
-window.continuarDatos=function(){
-  const placa=document.getElementById('f-placa').value.trim().toUpperCase();
-  const lic=document.getElementById('f-lic').value.trim();
-  const nombre=document.getElementById('f-nombre').value.trim();
-  const tel=document.getElementById('f-tel').value.trim();
-  if(!placasDB[placa]){showMsg('La placa ingresada no está registrada en el sistema.','err');return;}
-  if(!nombre||nombre==='Licencia no encontrada'){showMsg('La licencia ingresada no está registrada.','err');return;}
-  if(!tel){showMsg('Ingresa tu número de teléfono.','err');return;}
+window.continuarDatos = function() {
+  const placa = document.getElementById('f-placa').value.trim().toUpperCase();
+  const lic = document.getElementById('f-lic').value.trim();
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const tel = document.getElementById('f-tel').value.trim();
+  if (!placasDB[placa]) { showMsg('Placa no registrada.', 'err'); return; }
+  if (!nombre || nombre === 'Licencia no encontrada') { showMsg('Licencia no registrada.', 'err'); return; }
+  if (!tel) { showMsg('Ingresa tu teléfono.', 'err'); return; }
+
+  // Bloquear campos
+  document.getElementById('f-placa').readOnly = true;
+  document.getElementById('f-lic').readOnly = true;
+  document.getElementById('f-tel').readOnly = true;
+  camposBloqueados = true;
+
   paso(2);
-  document.getElementById('btn-abrir-cam').style.display='inline-block';
+  document.getElementById('btn-abrir-cam').style.display = 'inline-block';
 };
 
-// CÁMARA
-window.abrirCamara=async function(){
-  document.getElementById('btn-abrir-cam').style.display='none';
-  document.getElementById('cam-wrap').style.display='block';
+// ----- CÁMARA Y OCR -----
+window.abrirCamara = async function() {
+  document.getElementById('btn-abrir-cam').style.display = 'none';
+  document.getElementById('cam-wrap').style.display = 'block';
   setOcr('','');
-  try{
-    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280}}});
-    streamActivo=stream;document.getElementById('video').srcObject=stream;
-  }catch(e){
-    document.getElementById('cam-wrap').style.display='none';
-    setOcr('err','No se pudo acceder a la cámara. Verifica los permisos del navegador.');
-    document.getElementById('btn-abrir-cam').style.display='inline-block';
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 } } });
+    streamActivo = stream;
+    document.getElementById('video').srcObject = stream;
+  } catch(e) {
+    document.getElementById('cam-wrap').style.display = 'none';
+    setOcr('err', 'No se pudo acceder a la cámara. Verifica permisos.');
+    document.getElementById('btn-abrir-cam').style.display = 'inline-block';
   }
 };
 
-window.capturarFoto=function(){
-  const video=document.getElementById('video');
-  const canvas=document.createElement('canvas');
-  canvas.width=video.videoWidth||640;canvas.height=video.videoHeight||480;
+window.capturarFoto = function() {
+  const video = document.getElementById('video');
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
   canvas.getContext('2d').drawImage(video,0,0);
   pararCamara();
-  document.getElementById('cam-wrap').style.display='none';
-  const dataUrl=canvas.toDataURL('image/jpeg',0.92);
-  const prev=document.getElementById('foto-preview');prev.src=dataUrl;prev.style.display='block';
-  document.getElementById('btn-retomar').style.display='inline-block';
+  document.getElementById('cam-wrap').style.display = 'none';
+  const dataUrl = canvas.toDataURL('image/jpeg',0.92);
+  const prev = document.getElementById('foto-preview');
+  prev.src = dataUrl;
+  prev.style.display = 'block';
+  document.getElementById('btn-retomar').style.display = 'inline-block';
   procesarOCR(dataUrl);
 };
 
-// ── Worker de Tesseract pre-inicializado (una sola vez por sesión) ──
-let _worker=null;
-async function getWorker(){
-  if(!_worker){
-    _worker=await Tesseract.createWorker('eng',1,{logger:()=>{}});
+let _worker = null;
+async function getWorker() {
+  if(!_worker) {
+    _worker = await Tesseract.createWorker('eng',1,{ logger:()=>{} });
     await _worker.setParameters({
-      tessedit_char_whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-      preserve_interword_spaces:'0',
-      tessedit_pageseg_mode:'7'
+      tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+      preserve_interword_spaces: '0',
+      tessedit_pageseg_mode: '7'
     });
   }
   return _worker;
 }
-// Pre-carga el worker en segundo plano al abrir la app
-setTimeout(()=>getWorker().catch(()=>{}),2000);
+setTimeout(() => getWorker().catch(()=>{}), 2000);
 
-// ── Preprocesado rápido de imagen ──
-function preprocesar(dataUrl,{yStart=0.25,yEnd=0.82,escala=2.8,contraste=2.2,brillo=-25,invertir=false}={}){
-  return new Promise(resolve=>{
-    const img=new Image();
-    img.onload=()=>{
-      const sy=Math.floor(img.height*yStart),sh=Math.floor(img.height*(yEnd-yStart));
-      const dw=Math.round(img.width*escala),dh=Math.round(sh*escala);
-      const c=document.createElement('canvas');c.width=dw;c.height=dh;
-      const ctx=c.getContext('2d');
-      ctx.filter=`contrast(${contraste}) brightness(${1+brillo/100}) grayscale(1)`;
+function preprocesar(dataUrl, { yStart=0.25, yEnd=0.82, escala=2.8, contraste=2.2, brillo=-25, invertir=false }={}) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const sy = Math.floor(img.height*yStart);
+      const sh = Math.floor(img.height*(yEnd-yStart));
+      const dw = Math.round(img.width*escala);
+      const dh = Math.round(sh*escala);
+      const c = document.createElement('canvas');
+      c.width = dw; c.height = dh;
+      const ctx = c.getContext('2d');
+      ctx.filter = `contrast(${contraste}) brightness(${1+brillo/100}) grayscale(1)`;
       ctx.drawImage(img,0,sy,img.width,sh,0,0,dw,dh);
-      ctx.filter='none';
-      const d=ctx.getImageData(0,0,dw,dh);const px=d.data;
-      for(let i=0;i<px.length;i+=4){
-        const g=px[i];// ya grayscale
-        const v=invertir?(g<140?255:0):(g>115?255:0);
-        px[i]=px[i+1]=px[i+2]=v;px[i+3]=255;
+      ctx.filter = 'none';
+      const d = ctx.getImageData(0,0,dw,dh);
+      const px = d.data;
+      for(let i=0;i<px.length;i+=4) {
+        const g = px[i];
+        const v = invertir ? (g<140?255:0) : (g>115?255:0);
+        px[i]=px[i+1]=px[i+2]=v; px[i+3]=255;
       }
       ctx.putImageData(d,0,0);
       resolve(c.toDataURL('image/png'));
     };
-    img.src=dataUrl;
+    img.src = dataUrl;
   });
 }
 
-function placaEnTexto(ocr,placa){
-  if(!ocr||!placa)return false;
-  if(ocr.includes(placa))return true;
-  const len=placa.length;
-  for(let i=0;i<=ocr.length-len;i++){
-    const sub=ocr.substring(i,i+len);
-    let ok=0;for(let j=0;j<len;j++)if(sub[j]===placa[j])ok++;
-    if(ok/len>=0.82)return true;
+function placaEnTexto(ocr, placa) {
+  if(!ocr || !placa) return false;
+  if(ocr.includes(placa)) return true;
+  const len = placa.length;
+  for(let i=0;i<=ocr.length-len;i++) {
+    const sub = ocr.substring(i,i+len);
+    let ok=0; for(let j=0;j<len;j++) if(sub[j]===placa[j]) ok++;
+    if(ok/len >= 0.82) return true;
   }
   return false;
 }
 
-// ── 3 variantes en PARALELO, con PSM 7 y PSM 8 como respaldo ──
-async function procesarOCR(dataUrl){
-  const placa=document.getElementById('f-placa').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+async function procesarOCR(dataUrl) {
+  const placa = document.getElementById('f-placa').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
   setOcr('info','🔍 Verificando placa...');
-  try{
-    const worker=await getWorker();
-    // Preparar 3 variantes simultáneamente (Promise.all en preprocessing)
-    const [imgNormal,imgInv,imgAmplio]=await Promise.all([
+  try {
+    const worker = await getWorker();
+    const [imgNormal, imgInv, imgAmplio] = await Promise.all([
       preprocesar(dataUrl,{yStart:0.28,yEnd:0.80,escala:3,contraste:2.2,brillo:-25,invertir:false}),
       preprocesar(dataUrl,{yStart:0.28,yEnd:0.80,escala:3,contraste:2.5,brillo:-35,invertir:true}),
       preprocesar(dataUrl,{yStart:0.15,yEnd:0.92,escala:2.5,contraste:2,brillo:-10,invertir:false})
     ]);
-    // Reconocer secuencialmente con salida temprana al primer match
-    for(const [img,psm] of [[imgNormal,'7'],[imgNormal,'8'],[imgInv,'7'],[imgAmplio,'7'],[imgAmplio,'11']]){
-      await worker.setParameters({tessedit_pageseg_mode:psm});
-      const {data:{text}}=await worker.recognize(img);
-      const t=text.toUpperCase().replace(/[^A-Z0-9]/g,'').trim();
-      if(t.length>=4&&placaEnTexto(t,placa)){
-        onPlacaVerificada(placa);return;
+    for(const [img,psm] of [[imgNormal,'7'],[imgNormal,'8'],[imgInv,'7'],[imgAmplio,'7'],[imgAmplio,'11']]) {
+      await worker.setParameters({ tessedit_pageseg_mode: parseInt(psm) });
+      const { data:{ text } } = await worker.recognize(img);
+      const t = text.toUpperCase().replace(/[^A-Z0-9]/g,'').trim();
+      if(t.length>=4 && placaEnTexto(t,placa)) {
+        onPlacaVerificada(placa);
+        return;
       }
     }
-    // No encontró coincidencia
-    setOcr('err','✗ La placa "'+document.getElementById('f-placa').value+'" no se detectó en la foto. Acércate más y asegúrate de que la placa esté centrada y bien iluminada.');
-    fotoOk=false;
-  }catch(e){
-    setOcr('warn','Error al analizar la foto. Retoma la foto e intenta nuevamente.');
-    fotoOk=false;
+    setOcr('err','✗ La placa "'+document.getElementById('f-placa').value+'" no se detectó en la foto. Acércate más y centra bien la placa.');
+    fotoOk = false;
+  } catch(e) {
+    setOcr('warn','Error al analizar la foto. Retoma la foto.');
+    fotoOk = false;
   }
 }
 
-function onPlacaVerificada(placa){
+function onPlacaVerificada(placa) {
   setOcr('ok','✓ Placa verificada correctamente.');
-  fotoOk=true;paso(3);
-  const info=placasDB[placa];
-  if(info&&info.tipo==='LOCAL'){
-    if(!zona)setGeo('warn','warn','No hay zona configurada. Contacta al administrador.');
-    else{setGeo('info','info','Unidad LOCAL: debes estar dentro de "'+zona.nombre+'" (radio: '+zona.radio+' m).');document.getElementById('btn-geo').style.display='inline-block';}
+  fotoOk = true;
+  paso(3);
+  const info = placasDB[placa];
+  if(info && info.tipo === 'LOCAL') {
+    if(!zona) setGeo('warn','warn','No hay zona configurada. Contacta al administrador.');
+    else { setGeo('info','info','Unidad LOCAL: debes estar dentro de "'+zona.nombre+'" (radio: '+zona.radio+' m).'); document.getElementById('btn-geo').style.display = 'inline-block'; }
   } else {
-    document.getElementById('field-coords').style.display='flex';
+    document.getElementById('field-coords').style.display = 'flex';
     setGeo('warn','warn','Unidad '+(info?info.tipo:'')+': se capturará tu ubicación al registrar.');
-    document.getElementById('btn-guardar').style.display='inline-block';
-    document.getElementById('btn-guardar').disabled=false;
-    geoOk=true;
+    document.getElementById('btn-guardar').style.display = 'inline-block';
+    document.getElementById('btn-guardar').disabled = false;
+    geoOk = true;
   }
 }
 
-
-
-function setOcr(type,msg){
-  const el=document.getElementById('ocr-box');
-  if(!msg){el.style.display='none';return;}
-  el.textContent=msg;el.className='ocr-box '+(type||'');el.style.display='block';
+function setOcr(type,msg) {
+  const el = document.getElementById('ocr-box');
+  if(!msg) { el.style.display = 'none'; return; }
+  el.textContent = msg;
+  el.className = 'ocr-box '+(type||'');
+  el.style.display = 'block';
 }
-function pararCamara(){if(streamActivo){streamActivo.getTracks().forEach(t=>t.stop());streamActivo=null;}}
+function pararCamara() { if(streamActivo) { streamActivo.getTracks().forEach(t=>t.stop()); streamActivo=null; } }
 
-window.retomar=function(){
+window.retomar = function() {
   pararCamara();
-  document.getElementById('foto-preview').style.display='none';document.getElementById('foto-preview').src='';
-  document.getElementById('btn-retomar').style.display='none';
-  document.getElementById('btn-guardar').style.display='none';
-  document.getElementById('btn-geo').style.display='none';
-  document.getElementById('dist-wrap').style.display='none';
-  fotoOk=false;geoOk=false;
+  document.getElementById('foto-preview').style.display = 'none';
+  document.getElementById('foto-preview').src = '';
+  document.getElementById('btn-retomar').style.display = 'none';
+  document.getElementById('btn-guardar').style.display = 'none';
+  document.getElementById('btn-geo').style.display = 'none';
+  document.getElementById('dist-wrap').style.display = 'none';
+  fotoOk = false; geoOk = false;
   setGeo('','','Presiona el botón para verificar tu ubicación.');
   setOcr('','');
-  paso(2);abrirCamara();
+  // Desbloquear campos si estaban bloqueados
+  if (camposBloqueados) {
+    document.getElementById('f-placa').readOnly = false;
+    document.getElementById('f-lic').readOnly = false;
+    document.getElementById('f-tel').readOnly = false;
+    camposBloqueados = false;
+  }
+  paso(2);
+  abrirCamara();
 };
 
-// PASO 3: Verificar ubicación
-window.verificarUbicacion=function(){
-  if(!zona){setGeo('warn','warn','Sin zona configurada. Contacta al administrador.');return;}
+window.verificarUbicacion = function() {
+  if(!zona) { setGeo('warn','warn','Sin zona configurada.'); return; }
   setGeo('info','info','Obteniendo ubicación GPS...');
-  if(!navigator.geolocation){setGeo('err','err','Tu navegador no soporta geolocalización.');return;}
-  navigator.geolocation.getCurrentPosition(pos=>{
-    userLat=pos.coords.latitude;userLng=pos.coords.longitude;
-    const dist=haversine(userLat,userLng,zona.lat,zona.lng),dentro=dist<=zona.radio,dm=Math.round(dist);
-    geoOk=dentro;
-    document.getElementById('dist-wrap').style.display='block';
-    document.getElementById('dist-label').textContent=dm+' m / '+zona.radio+' m';
-    const bar=document.getElementById('dist-bar');bar.style.width=Math.min(100,Math.round(dist/zona.radio*100))+'%';bar.className='dist-fill '+(dentro?'fill-ok':'fill-err');
-    if(dentro){
-      setGeo('ok','ok','✓ Dentro de "'+zona.nombre+'" — '+dm+' m del centro.');
-      document.getElementById('btn-guardar').style.display='inline-block';
-      document.getElementById('btn-guardar').disabled=false;
+  if(!navigator.geolocation) { setGeo('err','err','Geolocalización no soportada.'); return; }
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+    const dist = haversine(userLat,userLng,zona.lat,zona.lng);
+    const dentro = dist <= zona.radio;
+    geoOk = dentro;
+    document.getElementById('dist-wrap').style.display = 'block';
+    document.getElementById('dist-label').textContent = Math.round(dist)+' m / '+zona.radio+' m';
+    const bar = document.getElementById('dist-bar');
+    bar.style.width = Math.min(100, Math.round(dist/zona.radio*100))+'%';
+    bar.className = 'dist-fill '+(dentro?'fill-ok':'fill-err');
+    if(dentro) {
+      setGeo('ok','ok','✓ Dentro de "'+zona.nombre+'" — '+Math.round(dist)+' m del centro.');
+      document.getElementById('btn-guardar').style.display = 'inline-block';
+      document.getElementById('btn-guardar').disabled = false;
     } else {
-      setGeo('err','err','Fuera de la zona. Estás a '+dm+' m. Límite: '+zona.radio+' m.');
-      document.getElementById('btn-guardar').disabled=true;
+      setGeo('err','err','Fuera de la zona. Estás a '+Math.round(dist)+' m. Límite: '+zona.radio+' m.');
+      document.getElementById('btn-guardar').disabled = true;
     }
-  },()=>{setGeo('err','err','No se pudo obtener tu ubicación. Verifica los permisos del navegador.');geoOk=false;},{enableHighAccuracy:true,timeout:10000});
+  }, () => { setGeo('err','err','No se pudo obtener ubicación.'); geoOk=false; }, { enableHighAccuracy:true, timeout:10000 });
 };
 
-// GUARDAR
-window.guardar=async function(){
-  const placa=document.getElementById('f-placa').value.trim().toUpperCase();
-  const lic=document.getElementById('f-lic').value.trim();
-  const nombre=document.getElementById('f-nombre').value.trim();
-  const tel=document.getElementById('f-tel').value.trim();
-  const info=placasDB[placa];
-  if(!info||!lic||!nombre||!tel){showMsg('Verifica todos los campos.','err');return;}
-  if(!fotoOk){showMsg('Debes completar la verificación de foto.','err');return;}
-  if(!geoOk&&info.tipo==='LOCAL'){showMsg('Debes verificar tu ubicación dentro de la cochera.','err');return;}
-  document.getElementById('btn-guardar').disabled=true;
-  if(info.tipo!=='LOCAL'&&navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(async pos=>{
-      userLat=pos.coords.latitude;userLng=pos.coords.longitude;
-      document.getElementById('f-coords').value=userLat.toFixed(6)+', '+userLng.toFixed(6);
-      await finalizar(userLat,userLng,info,placa,lic,nombre,tel);
-    },async()=>await finalizar(null,null,info,placa,lic,nombre,tel),{enableHighAccuracy:true,timeout:8000});
+window.guardar = async function() {
+  const placa = document.getElementById('f-placa').value.trim().toUpperCase();
+  const lic = document.getElementById('f-lic').value.trim();
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const tel = document.getElementById('f-tel').value.trim();
+  const info = placasDB[placa];
+  if(!info || !lic || !nombre || !tel) { showMsg('Verifica todos los campos.','err'); return; }
+  if(!fotoOk) { showMsg('Debes completar la verificación de foto.','err'); return; }
+  if(!geoOk && info.tipo === 'LOCAL') { showMsg('Debes verificar tu ubicación dentro de la cochera.','err'); return; }
+  document.getElementById('btn-guardar').disabled = true;
+  if(info.tipo !== 'LOCAL' && navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(async pos => {
+      userLat = pos.coords.latitude; userLng = pos.coords.longitude;
+      document.getElementById('f-coords').value = userLat.toFixed(6)+', '+userLng.toFixed(6);
+      await finalizar(userLat, userLng, info, placa, lic, nombre, tel);
+    }, async () => await finalizar(null, null, info, placa, lic, nombre, tel), { enableHighAccuracy:true, timeout:8000 });
     return;
   }
-  await finalizar(userLat,userLng,info,placa,lic,nombre,tel);
+  await finalizar(userLat, userLng, info, placa, lic, nombre, tel);
 };
 
-async function finalizar(lat,lng,info,placa,lic,nombre,tel){
-  const coords=lat&&lng?(lat.toFixed(6)+', '+lng.toFixed(6)):'No disponible';
-  try{
-    await window._add(window._col(window._db,'registros'),{
-      ts:fmtDate(new Date()),tsNum:Date.now(),tipo:info.tipo,empresa:info.empresa,
-      placa,cap:info.cap,lic,nombre,tel,coords,estado:'PENDIENTE',motivo:''
+async function finalizar(lat,lng,info,placa,lic,nombre,tel) {
+  const coords = (lat && lng) ? (lat.toFixed(6)+', '+lng.toFixed(6)) : 'No disponible';
+  try {
+    await db.collection('registros').add({
+      ts: fmtDate(new Date()),
+      tsNum: Date.now(),
+      tipo: info.tipo,
+      empresa: info.empresa,
+      placa,
+      cap: info.cap,
+      lic,
+      nombre,
+      tel,
+      coords,
+      estado: 'ESPERANDO PROGRAMACIÓN',
+      motivo: ''
     });
-    // Éxito
     pararCamara();
-    document.getElementById('app-content').innerHTML=`
+    document.getElementById('app-content').innerHTML = `
       <div style="text-align:center;padding:3rem 1rem">
         <div style="width:64px;height:64px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px">✓</div>
         <div style="font-size:20px;font-weight:600;color:var(--green-text);margin-bottom:8px">¡Registro exitoso!</div>
@@ -433,23 +503,24 @@ async function finalizar(lat,lng,info,placa,lic,nombre,tel){
         <div style="font-size:13px;color:var(--text2);margin-bottom:24px">Conductor: <strong>${nombre}</strong></div>
         <button class="btn btn-primary" onclick="location.reload()">Registrar otra unidad</button>
       </div>`;
-  }catch(e){
-    showMsg('Error al guardar. Verifica tu conexión e intenta nuevamente.','err');
-    document.getElementById('btn-guardar').disabled=false;
+  } catch(e) {
+    showMsg('Error al guardar. Verifica tu conexión.','err');
+    document.getElementById('btn-guardar').disabled = false;
   }
 }
 
-function showMsg(txt,type){
-  const el=document.getElementById('msg');el.textContent=txt;el.className='msg '+type;el.style.display='block';
-  setTimeout(()=>{el.style.display='none'},5000);
+function showMsg(txt,type) {
+  const el = document.getElementById('msg');
+  el.textContent = txt;
+  el.className = 'msg '+type;
+  el.style.display = 'block';
+  setTimeout(()=> el.style.display='none', 5000);
 }
 
-// Escuchar cambios en teléfono para habilitar continuar
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('f-tel').addEventListener('input',checkContinuar);
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('f-tel').addEventListener('input', checkContinuar);
 });
-
-paso(1);init();
+// No llamamos a paso(1) aquí porque esperamos autenticación
 </script>
 </body>
 </html>
