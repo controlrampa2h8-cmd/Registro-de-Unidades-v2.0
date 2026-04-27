@@ -87,7 +87,6 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
       <div class="actions">
         <button class="btn btn-primary" id="btn-continuar-datos" onclick="continuarDatos()" disabled aria-label="Continuar al siguiente paso">Continuar →</button>
       </div>
-      <!-- MEJORA: Mensaje de ayuda dinámico -->
       <div id="help-message" style="font-size:12px; color:var(--text3); margin-top:8px;"></div>
     </div>
 
@@ -107,6 +106,7 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
         <button class="btn btn-blue" id="btn-abrir-cam" onclick="abrirCamara()" style="display:none" aria-label="Abrir cámara">📷 Abrir cámara</button>
         <button class="btn btn-ghost" id="btn-retomar" onclick="retomar()" style="display:none" aria-label="Retomar foto">↺ Retomar foto</button>
+        <button class="btn btn-ghost" id="btn-reintentar-foto" onclick="reintentarFoto()" style="display:none" aria-label="Tomar nueva foto">📸 Tomar nueva foto</button>
       </div>
     </div>
 
@@ -132,7 +132,7 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore-compat.js"></script>
 <script>
-// ========== MEJORA: Constantes de mensajes ==========
+// ========== Constantes ==========
 const MSG = {
   telInvalido: "El teléfono debe tener entre 7 y 15 dígitos.",
   placaNoReg: "La placa ingresada no está registrada en el sistema.",
@@ -160,7 +160,7 @@ let zona = null, geoOk = false, fotoOk = false, userLat = null, userLng = null, 
 let placasDB = {}, conductoresDB = {};
 let datosCargados = false;
 
-// MEJORA: Referencias a elementos del DOM para evitar búsquedas repetitivas
+// Referencias DOM
 const dom = {
   placa: document.getElementById('f-placa'),
   lic: document.getElementById('f-lic'),
@@ -170,6 +170,7 @@ const dom = {
   helpMsg: document.getElementById('help-message')
 };
 
+// ========== Funciones auxiliares ==========
 const pad = n => String(n).padStart(2,'0');
 function fmtDate(d) { return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
 function tick() {
@@ -231,13 +232,24 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
+// ========== CORRECCIÓN: Bloqueo correcto de pasos ==========
 function paso(n) {
   [1,2,3].forEach(i => {
-    if(i>1) document.getElementById('card-'+i).classList.toggle('locked', i>n);
+    const card = document.getElementById('card-'+i);
     const b = document.getElementById('b'+i);
-    if(i<n) { b.className = 'step-badge done'; b.textContent = '✓'; }
-    else if(i===n) { b.className = 'step-badge active'; b.textContent = i; }
-    else { b.className = 'step-badge'; b.textContent = i; }
+    if (i < n) {
+      card.classList.add('locked');
+      b.className = 'step-badge done';
+      b.textContent = '✓';
+    } else if (i === n) {
+      card.classList.remove('locked');
+      b.className = 'step-badge active';
+      b.textContent = i;
+    } else {
+      card.classList.add('locked');
+      b.className = 'step-badge';
+      b.textContent = i;
+    }
   });
 }
 
@@ -252,7 +264,6 @@ function haversine(a,b,c,d) {
   return R * 2 * Math.atan2(Math.sqrt(k), Math.sqrt(1-k));
 }
 
-// MEJORA: Validación de teléfono con regex
 function validarTelefono(tel) {
   return /^[0-9]{7,15}$/.test(tel);
 }
@@ -323,7 +334,7 @@ window.continuarDatos = function() {
   document.getElementById('btn-abrir-cam').style.display = 'inline-block';
 };
 
-// MEJORA: Carga bajo demanda de Tesseract (solo al abrir cámara)
+// ========== MEJORAS EN VERIFICACIÓN DE PLACA ==========
 let _worker = null;
 async function getWorker() {
   if(!_worker) {
@@ -337,13 +348,10 @@ async function getWorker() {
   return _worker;
 }
 
-// MEJORA: Ya no hay precarga automática; se cargará cuando se abra la cámara.
-
 window.abrirCamara = async function() {
   document.getElementById('btn-abrir-cam').style.display = 'none';
   document.getElementById('cam-wrap').style.display = 'block';
   setOcr('','');
-  // Precarga del worker en segundo plano (no bloqueante)
   getWorker().catch(()=>{});
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 } } });
@@ -372,8 +380,52 @@ window.capturarFoto = function() {
   procesarOCR(dataUrl);
 };
 
-function preprocesar(dataUrl, { yStart=0.25, yEnd=0.82, escala=2.8, contraste=2.2, brillo=-25, invertir=false } = {}) {
+// Función de ecualización de histograma simple para mejorar contraste
+function equalizeHistogram(dataUrl) {
   return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const imageData = ctx.getImageData(0, 0, img.width, img.height);
+      const data = imageData.data;
+      // Convertir a grises y calcular histograma
+      const histogram = new Array(256).fill(0);
+      for (let i = 0; i < data.length; i += 4) {
+        const gray = Math.round(0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
+        histogram[gray]++;
+      }
+      // Calcular CDF
+      let cdf = 0;
+      const min = 0;
+      const total = data.length / 4;
+      const lookup = new Array(256);
+      for (let i = 0; i < 256; i++) {
+        cdf += histogram[i];
+        lookup[i] = Math.round(255 * (cdf - min) / (total - min));
+      }
+      // Aplicar ecualización
+      for (let i = 0; i < data.length; i += 4) {
+        const gray = Math.round(0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
+        const newVal = lookup[gray];
+        data[i] = data[i+1] = data[i+2] = newVal;
+      }
+      ctx.putImageData(imageData, 0, 0);
+      resolve(canvas.toDataURL('image/png'));
+    };
+    img.src = dataUrl;
+  });
+}
+
+function preprocesar(dataUrl, { yStart=0.25, yEnd=0.82, escala=2.5, contraste=2.0, brillo=-15, invertir=false, equalize=true } = {}) {
+  return new Promise(async resolve => {
+    let processedUrl = dataUrl;
+    if (equalize) {
+      processedUrl = await equalizeHistogram(dataUrl);
+    }
     const img = new Image();
     img.onload = () => {
       const sy = Math.floor(img.height * yStart);
@@ -397,7 +449,7 @@ function preprocesar(dataUrl, { yStart=0.25, yEnd=0.82, escala=2.8, contraste=2.
       ctx.putImageData(d, 0, 0);
       resolve(c.toDataURL('image/png'));
     };
-    img.src = dataUrl;
+    img.src = processedUrl;
   });
 }
 
@@ -407,25 +459,27 @@ function placaEnTexto(ocr, placa) {
   const len = placa.length;
   for(let i=0; i<=ocr.length-len; i++) {
     const sub = ocr.substring(i, i+len);
-    let ok = 0;
-    for(let j=0; j<len; j++) if(sub[j] === placa[j]) ok++;
-    if(ok/len >= 0.82) return true;
+    let matchCount = 0;
+    for(let j=0; j<len; j++) if(sub[j] === placa[j]) matchCount++;
+    if(matchCount/len >= 0.75) return true; // umbral reducido al 75% para mayor tolerancia
   }
   return false;
 }
 
-// MEJORA: Reconocimiento paralelo con Promise.any()
 async function procesarOCR(dataUrl) {
   const placa = document.getElementById('f-placa').value.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
   setOcr('info', '🔍 Verificando placa...');
+  // Ocultar botón reintentar si estaba visible
+  document.getElementById('btn-reintentar-foto').style.display = 'none';
   try {
     const worker = await getWorker();
+    // Preprocesar 3 variantes (normal, invertida, amplia) con ecualización
     const [imgNormal, imgInv, imgAmplio] = await Promise.all([
-      preprocesar(dataUrl, { yStart:0.28, yEnd:0.80, escala:3, contraste:2.2, brillo:-25, invertir:false }),
-      preprocesar(dataUrl, { yStart:0.28, yEnd:0.80, escala:3, contraste:2.5, brillo:-35, invertir:true }),
-      preprocesar(dataUrl, { yStart:0.15, yEnd:0.92, escala:2.5, contraste:2, brillo:-10, invertir:false })
+      preprocesar(dataUrl, { yStart:0.28, yEnd:0.80, escala:3, contraste:2.2, brillo:-25, invertir:false, equalize:true }),
+      preprocesar(dataUrl, { yStart:0.28, yEnd:0.80, escala:3, contraste:2.5, brillo:-35, invertir:true, equalize:true }),
+      preprocesar(dataUrl, { yStart:0.15, yEnd:0.92, escala:2.5, contraste:2.0, brillo:-10, invertir:false, equalize:true })
     ]);
-    // Definir tareas de reconocimiento con diferentes configuraciones PSM
+    // Tareas con diferentes modos PSM
     const tareas = [
       worker.recognize(imgNormal, { tessedit_pageseg_mode: 7 }),
       worker.recognize(imgNormal, { tessedit_pageseg_mode: 8 }),
@@ -433,23 +487,38 @@ async function procesarOCR(dataUrl) {
       worker.recognize(imgAmplio, { tessedit_pageseg_mode: 7 }),
       worker.recognize(imgAmplio, { tessedit_pageseg_mode: 11 })
     ];
-    // Lanzar todas las tareas y esperar la primera que cumpla con la placa
     const resultados = await Promise.allSettled(tareas);
+    let mejorCoincidencia = null;
+    let mejorTexto = '';
     for (const res of resultados) {
       if (res.status === 'fulfilled') {
         const text = res.value.data.text.toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
-        if (text.length >= 4 && placaEnTexto(text, placa)) {
-          onPlacaVerificada(placa);
-          return;
+        if (text.length >= 4) {
+          if (placaEnTexto(text, placa)) {
+            onPlacaVerificada(placa);
+            return;
+          }
+          // Guardar la mejor coincidencia por si ninguna pasa el umbral
+          if (!mejorCoincidencia) {
+            mejorCoincidencia = text;
+            mejorTexto = text;
+          }
         }
       }
     }
-    // Si ninguna coincide
-    setOcr('err', '✗ La placa "' + document.getElementById('f-placa').value + '" no se detectó en la foto. Acércate más y asegúrate de que la placa esté centrada y bien iluminada.');
+    // Si no se encontró coincidencia, mostrar el texto detectado
+    if (mejorTexto) {
+      setOcr('err', `✗ No se pudo verificar la placa "${placa}". El texto detectado fue: "${mejorTexto}".\nAsegúrate de que la placa esté centrada y bien iluminada.`);
+    } else {
+      setOcr('err', '✗ No se pudo leer la placa. Acércate más y asegúrate de que la placa esté centrada y bien iluminada.');
+    }
     fotoOk = false;
+    document.getElementById('btn-reintentar-foto').style.display = 'inline-block';
   } catch(e) {
-    setOcr('warn', 'Error al analizar la foto. Retoma la foto e intenta nuevamente.');
+    console.error(e);
+    setOcr('warn', 'Error al analizar la foto. Intenta nuevamente con mejor iluminación.');
     fotoOk = false;
+    document.getElementById('btn-reintentar-foto').style.display = 'inline-block';
   }
 }
 
@@ -493,6 +562,7 @@ window.retomar = function() {
   document.getElementById('foto-preview').style.display = 'none';
   document.getElementById('foto-preview').src = '';
   document.getElementById('btn-retomar').style.display = 'none';
+  document.getElementById('btn-reintentar-foto').style.display = 'none';
   document.getElementById('btn-guardar').style.display = 'none';
   document.getElementById('btn-geo').style.display = 'none';
   document.getElementById('dist-wrap').style.display = 'none';
@@ -500,6 +570,19 @@ window.retomar = function() {
   geoOk = false;
   setGeo('','','Presiona el botón para verificar tu ubicación.');
   setOcr('','');
+  paso(2);
+  abrirCamara();
+};
+
+// Nuevo: permitir tomar una nueva foto sin salir del paso
+window.reintentarFoto = function() {
+  pararCamara();
+  document.getElementById('foto-preview').style.display = 'none';
+  document.getElementById('foto-preview').src = '';
+  document.getElementById('btn-retomar').style.display = 'none';
+  document.getElementById('btn-reintentar-foto').style.display = 'none';
+  setOcr('', '');
+  fotoOk = false;
   paso(2);
   abrirCamara();
 };
@@ -574,7 +657,6 @@ async function finalizar(lat, lng, info, placa, lic, nombre, tel) {
       motivo: ''
     });
     pararCamara();
-    // MEJORA: Reinicio sin recargar página
     mostrarPantallaExito(placa, nombre);
   } catch(e) {
     showMsg('Error al guardar. Verifica tu conexión e intenta nuevamente.','err');
@@ -582,7 +664,6 @@ async function finalizar(lat, lng, info, placa, lic, nombre, tel) {
   }
 }
 
-// MEJORA: Función que muestra éxito y permite nuevo registro sin recargar
 function mostrarPantallaExito(placa, nombre) {
   const container = document.getElementById('app-content');
   container.innerHTML = `
@@ -595,46 +676,8 @@ function mostrarPantallaExito(placa, nombre) {
     </div>`;
   const btnNuevo = document.getElementById('btn-nuevo-registro');
   btnNuevo.addEventListener('click', () => {
-    reiniciarFormulario();
+    location.reload(); // Por simplicidad recarga la página para reiniciar todo el estado
   });
-}
-
-function reiniciarFormulario() {
-  // Limpiar campos
-  dom.placa.value = '';
-  dom.lic.value = '';
-  dom.tel.value = '';
-  dom.nombre.value = '';
-  document.getElementById('f-tipo').value = '';
-  document.getElementById('f-empresa').value = '';
-  document.getElementById('f-cap').value = '';
-  document.getElementById('f-coords').value = '';
-  document.getElementById('field-coords').style.display = 'none';
-  document.getElementById('foto-preview').style.display = 'none';
-  document.getElementById('foto-preview').src = '';
-  document.getElementById('btn-retomar').style.display = 'none';
-  document.getElementById('btn-guardar').style.display = 'none';
-  document.getElementById('btn-geo').style.display = 'none';
-  document.getElementById('dist-wrap').style.display = 'none';
-  setGeo('','','Presiona el botón para verificar tu ubicación.');
-  setOcr('','');
-  fotoOk = false;
-  geoOk = false;
-  userLat = null;
-  userLng = null;
-  // Desbloquear campos de datos (si estaban bloqueados por continuar)
-  dom.placa.readOnly = false;
-  dom.lic.readOnly = false;
-  dom.tel.readOnly = false;
-  // Restaurar el HTML original del formulario (solo la estructura, los datos ya están vacíos)
-  // Como los campos ya están limpios, solo hay que ocultar la pantalla de éxito y mostrar el contenido normal.
-  // Pero el contenido original fue reemplazado; necesitamos recargar la estructura original.
-  // Para simplificar, recargamos la página (pero eso anula la mejora). Vamos a regenerar el DOM original de forma dinámica.
-  // Dado que es un cambio grande, por ahora usaremos location.reload() para asegurar consistencia,
-  // pero la mejora real sería reconstruir el DOM. Dejamos location.reload() como fallback.
-  location.reload(); // Por simplicidad, pero es aceptable.
-  // NOTA: Para una verdadera experiencia sin recarga, habría que clonar el contenido original desde un template.
-  // Dado que el alcance de la mejora es limitado, se sugiere mantener recarga. Sin embargo, ya hemos mejorado otros aspectos.
 }
 
 function showMsg(txt, type) {
