@@ -338,182 +338,128 @@ window.continuarDatos = function() {
 let _worker = null;
 async function getWorker() {
   if(!_worker) {
-    _worker = await Tesseract.createWorker('eng', 1, { logger: () => {} });
+    // Usar español para mejor reconocimiento
+    _worker = await Tesseract.createWorker('spa', 1, { logger: () => {} });
     await _worker.setParameters({
       tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
       preserve_interword_spaces: '0',
-      tessedit_pageseg_mode: '7'
+      tessedit_pageseg_mode: '7',
+      tessedit_ocr_engine_mode: '3'
     });
   }
   return _worker;
 }
 
-window.abrirCamara = async function() {
-  document.getElementById('btn-abrir-cam').style.display = 'none';
-  document.getElementById('cam-wrap').style.display = 'block';
-  setOcr('','');
-  getWorker().catch(()=>{});
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 } } });
-    streamActivo = stream;
-    document.getElementById('video').srcObject = stream;
-  } catch(e) {
-    document.getElementById('cam-wrap').style.display = 'none';
-    setOcr('err','No se pudo acceder a la cámara. Verifica los permisos del navegador.');
-    document.getElementById('btn-abrir-cam').style.display = 'inline-block';
-  }
-};
-
-window.capturarFoto = function() {
-  const video = document.getElementById('video');
-  const canvas = document.createElement('canvas');
-  canvas.width = video.videoWidth || 640;
-  canvas.height = video.videoHeight || 480;
-  canvas.getContext('2d').drawImage(video, 0, 0);
-  pararCamara();
-  document.getElementById('cam-wrap').style.display = 'none';
-  const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-  const prev = document.getElementById('foto-preview');
-  prev.src = dataUrl;
-  prev.style.display = 'block';
-  document.getElementById('btn-retomar').style.display = 'inline-block';
-  procesarOCR(dataUrl);
-};
-
-// Función de ecualización de histograma simple para mejorar contraste
-function equalizeHistogram(dataUrl) {
+// Función preprocesamiento mejorada (sin ecualización agresiva)
+function preprocesarImagen(dataUrl) {
   return new Promise(resolve => {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
       const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      const imageData = ctx.getImageData(0, 0, img.width, img.height);
-      const data = imageData.data;
-      // Convertir a grises y calcular histograma
-      const histogram = new Array(256).fill(0);
+      const scale = 2; // aumentar resolución
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      
+      let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      let data = imageData.data;
+      // Convertir a grises y contraste simple
       for (let i = 0; i < data.length; i += 4) {
-        const gray = Math.round(0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
-        histogram[gray]++;
-      }
-      // Calcular CDF
-      let cdf = 0;
-      const min = 0;
-      const total = data.length / 4;
-      const lookup = new Array(256);
-      for (let i = 0; i < 256; i++) {
-        cdf += histogram[i];
-        lookup[i] = Math.round(255 * (cdf - min) / (total - min));
-      }
-      // Aplicar ecualización
-      for (let i = 0; i < data.length; i += 4) {
-        const gray = Math.round(0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
-        const newVal = lookup[gray];
-        data[i] = data[i+1] = data[i+2] = newVal;
+        let r = data[i];
+        let g = data[i+1];
+        let b = data[i+2];
+        let gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        gray = gray < 100 ? 0 : (gray > 180 ? 255 : gray);
+        data[i] = data[i+1] = data[i+2] = gray;
       }
       ctx.putImageData(imageData, 0, 0);
-      resolve(canvas.toDataURL('image/png'));
+      
+      // Recorte de la zona donde probablemente está la placa (mitad inferior)
+      const regionCanvas = document.createElement('canvas');
+      const regionW = canvas.width;
+      const regionH = Math.floor(canvas.height * 0.4);
+      const offsetY = Math.floor(canvas.height * 0.5);
+      regionCanvas.width = regionW;
+      regionCanvas.height = regionH;
+      const regionCtx = regionCanvas.getContext('2d');
+      regionCtx.drawImage(canvas, 0, offsetY, regionW, regionH, 0, 0, regionW, regionH);
+      
+      // Binarización fuerte
+      const regionData = regionCtx.getImageData(0, 0, regionW, regionH);
+      const px = regionData.data;
+      for (let i = 0; i < px.length; i += 4) {
+        let val = px[i];
+        val = val > 120 ? 255 : 0;
+        px[i] = px[i+1] = px[i+2] = val;
+      }
+      regionCtx.putImageData(regionData, 0, 0);
+      
+      resolve(regionCanvas.toDataURL('image/png'));
     };
     img.src = dataUrl;
   });
 }
 
-function preprocesar(dataUrl, { yStart=0.25, yEnd=0.82, escala=2.5, contraste=2.0, brillo=-15, invertir=false, equalize=true } = {}) {
-  return new Promise(async resolve => {
-    let processedUrl = dataUrl;
-    if (equalize) {
-      processedUrl = await equalizeHistogram(dataUrl);
-    }
-    const img = new Image();
-    img.onload = () => {
-      const sy = Math.floor(img.height * yStart);
-      const sh = Math.floor(img.height * (yEnd - yStart));
-      const dw = Math.round(img.width * escala);
-      const dh = Math.round(sh * escala);
-      const c = document.createElement('canvas');
-      c.width = dw; c.height = dh;
-      const ctx = c.getContext('2d');
-      ctx.filter = `contrast(${contraste}) brightness(${1 + brillo/100}) grayscale(1)`;
-      ctx.drawImage(img, 0, sy, img.width, sh, 0, 0, dw, dh);
-      ctx.filter = 'none';
-      const d = ctx.getImageData(0, 0, dw, dh);
-      const px = d.data;
-      for(let i=0; i<px.length; i+=4) {
-        const g = px[i];
-        const v = invertir ? (g<140 ? 255 : 0) : (g>115 ? 255 : 0);
-        px[i] = px[i+1] = px[i+2] = v;
-        px[i+3] = 255;
-      }
-      ctx.putImageData(d, 0, 0);
-      resolve(c.toDataURL('image/png'));
-    };
-    img.src = processedUrl;
-  });
-}
-
-function placaEnTexto(ocr, placa) {
-  if(!ocr || !placa) return false;
-  if(ocr.includes(placa)) return true;
-  const len = placa.length;
-  for(let i=0; i<=ocr.length-len; i++) {
-    const sub = ocr.substring(i, i+len);
-    let matchCount = 0;
-    for(let j=0; j<len; j++) if(sub[j] === placa[j]) matchCount++;
-    if(matchCount/len >= 0.75) return true; // umbral reducido al 75% para mayor tolerancia
-  }
-  return false;
-}
-
 async function procesarOCR(dataUrl) {
-  const placa = document.getElementById('f-placa').value.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const placaDigitada = document.getElementById('f-placa').value.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
   setOcr('info', '🔍 Verificando placa...');
-  // Ocultar botón reintentar si estaba visible
   document.getElementById('btn-reintentar-foto').style.display = 'none';
   try {
+    const imgPre = await preprocesarImagen(dataUrl);
     const worker = await getWorker();
-    // Preprocesar 3 variantes (normal, invertida, amplia) con ecualización
-    const [imgNormal, imgInv, imgAmplio] = await Promise.all([
-      preprocesar(dataUrl, { yStart:0.28, yEnd:0.80, escala:3, contraste:2.2, brillo:-25, invertir:false, equalize:true }),
-      preprocesar(dataUrl, { yStart:0.28, yEnd:0.80, escala:3, contraste:2.5, brillo:-35, invertir:true, equalize:true }),
-      preprocesar(dataUrl, { yStart:0.15, yEnd:0.92, escala:2.5, contraste:2.0, brillo:-10, invertir:false, equalize:true })
-    ]);
-    // Tareas con diferentes modos PSM
-    const tareas = [
-      worker.recognize(imgNormal, { tessedit_pageseg_mode: 7 }),
-      worker.recognize(imgNormal, { tessedit_pageseg_mode: 8 }),
-      worker.recognize(imgInv, { tessedit_pageseg_mode: 7 }),
-      worker.recognize(imgAmplio, { tessedit_pageseg_mode: 7 }),
-      worker.recognize(imgAmplio, { tessedit_pageseg_mode: 11 })
-    ];
-    const resultados = await Promise.allSettled(tareas);
-    let mejorCoincidencia = null;
-    let mejorTexto = '';
-    for (const res of resultados) {
-      if (res.status === 'fulfilled') {
-        const text = res.value.data.text.toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
-        if (text.length >= 4) {
-          if (placaEnTexto(text, placa)) {
-            onPlacaVerificada(placa);
-            return;
-          }
-          // Guardar la mejor coincidencia por si ninguna pasa el umbral
-          if (!mejorCoincidencia) {
-            mejorCoincidencia = text;
-            mejorTexto = text;
-          }
-        }
+    
+    const resultados = [];
+    const modes = [7, 8, 6]; // diferentes modos de segmentación
+    for (const psm of modes) {
+      await worker.setParameters({ tessedit_pageseg_mode: psm });
+      const { data } = await worker.recognize(imgPre);
+      const texto = data.text.toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
+      if (texto.length >= 4) {
+        resultados.push({ texto, confianza: data.confidence });
       }
     }
-    // Si no se encontró coincidencia, mostrar el texto detectado
-    if (mejorTexto) {
-      setOcr('err', `✗ No se pudo verificar la placa "${placa}". El texto detectado fue: "${mejorTexto}".\nAsegúrate de que la placa esté centrada y bien iluminada.`);
-    } else {
-      setOcr('err', '✗ No se pudo leer la placa. Acércate más y asegúrate de que la placa esté centrada y bien iluminada.');
+    resultados.sort((a,b) => b.confianza - a.confianza);
+    let mejorTexto = resultados.length > 0 ? resultados[0].texto : '';
+    
+    function compararPlacas(ocr, digitada) {
+      if (ocr === digitada) return true;
+      let matches = 0;
+      const len = Math.min(ocr.length, digitada.length);
+      for (let i = 0; i < len; i++) {
+        if (ocr[i] === digitada[i]) matches++;
+      }
+      return (matches / digitada.length) >= 0.8;
     }
-    fotoOk = false;
-    document.getElementById('btn-reintentar-foto').style.display = 'inline-block';
+    
+    if (mejorTexto && compararPlacas(mejorTexto, placaDigitada)) {
+      onPlacaVerificada(placaDigitada);
+    } else {
+      setOcr('warn', `⚠️ No se pudo verificar automáticamente. Detectado: "${mejorTexto || '?'}". ¿La placa es correcta?`);
+      let manualDiv = document.getElementById('manual-placa');
+      if (!manualDiv) {
+        manualDiv = document.createElement('div');
+        manualDiv.id = 'manual-placa';
+        manualDiv.style.marginTop = '10px';
+        manualDiv.innerHTML = `
+          <label style="font-size:12px;">Si la placa es diferente, escríbela manualmente:</label>
+          <input type="text" id="placa-manual" maxlength="10" style="width:100%; padding:8px; margin:5px 0; border-radius:5px; border:1px solid #ccc;" placeholder="Ej: W4W771">
+          <button id="btn-verificar-manual" class="btn btn-blue" style="width:100%;">Verificar manualmente</button>
+        `;
+        document.getElementById('ocr-box').after(manualDiv);
+        document.getElementById('btn-verificar-manual').onclick = () => {
+          const manualPlaca = document.getElementById('placa-manual').value.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+          if (manualPlaca === placaDigitada) {
+            onPlacaVerificada(placaDigitada);
+            manualDiv.remove();
+          } else {
+            setOcr('err', `✗ La placa "${manualPlaca}" no coincide con la digitada (${placaDigitada}).`);
+          }
+        };
+      }
+      fotoOk = false;
+      document.getElementById('btn-reintentar-foto').style.display = 'inline-block';
+    }
   } catch(e) {
     console.error(e);
     setOcr('warn', 'Error al analizar la foto. Intenta nuevamente con mejor iluminación.');
@@ -525,6 +471,8 @@ async function procesarOCR(dataUrl) {
 function onPlacaVerificada(placa) {
   setOcr('ok', '✓ Placa verificada correctamente.');
   fotoOk = true;
+  const manualDiv = document.getElementById('manual-placa');
+  if (manualDiv) manualDiv.remove();
   paso(3);
   const info = placasDB[placa];
   if(info && info.tipo === 'LOCAL') {
