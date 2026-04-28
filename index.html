@@ -232,7 +232,7 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
-// ========== CORRECCIÓN: Bloqueo correcto de pasos ==========
+// ========== Bloqueo correcto de pasos ==========
 function paso(n) {
   [1,2,3].forEach(i => {
     const card = document.getElementById('card-'+i);
@@ -535,6 +535,60 @@ window.reintentarFoto = function() {
   abrirCamara();
 };
 
+// ========== CORRECCIÓN: Abrir cámara sin interferencias ==========
+window.abrirCamara = async function() {
+  // Ocultar el botón de abrir cámara mientras se intenta acceder
+  document.getElementById('btn-abrir-cam').style.display = 'none';
+  document.getElementById('cam-wrap').style.display = 'block';
+  setOcr('', '');
+  try {
+    // Solicitar acceso a la cámara trasera si es posible
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+      video: { facingMode: { exact: "environment" } } 
+    }).catch(() => {
+      // Si falla la cámara trasera, intentar con cualquier cámara
+      return navigator.mediaDevices.getUserMedia({ video: true });
+    });
+    streamActivo = stream;
+    const videoElement = document.getElementById('video');
+    videoElement.srcObject = stream;
+    await videoElement.play();
+  } catch(e) {
+    console.error("Error al acceder a la cámara:", e);
+    document.getElementById('cam-wrap').style.display = 'none';
+    let errorMsg = "No se pudo acceder a la cámara. ";
+    if (e.name === 'NotAllowedError') errorMsg += "Permiso denegado. Habilita la cámara en la configuración de tu navegador.";
+    else if (e.name === 'NotFoundError') errorMsg += "No se detectó ninguna cámara en tu dispositivo.";
+    else errorMsg += "Verifica los permisos e intenta nuevamente.";
+    setOcr('err', errorMsg);
+    document.getElementById('btn-abrir-cam').style.display = 'inline-block';
+  }
+};
+
+// ========== Capturar foto y procesar OCR ==========
+window.capturarFoto = function() {
+  const video = document.getElementById('video');
+  if (!video.videoWidth || !video.videoHeight) {
+    setOcr('err', 'La cámara no está lista. Espera un momento o reintenta.');
+    return;
+  }
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  pararCamara();
+  document.getElementById('cam-wrap').style.display = 'none';
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+  const prev = document.getElementById('foto-preview');
+  prev.src = dataUrl;
+  prev.style.display = 'block';
+  document.getElementById('btn-retomar').style.display = 'inline-block';
+  procesarOCR(dataUrl);
+};
+
+// El resto de funciones (verificarUbicacion, guardar, finalizar, mostrarPantallaExito, showMsg) se mantienen sin cambios.
+
+// ========== Verificar ubicación ==========
 window.verificarUbicacion = function() {
   if(!zona) { setGeo('warn','warn','Sin zona configurada. Contacta al administrador.'); return; }
   setGeo('info','info','Obteniendo ubicación GPS...');
@@ -624,7 +678,7 @@ function mostrarPantallaExito(placa, nombre) {
     </div>`;
   const btnNuevo = document.getElementById('btn-nuevo-registro');
   btnNuevo.addEventListener('click', () => {
-    location.reload(); // Por simplicidad recarga la página para reiniciar todo el estado
+    location.reload();
   });
 }
 
